@@ -467,9 +467,56 @@ Load in the genoprobs and markers.
 
 ~~~
 genoprobs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
+~~~
+{: .language-r}
+
+
+
+~~~
+Warning in gzfile(file, "rb"): cannot open compressed file '../data/genotypes/
+attie_DO500_genoprobs_v5.rds', probable reason 'No such file or directory'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in gzfile(file, "rb"): cannot open the connection
+~~~
+{: .error}
+
+
+
+~~~
 markers = readRDS("../data/marker_grid_0.02cM_plus.rds")
 K = calc_kinship(probs = genoprobs, type = "loco", cores = 4)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in calc_kinship(probs = genoprobs, type = "loco", cores = 4): object 'genoprobs' not found
+~~~
+{: .error}
+
+
+
+~~~
 saveRDS(K, file = "../data/kinship")
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in saveRDS(K, file = "../data/kinship"): object 'K' not found
+~~~
+{: .error}
+
+
+
+~~~
 map = map_df_to_list(map = markers, pos_column = "pos")
 ~~~
 {: .language-r}
@@ -485,11 +532,63 @@ map_fxn = function(g, m) {
   return(retval)
 }
 allele.freq = map2(genoprobs, map, map_fxn)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in map2(genoprobs, map, map_fxn): object 'genoprobs' not found
+~~~
+{: .error}
+
+
+
+~~~
 allele.freq = map2(allele.freq, 1:length(allele.freq), function(af, chr) { mutate(af, chr = chr) })
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in map2(allele.freq, 1:length(allele.freq), function(af, chr) {: object 'allele.freq' not found
+~~~
+{: .error}
+
+
+
+~~~
 tmp = allele.freq[[1]]
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in eval(expr, envir, enclos): object 'allele.freq' not found
+~~~
+{: .error}
+
+
+
+~~~
 for(i in 2:length(allele.freq)) {
   tmp = rbind(tmp, allele.freq[[i]])
 }
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in eval(expr, envir, enclos): object 'allele.freq' not found
+~~~
+{: .error}
+
+
+
+~~~
 allele.freq = data.frame(tmp)
 rm(tmp)
 
@@ -505,7 +604,15 @@ ggplot(allele.freq, aes(pos, prop, color = founder)) +
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-founder_allele_freq-1.png" alt="plot of chunk founder_allele_freq" width="864" style="display: block; margin: auto;" />
+
+
+~~~
+Error in `combine_vars()`:
+! At least one layer must contain all faceting variables: `founder`.
+* Plot is missing `founder`
+* Layer 1 is missing `founder`
+~~~
+{: .error}
 
 
 ### QTL Scans
@@ -519,6 +626,13 @@ qtl = scan1(genoprobs = genoprobs, pheno = pheno_clin_log[,12:31, drop = FALSE],
 ~~~
 {: .language-r}
 
+
+
+~~~
+Error in scan1(genoprobs = genoprobs, pheno = pheno_clin_log[, 12:31, : object 'genoprobs' not found
+~~~
+{: .error}
+
 ### QTL plots
 
 
@@ -531,7 +645,12 @@ for(i in 1:ncol(qtl)) {
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+Error in ncol(qtl): object 'qtl' not found
+~~~
+{: .error}
 
 ### QTL Peaks
 
@@ -539,50 +658,29 @@ for(i in 1:ncol(qtl)) {
 ~~~
 lod_threshold = 6
 peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in align_scan1_map(scan1_output, map): object 'qtl' not found
+~~~
+{: .error}
+
+
+
+~~~
 kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 
 
 
-Table: Phenotype QTL Peaks with LOD >= 6
-
-|lodcolumn     |chr |        pos|       lod|     ci_lo|      ci_hi|
-|:-------------|:---|----------:|---------:|---------:|----------:|
-|Ins_14wk      |1   | 135.481336|  6.411892|   3.00000| 136.156743|
-|TG_14wk       |2   |  59.584104|  6.941041|  57.06789|  60.941372|
-|weight_2wk    |2   | 102.703260|  6.850378|  27.19212| 105.158368|
-|TG_10wk       |2   | 107.367424|  6.335945|  98.11262| 109.629183|
-|Glu_6wk       |3   |   5.843185|  7.390397|   3.00000|   9.907714|
-|WPIC          |4   |  59.732535|  6.010250|  59.16445|  87.661023|
-|Ins_per_islet |4   |  59.736655|  6.599126|  59.46325|  63.541039|
-|TG_10wk       |5   |  31.962653|  6.358020|  28.82120| 141.946043|
-|Ins_14wk      |5   | 151.520204|  6.746210| 149.08909| 151.833620|
-|Glu_10wk      |8   |  48.435138|  6.040469|  24.25070| 120.579268|
-|Ins_10wk      |10  | 115.899454|  6.049395|  78.43255| 117.979203|
-|weight_10wk   |11  |  11.726117|  6.595914|  10.41106|  16.881123|
-|weight_6wk    |11  |  11.826027|  6.321523|  10.41106|  16.881123|
-|Glu_tAUC      |11  |  71.782692|  6.185468|  61.06009|  94.220647|
-|Ins_tAUC      |11  |  83.594665| 11.258841|  83.58553|  84.954440|
-|HOMA_B_0min   |11  |  84.954440| 10.246737|  80.76487|  84.954440|
-|HOMA_B_0min   |11  |  94.142728|  8.401139|  91.74957|  94.478235|
-|HOMA_IR_0min  |12  |  75.147681|  6.636235|  72.84618|  79.844595|
-|HOMA_B_0min   |12  |  75.168727|  6.538015|  73.60843|  77.028816|
-|Ins_10wk      |12  |  79.450744|  6.310718|  77.15929|  97.135996|
-|Ins_14wk      |13  |  38.450528|  6.174213|  34.80443| 109.389360|
-|HOMA_IR_0min  |13  |  97.462245|  6.783359|  96.43627|  98.394465|
-|TG_10wk       |14  |  55.802312|  6.120587|  46.98388|  86.148708|
-|HOMA_IR_0min  |15  |  72.661699|  6.423236|  72.23535|  77.426124|
-|Ins_14wk      |17  |  31.648772|  7.570437|  31.34581|  34.961498|
-|weight_6wk    |17  |  34.565685|  6.831975|  31.46779|  44.523656|
-|weight_10wk   |17  |  34.660915|  6.942955|  31.34289|  44.044398|
-|HOMA_IR_0min  |17  |  72.177507|  6.587342|  71.48575|  87.735040|
-|HOMA_B_0min   |18  |  47.130148|  6.099928|  15.39198|  47.422415|
-|num_islets    |18  |  76.826830|  6.561935|  74.47827|  78.195167|
-|food_ave      |19  |  22.638956|  6.266982|  21.84092|  60.056498|
-|weight_2wk    |X   |  45.989364|  7.315103|  39.46486|  47.608349|
-|weight_6wk    |X   |  45.989364|  6.373361|  39.23834|  49.934828|
-|TG_6wk        |X   | 135.388462|  6.441733|  37.92750| 139.946194|
+~~~
+Error in select(., -lodindex): object 'peaks' not found
+~~~
+{: .error}
 
 
 
@@ -591,33 +689,98 @@ write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
 ~~~
 {: .language-r}
 
+
+
+~~~
+Error in is.data.frame(x): object 'peaks' not found
+~~~
+{: .error}
+
 ### QTL Peaks Figure
 
 
 ~~~
 peaks = peaks %>%
           arrange(lodcolumn)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in arrange(., lodcolumn): object 'peaks' not found
+~~~
+{: .error}
+
+
+
+~~~
 plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in plot_peaks(peaks, map, col = c("blue", "red"), lwd = 3, tick.height = 0.8, : object 'peaks' not found
+~~~
+{: .error}
+
+
+
+~~~
 box()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_peaks_figure-1.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+Error in box(): plot.new has not been called yet
+~~~
+{: .error}
+
+
 
 ~~~
 plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in plot_peaks(peaks, map, col = c("blue", "red"), lwd = 3, tick_height = 0.8, : object 'peaks' not found
+~~~
+{: .error}
+
+
+
+~~~
 box()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_peaks_figure-2.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+Error in box(): plot.new has not been called yet
+~~~
+{: .error}
+
+
 
 ~~~
 ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_peaks_figure-3.png" alt="plot of chunk qtl_peaks_figure" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+Error in nrow(peaks): object 'peaks' not found
+~~~
+{: .error}
 
 
 ~~~
@@ -626,7 +789,12 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-qtl_heatmap-1.png" alt="plot of chunk qtl_heatmap" width="864" style="display: block; margin: auto;" />
+
+
+~~~
+Error in qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5): object 'qtl' not found
+~~~
+{: .error}
 
 
 ## Gene Expression Phenotypes
@@ -638,7 +806,27 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ~~~
 # load the expression data along with annotations and metadata
 load("../data/dataset.islet.rnaseq.RData")
+~~~
+{: .language-r}
 
+
+
+~~~
+Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file '../
+data/dataset.islet.rnaseq.RData', probable reason 'No such file or directory'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection
+~~~
+{: .error}
+
+
+
+~~~
 # look at raw counts
 dataset.islet.rnaseq$raw[1:6,1:6]
 ~~~
@@ -647,22 +835,9 @@ dataset.islet.rnaseq$raw[1:6,1:6]
 
 
 ~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021              10247                108                 29
-DO022              11838                187                 35
-DO023              12591                160                 19
-DO024              12424                216                 30
-DO025              10906                 76                 21
-DO026              12248                110                 34
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021                 15                120                703
-DO022                 18                136                747
-DO023                 18                275               1081
-DO024                 81                160                761
-DO025                  7                163                770
-DO026                 18                204                644
+Error in eval(expr, envir, enclos): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -675,29 +850,9 @@ dataset.islet.rnaseq$annots[1:6,]
 
 
 ~~~
-                              gene_id symbol chr     start       end strand
-ENSMUSG00000000001 ENSMUSG00000000001  Gnai3   3 108.10728 108.14615     -1
-ENSMUSG00000000028 ENSMUSG00000000028  Cdc45  16  18.78045  18.81199     -1
-ENSMUSG00000000037 ENSMUSG00000000037  Scml2   X 161.11719 161.25821      1
-ENSMUSG00000000049 ENSMUSG00000000049   Apoh  11 108.34335 108.41440      1
-ENSMUSG00000000056 ENSMUSG00000000056   Narf  11 121.23725 121.25586      1
-ENSMUSG00000000058 ENSMUSG00000000058   Cav2   6  17.28119  17.28911      1
-                      middle nearest.marker.id        biotype      module
-ENSMUSG00000000001 108.12671       3_108090236 protein_coding   darkgreen
-ENSMUSG00000000028  18.79622       16_18817262 protein_coding        grey
-ENSMUSG00000000037 161.18770       X_161182677 protein_coding        grey
-ENSMUSG00000000049 108.37887      11_108369225 protein_coding greenyellow
-ENSMUSG00000000056 121.24655      11_121200487 protein_coding       brown
-ENSMUSG00000000058  17.28515        6_17288298 protein_coding       brown
-                   hotspot
-ENSMUSG00000000001    <NA>
-ENSMUSG00000000028    <NA>
-ENSMUSG00000000037    <NA>
-ENSMUSG00000000049    <NA>
-ENSMUSG00000000056    <NA>
-ENSMUSG00000000058    <NA>
+Error in eval(expr, envir, enclos): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -711,12 +866,9 @@ table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
 
 
 ~~~
-   birthdate
-sex 2014-05-29 2014-10-15 2015-02-25 2015-09-22
-  F         46         46         49         47
-  M         45         48         50         47
+Error in table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")]): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -728,12 +880,9 @@ table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
 
 
 ~~~
-   DOwave
-sex  1  2  3  4  5
-  F 46 46 49 47  0
-  M 45 48 50 47  0
+Error in table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")]): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -746,22 +895,9 @@ dataset.islet.rnaseq$raw[1:6,1:6]
 
 
 ~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021              10247                108                 29
-DO022              11838                187                 35
-DO023              12591                160                 19
-DO024              12424                216                 30
-DO025              10906                 76                 21
-DO026              12248                110                 34
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021                 15                120                703
-DO022                 18                136                747
-DO023                 18                275               1081
-DO024                 81                160                761
-DO025                  7                163                770
-DO026                 18                204                644
+Error in eval(expr, envir, enclos): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -774,22 +910,9 @@ dataset.islet.rnaseq$expr[1:6,1:6]
 
 
 ~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021        -0.09858728         0.19145703          0.5364855
-DO022         0.97443030         2.41565800          1.1599398
-DO023         0.75497867         1.62242658         -0.4767954
-DO024         1.21299720         2.79216889          0.7205211
-DO025         1.62242658        -0.27918258          0.3272808
-DO026         0.48416010         0.03281516          0.8453674
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021         0.67037652         -1.4903750          0.6703765
-DO022         1.03980755         -1.1221937          0.9744303
-DO023         0.89324170          0.2317220          1.8245906
-DO024         2.15179362         -0.7903569          0.9957498
-DO025        -0.03281516         -0.2587715          1.5530179
-DO026         0.86427916         -0.3973634          0.2791826
+Error in eval(expr, envir, enclos): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -802,15 +925,9 @@ dataset.islet.rnaseq$lod.peaks[1:6,]
 
 
 ~~~
-            annot.id   marker.id chrom        pos       lod
-1 ENSMUSG00000037922 3_136728699     3 136.728699 11.976856
-2 ENSMUSG00000037926 2_164758936     2 164.758936  7.091543
-3 ENSMUSG00000037926 5_147178504     5 147.178504  6.248598
-4 ENSMUSG00000037933 5_147253583     5 147.253583  8.581871
-5 ENSMUSG00000037933  13_6542783    13   6.542783  6.065497
-6 ENSMUSG00000037935 11_99340415    11  99.340415  8.089051
+Error in eval(expr, envir, enclos): object 'dataset.islet.rnaseq' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -821,7 +938,19 @@ chr11_peaks <- dataset.islet.rnaseq$annots %>%
    filter(chr=="11") %>%
    left_join(dataset.islet.rnaseq$lod.peaks, 
              by = c("chr" = "chrom", "gene_id" = "annot.id")) 
+~~~
+{: .language-r}
 
+
+
+~~~
+Error in select(., gene_id, chr): object 'dataset.islet.rnaseq' not found
+~~~
+{: .error}
+
+
+
+~~~
 # look at the first several rows of chromosome 11 peaks
 head(chr11_peaks)
 ~~~
@@ -830,15 +959,9 @@ head(chr11_peaks)
 
 
 ~~~
-             gene_id chr    marker.id       pos       lod
-1 ENSMUSG00000000049  11 11_109408556 109.40856  8.337996
-2 ENSMUSG00000000056  11 11_121434933 121.43493 11.379449
-3 ENSMUSG00000000093  11  11_74732783  74.73278  9.889119
-4 ENSMUSG00000000120  11  11_95962181  95.96218 11.257591
-5 ENSMUSG00000000125  11         <NA>        NA        NA
-6 ENSMUSG00000000126  11  11_26992236  26.99224  6.013533
+Error in head(chr11_peaks): object 'chr11_peaks' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -851,9 +974,9 @@ dim(chr11_peaks)
 
 
 ~~~
-[1] 1810    5
+Error in eval(expr, envir, enclos): object 'chr11_peaks' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -866,9 +989,9 @@ chr11_peaks %>% filter(!is.na(lod)) %>% dim()
 
 
 ~~~
-[1] 1208    5
+Error in filter(., !is.na(lod)): object 'chr11_peaks' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -881,15 +1004,9 @@ chr11_peaks %>% arrange(desc(lod)) %>% head()
 
 
 ~~~
-             gene_id chr   marker.id      pos      lod
-1 ENSMUSG00000020268  11 11_55073940 55.07394 189.2332
-2 ENSMUSG00000020333  11 11_53961279 53.96128 147.8134
-3 ENSMUSG00000017404  11 11_98062374 98.06237 136.0430
-4 ENSMUSG00000093483  11 11_83104215 83.10421 135.1067
-5 ENSMUSG00000058546  11 11_78204410 78.20441 132.3365
-6 ENSMUSG00000078695  11 11_97596132 97.59613 131.8005
+Error in arrange(., desc(lod)): object 'chr11_peaks' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -902,9 +1019,9 @@ range(chr11_peaks$lod, na.rm = TRUE)
 
 
 ~~~
-[1]   6.000975 189.233211
+Error in eval(expr, envir, enclos): object 'chr11_peaks' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -916,6 +1033,6 @@ range(chr11_peaks$pos, na.rm = TRUE)
 
 
 ~~~
-[1]   3.126009 122.078650
+Error in eval(expr, envir, enclos): object 'chr11_peaks' not found
 ~~~
-{: .output}
+{: .error}
