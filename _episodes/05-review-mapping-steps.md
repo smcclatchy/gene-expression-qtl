@@ -44,6 +44,22 @@ genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
 ~~~
 {: .language-r}
 
+
+
+~~~
+Warning in gzfile(file, "rb"): cannot open compressed file '../data/
+attie_DO500_genoprobs_qtlviewer_8state_69k.rds', probable reason 'No such file
+or directory'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in gzfile(file, "rb"): cannot open the connection
+~~~
+{: .error}
+
 ### Phenotypes
 
 Lets choose a phenotype.  Here, we have chosen `weight_6wk` (weight taken at 6 weeks).  
@@ -97,6 +113,13 @@ probs = genoprobs
 {: .language-r}
 
 
+
+~~~
+Error in eval(expr, envir, enclos): object 'genoprobs' not found
+~~~
+{: .error}
+
+
 ~~~
 dim(probs[[1]])
 ~~~
@@ -105,9 +128,9 @@ dim(probs[[1]])
 
 
 ~~~
-[1]  500    8 4711
+Error in eval(expr, envir, enclos): object 'probs' not found
 ~~~
-{: .output}
+{: .error}
 
 
 ~~~
@@ -115,7 +138,12 @@ plot_genoprob(probs, map, ind = 1, chr = 1)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-05-geno_plot-1.png" alt="plot of chunk geno_plot" width="576" style="display: block; margin: auto;" />
+
+
+~~~
+Error in plot_genoprob(probs, map, ind = 1, chr = 1): object 'probs' not found
+~~~
+{: .error}
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
 
