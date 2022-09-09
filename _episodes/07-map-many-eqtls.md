@@ -30,26 +30,6 @@ library(RColorBrewer)
 library(qtl2ggplot)
 
 source("../code/gg_transcriptome_map.R")
-~~~
-{: .language-r}
-
-
-
-~~~
-Warning: package 'IRanges' was built under R version 4.2.1
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'GenomeInfoDb' was built under R version 4.2.1
-~~~
-{: .warning}
-
-
-
-~~~
 source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
@@ -65,28 +45,7 @@ load("../data/attie_DO500_expr.datasets.RData")
 load("../data/attie_DO500_mapping.data.RData")
 
 probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
-~~~
-{: .language-r}
 
-
-
-~~~
-Warning in gzfile(file, "rb"): cannot open compressed file '../data/
-attie_DO500_genoprobs_qtlviewer_8state_69k.rds', probable reason 'No such file
-or directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in gzfile(file, "rb"): cannot open the connection
-~~~
-{: .error}
-
-
-
-~~~
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~
