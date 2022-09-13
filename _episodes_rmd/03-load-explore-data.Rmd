@@ -55,21 +55,6 @@ kable(pheno_clin_dict)
 names(pheno_clin)
 ```
 
-#### Univariate Boxplot
-
-```{r pheno_boxplot, warning=FALSE}
-pheno_clin %>%
-  dplyr::select(starts_with("Ins")) %>%
-  gather(phenotype, value) %>%
-  ggplot(aes(x = phenotype, y = value)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(title = "Distribution of Phenotypes")
-```
-
-Subset the phenotypes to include only those analyzed in the paper.
-
 ```{r convert_factors}
 # convert sex and DO wave (batch) to factors
 pheno_clin$sex = factor(pheno_clin$sex)
@@ -140,20 +125,6 @@ pheno_clin %>%
 ```
 
 ### QA/QC
-
-#### Proportion Missing Data
-
-```{r pheno_missing_data, warning=FALSE}
-tmp = pheno_clin %>% 
-  mutate_all(is.na) %>% 
-  summarize_all(mean) %>%
-  gather(phenotype, value)
-kable(tmp, caption = "Proportion of Missing Data")
-```
-
-The phenotypes that we're mapping (on the right) are mostly free of missing 
-values. The highest are `Ins_per_islet` and WPIC at 3.6%.
-
 
 Log transform and standardize each phenotype. Consider setting points that are 
 more than 5 std. dev. from the mean to NA. Only do this if the final 
@@ -262,71 +233,6 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
                main = "Male Clinical Phenotype Correlation")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
-```
-
-### QTL Scans
-
-```{r qtl_scans_saved, echo=FALSE}
-rownames(pheno_clin_log) = pheno_clin_log$mouse
-covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
-
-# uncomment and run scan1 if you don't have the qtl object in 
-# your environment
-# qtl = scan1(genoprobs = genoprobs, 
-#             pheno = pheno_clin_log[,12:31, drop = FALSE], 
-#             kinship = K, 
-#             addcovar = covar, 
-#             cores = 2)
-# 
-# save(qtl, file = "../data/qtl-scan.Rdata")
-load(file = "../data/qtl-scan.Rdata")
-```
-
-```{r qtl_scans, eval=FALSE}
-rownames(pheno_clin_log) = pheno_clin_log$mouse
-covar = model.matrix(~sex + DOwave, data = pheno_clin_log)
-
-qtl = scan1(genoprobs = genoprobs, 
-            pheno = pheno_clin_log[,12:31, drop = FALSE], 
-            kinship = K, 
-            addcovar = covar, 
-            cores = 2)
-```
-
-### QTL plots
-
-```{r qtl_plots}
-par(mfrow=c(2,10))
-for(i in 1:ncol(qtl)) {
-  plot_scan1(x = qtl, map = map, lodcolumn = i, main = colnames(qtl)[i])
-  abline(h = 6, col = 2, lwd = 2)
-}
-```
-
-### QTL Peaks
-
-```{r qtl_peaks}
-lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% dplyr::select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
-write_csv(peaks, file = "../data/pheno_clin_QTL_peaks.csv")
-```
-
-### QTL Peaks Figure
-
-```{r qtl_peaks_figure,warning=FALSE,message=FALSE}
-peaks = peaks %>%
-          arrange(lodcolumn)
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick.height = 0.8, gap = 0, main = "LOD > 6")
-box()
-plot_peaks(peaks, map, col = c("blue","red"), lwd = 3, tick_height = 0.8, gap = 0, main = "LOD > 6")
-box()
-ggplot_peaks(peaks, map, col = c("blue","red"), legend.title = "LOD > 6")
-```
-
-```{r qtl_heatmap, warning=FALSE,message=FALSE,fig.height=8,fig.width=12}
-source("../code/qtl_heatmap.R")
-qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ```
 
 
