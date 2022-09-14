@@ -177,7 +177,7 @@ rm(tmp)
 
 ### Weight vs. Food Intake
 
-```{r bw_vs_food, warning=FALSE}
+```{r bw_vs_food, warning=FALSE, message=FALSE}
 pheno_clin_log %>%
   select(mouse, sex, food_ave:weight_10wk) %>%
   gather(phenotype, value, -mouse, -sex, -food_ave) %>%
@@ -214,7 +214,7 @@ Females
 ```{r female_corr_plot, fig.width=15, fig.height=15, message=FALSE, warning=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "F") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Female Clinical Phenotype Correlation")
@@ -227,7 +227,7 @@ Males
 ```{r male_corr_plot, fig.width=15, fig.height=15, warning=FALSE, message=FALSE}
 tmp = pheno_clin_log %>% 
         filter(sex == "M") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")

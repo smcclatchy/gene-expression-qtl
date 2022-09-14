@@ -285,13 +285,6 @@ pheno_clin_log %>%
 ~~~
 {: .language-r}
 
-
-
-~~~
-`geom_smooth()` using formula 'y ~ x'
-~~~
-{: .output}
-
 <img src="../fig/rmd-03-bw_vs_food-1.png" alt="plot of chunk bw_vs_food" width="612" style="display: block; margin: auto;" />
 
 
@@ -321,7 +314,7 @@ Females
 ~~~
 tmp = pheno_clin_log %>% 
         filter(sex == "F") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Female Clinical Phenotype Correlation")
@@ -338,7 +331,7 @@ Males
 ~~~
 tmp = pheno_clin_log %>% 
         filter(sex == "M") %>%
-        select(num_islets:weight_10wk)
+        select(starts_with(c("Ins", "Glu", "TG")))
 tmp = cor(tmp, use = "pairwise")
 corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
                main = "Male Clinical Phenotype Correlation")
