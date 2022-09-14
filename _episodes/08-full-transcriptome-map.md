@@ -68,27 +68,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 
 ##loading previous results
 load("../data/dataset.islet.rnaseq.RData")
-~~~
-{: .language-r}
 
-
-
-~~~
-Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file '../
-data/dataset.islet.rnaseq.RData', probable reason 'No such file or directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection
-~~~
-{: .error}
-
-
-
-~~~
 #annot.samples = dataset.islet.rnaseq$samples
 #names(annot.samples)[1] <- c("Mouse.ID")
 #annot.samples$Mouse.ID = gsub("[^[:alnum:]]", "", annot.samples$Mouse.ID)
@@ -108,19 +88,7 @@ Load in the LOD peaks over 6 from previous lesson.
 
 ~~~
 lod_summary = dataset.islet.rnaseq$lod.peaks
-~~~
-{: .language-r}
 
-
-
-~~~
-Error in eval(expr, envir, enclos): object 'dataset.islet.rnaseq' not found
-~~~
-{: .error}
-
-
-
-~~~
 ensembl = get_ensembl_genes()
 ~~~
 {: .language-r}
@@ -207,61 +175,9 @@ Error in data.frame(ensembl = id, gene_chr = chr, gene_start = start, : object '
 
 ~~~
 colnames(lod_summary)[colnames(lod_summary) == "annot.id"] = "ensembl"
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in colnames(lod_summary)[colnames(lod_summary) == "annot.id"] = "ensembl": object 'lod_summary' not found
-~~~
-{: .error}
-
-
-
-~~~
 colnames(lod_summary)[colnames(lod_summary) == "chrom"] = "qtl_chr"
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in colnames(lod_summary)[colnames(lod_summary) == "chrom"] = "qtl_chr": object 'lod_summary' not found
-~~~
-{: .error}
-
-
-
-~~~
 colnames(lod_summary)[colnames(lod_summary) == "pos"] = "qtl_pos"
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in colnames(lod_summary)[colnames(lod_summary) == "pos"] = "qtl_pos": object 'lod_summary' not found
-~~~
-{: .error}
-
-
-
-~~~
 colnames(lod_summary)[colnames(lod_summary) == "lod"] = "qtl_lod"
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in colnames(lod_summary)[colnames(lod_summary) == "lod"] = "qtl_lod": object 'lod_summary' not found
-~~~
-{: .error}
-
-
-
-~~~
 lod_summary = left_join(lod_summary, df, by = "ensembl")
 ~~~
 {: .language-r}
@@ -269,7 +185,9 @@ lod_summary = left_join(lod_summary, df, by = "ensembl")
 
 
 ~~~
-Error in left_join(lod_summary, df, by = "ensembl"): object 'lod_summary' not found
+Error in `auto_copy()`:
+! `x` and `y` must share the same src.
+ℹ set `copy` = TRUE (may be slow).
 ~~~
 {: .error}
 
@@ -284,7 +202,10 @@ lod_summary = mutate(lod_summary, gene_chr = factor(gene_chr, levels = c(1:19, "
 
 
 ~~~
-Error in mutate(lod_summary, gene_chr = factor(gene_chr, levels = c(1:19, : object 'lod_summary' not found
+Error in `mutate()`:
+! Problem while computing `gene_chr = factor(gene_chr, levels = c(1:19, "X"))`.
+Caused by error in `factor()`:
+! object 'gene_chr' not found
 ~~~
 {: .error}
 
@@ -302,7 +223,7 @@ lod_summary$cis.trans <- ifelse(lod_summary$qtl_chr == lod_summary$gene_chr, "ci
 
 
 ~~~
-Error in ifelse(lod_summary$qtl_chr == lod_summary$gene_chr, "cis", "trans"): object 'lod_summary' not found
+Error in `$<-.data.frame`(`*tmp*`, cis.trans, value = logical(0)): replacement has 0 rows, data has 39958
 ~~~
 {: .error}
 
@@ -316,9 +237,9 @@ table(lod_summary$cis.trans)
 
 
 ~~~
-Error in table(lod_summary$cis.trans): object 'lod_summary' not found
+< table of extent 0 >
 ~~~
-{: .error}
+{: .output}
 
 
 ### Plot Transcriptome Map
@@ -332,7 +253,10 @@ lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start 
 
 
 ~~~
-Error in mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start - : object 'lod_summary' not found
+Error in `mutate()`:
+! Problem while computing `cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4)`.
+Caused by error in `mask$eval_all_mutate()`:
+! object 'gene_chr' not found
 ~~~
 {: .error}
 
@@ -433,7 +357,10 @@ tmp[[i]] = lod_summary %>%
 
 
 ~~~
-Error in filter(., qtl_lod >= 7.18 & cis == FALSE): object 'lod_summary' not found
+Error in `filter()`:
+! Problem while computing `..1 = qtl_lod >= 7.18 & cis == FALSE`.
+Caused by error in `mask$eval_all_filter()`:
+! object 'cis' not found
 ~~~
 {: .error}
 
@@ -557,7 +484,10 @@ tmp[[i]] = lod_summary %>%
 
 
 ~~~
-Error in filter(., qtl_lod >= 7.18 & cis == TRUE): object 'lod_summary' not found
+Error in `filter()`:
+! Problem while computing `..1 = qtl_lod >= 7.18 & cis == TRUE`.
+Caused by error in `mask$eval_all_filter()`:
+! object 'cis' not found
 ~~~
 {: .error}
 
@@ -670,7 +600,9 @@ tmp = lod_summary %>%
 
 
 ~~~
-Error in filter(., qtl_lod >= 7.18): object 'lod_summary' not found
+Error in `group_by()`:
+! Must group by variables found in `.data`.
+✖ Column `cis` is not found.
 ~~~
 {: .error}
 
@@ -1179,7 +1111,10 @@ for(i in 1:nrow(hotspots)) {
 
 
 ~~~
-Error in filter(., qtl_lod >= 7.18): object 'lod_summary' not found
+Error in `filter()`:
+! Problem while computing `..1 = ... & ...`.
+Caused by error in `mask$eval_all_filter()`:
+! object 'gene_chr' not found
 ~~~
 {: .error}
 

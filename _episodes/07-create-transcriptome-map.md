@@ -65,27 +65,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 
 # loading previous results
 load("../data/dataset.islet.rnaseq.RData")
-~~~
-{: .language-r}
 
-
-
-~~~
-Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file '../
-data/dataset.islet.rnaseq.RData', probable reason 'No such file or directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection
-~~~
-{: .error}
-
-
-
-~~~
 expr.mrna <- counts
 ~~~
 {: .language-r}
