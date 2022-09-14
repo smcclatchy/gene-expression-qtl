@@ -45,7 +45,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-genoprobs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 ~~~
 {: .language-r}
 
@@ -94,7 +94,7 @@ We have already calculated genotype probabilities which we loaded above called `
 
 
 ~~~
-dim(genoprobs[[1]])
+dim(probs[[1]])
 ~~~
 {: .language-r}
 
@@ -107,7 +107,7 @@ dim(genoprobs[[1]])
 
 
 ~~~
-plot_genoprob(genoprobs, map, ind = 1, chr = 1)
+plot_genoprob(probs, map, ind = 1, chr = 1)
 ~~~
 {: .language-r}
 
@@ -151,7 +151,7 @@ Now lets perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = genoprobs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
 ~~~
 {: .language-r}
 
@@ -174,8 +174,12 @@ Lets find LOD peaks.  Here we are choosing to find peaks with a LOD score greate
 
 ~~~
 lod_threshold = 6
-peaks = find_peaks(scan1_output = qtl, map = map, threshold = lod_threshold, peakdrop = 4, prob = 0.95)
-kable(peaks %>% select (-lodindex) %>% arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
+peaks = find_peaks(scan1_output = qtl, map = map, 
+                   threshold = lod_threshold, 
+                   peakdrop = 4, 
+                   prob = 0.95)
+kable(peaks %>% select (-lodindex) %>% 
+        arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
 

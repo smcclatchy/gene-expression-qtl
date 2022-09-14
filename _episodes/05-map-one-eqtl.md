@@ -40,29 +40,8 @@ load("../data/attie_DO500_expr.datasets.RData")
 # mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
-~~~
-{: .language-r}
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
-
-
-~~~
-Warning in gzfile(file, "rb"): cannot open compressed file '../data/
-attie_DO500_genoprobs_qtlviewer_8state_69k.rds', probable reason 'No such file
-or directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in gzfile(file, "rb"): cannot open the connection
-~~~
-{: .error}
-
-
-
-~~~
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~
@@ -92,20 +71,7 @@ The marker map for each chromosome is stored in the `map` object. This is used t
 
 ### Genotype probabilities  
 
-We have already claculated genotype probabilities which we load above
-
-
-~~~
-probs = genoprobs
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in eval(expr, envir, enclos): object 'genoprobs' not found
-~~~
-{: .error}
+We have already calculated genotype probabilities which we load above
 
 
 ~~~
@@ -116,9 +82,9 @@ dim(probs[[1]])
 
 
 ~~~
-Error in eval(expr, envir, enclos): object 'probs' not found
+[1]  500    8 4711
 ~~~
-{: .error}
+{: .output}
 
 
 ~~~
@@ -126,12 +92,7 @@ plot_genoprob(probs, map, ind = 1, chr = 1)
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in plot_genoprob(probs, map, ind = 1, chr = 1): object 'probs' not found
-~~~
-{: .error}
+<img src="../fig/rmd-05-geno_plot-1.png" alt="plot of chunk geno_plot" width="576" style="display: block; margin: auto;" />
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
 
@@ -174,13 +135,6 @@ qtl = scan1(genoprobs = probs,
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in scan1(genoprobs = probs, pheno = counts[, "ENSMUSG00000020679", : object 'probs' not found
-~~~
-{: .error}
-
 Lets plot it
 
 
@@ -190,29 +144,11 @@ plot_scan1(x = qtl,
            map = map, 
            lodcolumn = "ENSMUSG00000020679", 
            main = colnames(qtl))
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", : object 'qtl' not found
-~~~
-{: .error}
-
-
-
-~~~
 abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
-~~~
-{: .error}
+<img src="../fig/rmd-05-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
 
 ### [Performing a permutation test](https://smcclatchy.github.io/mapping/10-perform-perm-test/) 
 
@@ -229,19 +165,6 @@ peaks = find_peaks(scan1_output = qtl,
                    map = map, 
                    threshold = lod_threshold, 
                    peakdrop = 4, prob = 0.95)
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in align_scan1_map(scan1_output, map): object 'qtl' not found
-~~~
-{: .error}
-
-
-
-~~~
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
@@ -250,10 +173,13 @@ kable(peaks %>%
 
 
 
-~~~
-Error in dplyr::select(., -lodindex): object 'peaks' not found
-~~~
-{: .error}
+Table: Phenotype QTL Peaks with LOD >= 6
+
+|lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
+|:------------------|:---|---------:|---------:|---------:|---------:|
+|ENSMUSG00000020679 |9   | 109.08150|  6.714179| 107.32742| 111.54793|
+|ENSMUSG00000020679 |11  |  84.40138| 20.773852|  83.59326|  84.68618|
+|ENSMUSG00000020679 |17  |  72.00172|  6.363912|  70.93501|  72.03042|
 
 Lets plot them:
 

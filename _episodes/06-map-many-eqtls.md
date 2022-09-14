@@ -57,29 +57,8 @@ load("../data/attie_DO500_expr.datasets.RData")
 # mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
-~~~
-{: .language-r}
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
-
-
-~~~
-Warning in gzfile(file, "rb"): cannot open compressed file '../data/
-attie_DO500_genoprobs_qtlviewer_8state_69k.rds', probable reason 'No such file
-or directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in gzfile(file, "rb"): cannot open the connection
-~~~
-{: .error}
-
-
-
-~~~
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~

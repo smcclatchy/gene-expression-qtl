@@ -47,7 +47,7 @@ load("../data/attie_DO500_expr.datasets.RData")
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")

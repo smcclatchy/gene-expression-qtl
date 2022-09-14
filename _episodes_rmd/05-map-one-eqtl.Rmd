@@ -38,7 +38,7 @@ load("../data/attie_DO500_expr.datasets.RData")
 # mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-genoprobs <- readRDS("../data/attie_DO500_genoprobs_qtlviewer_8state_69k.rds")
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -67,11 +67,7 @@ map=map
 
 ### Genotype probabilities  
 
-We have already claculated genotype probabilities which we load above
-
-```{r DOex_calc_genoprob}
-probs = genoprobs
-```
+We have already calculated genotype probabilities which we load above
 
 ```{r dim_probs}
 dim(probs[[1]])
