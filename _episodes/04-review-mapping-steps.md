@@ -20,22 +20,33 @@ source: Rmd
 
 ~~~
 library(tidyverse)
+library(knitr)
+library(GGally)
+library(corrplot)
+library(broom)
 library(qtl2)
 library(qtl2convert)
-library(GGally)
-library(broom)
-library(knitr)
-library(corrplot)
+library(qtl2ggplot)
 library(RColorBrewer)
 ~~~
 {: .language-r}
 
-Before we begin to run QTL mapping on gene expression data to find eQTLs, lets review the main QTL mapping steps.  
 
-## Load Data
+Before we begin to run QTL mapping on gene expression data to find eQTLs, let's review the main QTL mapping steps.  First, let's set our working dirctory to the directory where we want to run our analysis and store data for this course.  I've created a folder on my Desktop called `eQTL.Mapping.Course`.
+
+
+
+~~~
+setwd("/Users/corneb/Desktop/eQTL.Mapping.Course")
+~~~
+{: .language-r}
+
+
+### Load Data
 
 For this review, we are using data from the Keller et al. [paper](https://academic.oup.com/genetics/article/209/1/335/5931013?login=false) that are freely available to [download](doi:10.5061/dryad.pj105).  Here we are loading in the phenotypes & mapping as well as the genoprobs.   If available, a link is provided to the original lesson in case you need a little more help. 
 
+Let's load the data.  Hopefully you have already downloaded these beforehand and saved them in a directory called `data` created under `eQTL.Mapping.Course`.
 
 
 ~~~
@@ -45,13 +56,15 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
+##genoprobs
+probs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
 ~~~
 {: .language-r}
 
+
 ### Phenotypes
 
-In this data set, we have ??? phenotypes for 500 diversity oubred mice. Since the paper is interested in type 2 dabetes and insulin secretion, lets chose `insulin tAUC` (area under the curve) for this review.   Before going ahead to perform QTL mapping, we need the check the phenotypes distrbution as r/qtl2 assumes a normal distribution of the phenotype. 
+In this data set, we have 20 phenotypes for 500 diversity oubred mice. Since the paper is interested in type 2 dabetes and insulin secretion, let's chose `insulin tAUC` (area under the curve) for this review.   Before going ahead to perform QTL mapping, we need the check the phenotypes distrbution as r/qtl2 assumes a normal distribution of the phenotype. 
 
 
 
@@ -62,7 +75,7 @@ hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
 
 <img src="../fig/rmd-04-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 
-Now lets apply the `log()` function to this data to corect the distribution.
+Now, let's apply the `log()` function to this data to corect the distribution.
 
 
 ~~~
@@ -70,7 +83,7 @@ pheno_clin$Ins_tAUC_log <- log(pheno_clin$Ins_tAUC)
 ~~~
 {: .language-r}
 
-Now, lets make a histogram of the log-transformed data.
+Now, let's make a histogram of the log-transformed data.
 
 
 ~~~
@@ -82,6 +95,7 @@ hist(pheno_clin$Ins_tAUC_log, main = "insulin tAUC (log-transformed)")
 
 This looks much better!
 
+
 ### The Marker Map  
 
 The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file.
@@ -89,21 +103,21 @@ The marker map for each chromosome is stored in the `map` object. This is used t
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we loaded above called `genoprobs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
+We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
 
 
 
 ~~~
-dim(probs[[1]])
+dim(genoprobs[[1]])
 ~~~
 {: .language-r}
 
 
 
 ~~~
-[1]  500    8 4711
+Error in eval(expr, envir, enclos): object 'genoprobs' not found
 ~~~
-{: .output}
+{: .error}
 
 
 ~~~
@@ -126,15 +140,71 @@ heatmap(K[[1]][1:n_samples, 1:n_samples])
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-04-kinship_genoprobs-1.png" alt="plot of chunk kinship_genoprobs" width="576" style="display: block; margin: auto;" />
+<img src="../fig/rmd-04-kinship_probs-1.png" alt="plot of chunk kinship_probs" width="576" style="display: block; margin: auto;" />
+
 
 ### Covariates    
 
-Now lets add the necessary covariates. For these analysis, lets see which covariates are significant (???) ... 
+Now, let's add the necessary covariates. For these analysis, let's see which covariates are significant. In the data set we have `sex`, `DOwave` (or batch) and `diet_days` to test whether there are any gender, batch or diet effects.
+
+
+~~~
+### Tests for sex, wave and diet_days.
+
+tmp = pheno_clin %>%
+        select(mouse, sex, DOwave, diet_days, Ins_tAUC_log) %>%
+        gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
+        group_by(phenotype) %>%
+        nest()
+mod_fxn = function(df) {
+  lm(value ~ sex + DOwave + diet_days, data = df)
+}
+tmp = tmp %>%
+  mutate(model = map(data, mod_fxn)) %>%
+  mutate(summ = map(model, tidy)) %>%
+  unnest(summ)
+#  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
+
+print(tmp)
+~~~
+{: .language-r}
 
 
 
-We can see that sex and DOwave are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
+~~~
+# A tibble: 7 × 8
+# Groups:   phenotype [1]
+  phenotype    data               model  term  estimate std.e…¹ stati…²  p.value
+  <chr>        <list>             <list> <chr>    <dbl>   <dbl>   <dbl>    <dbl>
+1 Ins_tAUC_log <tibble [500 × 5]> <lm>   (Int…  4.49    0.447    10.1   1.10e-21
+2 Ins_tAUC_log <tibble [500 × 5]> <lm>   sexM   0.457   0.0742    6.17  1.48e- 9
+3 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.294   0.118    -2.49  1.33e- 2
+4 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.395   0.118    -3.36  8.46e- 4
+5 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.176   0.118    -1.49  1.38e- 1
+6 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.137   0.118    -1.16  2.46e- 1
+7 Ins_tAUC_log <tibble [500 × 5]> <lm>   diet…  0.00111 0.00346   0.322 7.48e- 1
+# … with abbreviated variable names ¹​std.error, ²​statistic
+~~~
+{: .output}
+
+
+
+~~~
+tmp %>%
+  filter(term != "(Intercept)") %>%
+  mutate(neg.log.p = -log10(p.value)) %>%
+  ggplot(aes(term, neg.log.p)) +
+    geom_point() +
+    facet_wrap(~phenotype) +
+    labs(title = "Significance of Sex, Wave & Diet Days on Phenotypes") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+rm(tmp)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-04-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
+
+We can see that sex and DOwave (especially the third batch) are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
 
 
 ~~~
@@ -145,18 +215,22 @@ pheno_clin$DOwave = factor(pheno_clin$DOwave)
 covar = model.matrix(~sex + DOwave, data = pheno_clin)
 ~~~
 {: .language-r}
+
+
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now lets perform the genome scan!
+Now let's perform the genome scan!
 
 
 ~~~
-qtl = scan1(genoprobs = probs, pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], kinship = K, addcovar = covar, cores = 2)
+qtl = scan1(genoprobs = probs, 
+            pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+            kinship = K, 
+            addcovar = covar)
 ~~~
 {: .language-r}
 
 Lets plot it
-
 
 
 ~~~
@@ -166,6 +240,7 @@ plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
 {: .language-r}
 
 <img src="../fig/rmd-04-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
+
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 
@@ -178,6 +253,7 @@ peaks = find_peaks(scan1_output = qtl, map = map,
                    threshold = lod_threshold, 
                    peakdrop = 4, 
                    prob = 0.95)
+
 kable(peaks %>% select (-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
@@ -191,3 +267,12 @@ Table: Phenotype QTL Peaks with LOD >= 6
 |:------------|:---|--------:|--------:|--------:|--------:|
 |Ins_tAUC_log |11  | 83.59467| 11.25884| 83.58553| 84.95444|
 
+
+> ## Challenge
+> Now choose another phenotype in `pheno_clin` and peform the same steps
+> 1). Check the distribution. Does it need transforming? 
+> 2). Are there any sex, batch, diet effects? 
+> 3). Run a genome scan with the genotype probabilities and kinship provided.  
+> 4). Plot the genome scan for this phenotype.
+> 5). Find the peaks above LOD score of 6.   
+{: .challenge}

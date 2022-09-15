@@ -31,6 +31,26 @@ library(corrplot)
 library(RColorBrewer)
 library(qtl2ggplot)
 source("../code/gg_transcriptome_map.R")
+~~~
+{: .language-r}
+
+
+
+~~~
+Warning: package 'IRanges' was built under R version 4.2.1
+~~~
+{: .warning}
+
+
+
+~~~
+Warning: package 'GenomeInfoDb' was built under R version 4.2.1
+~~~
+{: .warning}
+
+
+
+~~~
 source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
@@ -46,13 +66,53 @@ load("../data/attie_DO500_expr.datasets.RData")
 load("../data/attie_DO500_mapping.data.RData")
 
 probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
+~~~
+{: .language-r}
 
+
+
+~~~
+Warning in gzfile(file, "rb"): cannot open compressed file '../data/
+attie_DO500_genoprobs_v5.rds', probable reason 'No such file or directory'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in gzfile(file, "rb"): cannot open the connection
+~~~
+{: .error}
+
+
+
+~~~
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 
 # loading previous results
 load("../data/dataset.islet.rnaseq.RData")
+~~~
+{: .language-r}
 
+
+
+~~~
+Warning in readChar(con, 5L, useBytes = TRUE): cannot open compressed file '../
+data/dataset.islet.rnaseq.RData', probable reason 'No such file or directory'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in readChar(con, 5L, useBytes = TRUE): cannot open the connection
+~~~
+{: .error}
+
+
+
+~~~
 expr.mrna <- counts
 ~~~
 {: .language-r}
@@ -122,18 +182,15 @@ out.plot = ggtmap(data = lod_summary %>%
 
 ~~~
 pdf("../results/transcriptome_map_random.pdf", width = 10, height = 10)
-out.plot
-dev.off()
 ~~~
 {: .language-r}
 
 
 
 ~~~
-quartz_off_screen 
-                2 
+Error in pdf("../results/transcriptome_map_random.pdf", width = 10, height = 10): cannot open file '../results/transcriptome_map_random.pdf'
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -143,6 +200,26 @@ out.plot
 {: .language-r}
 
 <img src="../fig/rmd-07-unnamed-chunk-2-2.png" alt="plot of chunk unnamed-chunk-2" width="720" style="display: block; margin: auto;" />
+
+~~~
+dev.off()
+~~~
+{: .language-r}
+
+
+
+~~~
+null device 
+          1 
+~~~
+{: .output}
+
+
+
+~~~
+out.plot
+~~~
+{: .language-r}
 
 ### QTL Density Plot
 
@@ -185,7 +262,26 @@ out.plot = ggplot(trans, aes(mid, cnt)) +
              axis.text.x = element_text(angle = 90)) +
              labs(title = "trans-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
 pdf("../results/trans_eqtl_density_random.pdf", width = 10, height = 8)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in pdf("../results/trans_eqtl_density_random.pdf", width = 10, height = 8): cannot open file '../results/trans_eqtl_density_random.pdf'
+~~~
+{: .error}
+
+
+
+~~~
 print(out.plot)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-07-trans_eqtl_sliding_window-1.png" alt="plot of chunk trans_eqtl_sliding_window" width="612" style="display: block; margin: auto;" />
+
+~~~
 dev.off()
 ~~~
 {: .language-r}
@@ -193,8 +289,8 @@ dev.off()
 
 
 ~~~
-quartz_off_screen 
-                2 
+null device 
+          1 
 ~~~
 {: .output}
 
@@ -204,8 +300,6 @@ quartz_off_screen
 out.plot
 ~~~
 {: .language-r}
-
-<img src="../fig/rmd-07-trans_eqtl_sliding_window-1.png" alt="plot of chunk trans_eqtl_sliding_window" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -243,7 +337,26 @@ out.plot = ggplot(cis, aes(mid, cnt)) +
                    axis.text.x = element_text(angle = 90)) +
            labs(title = "cis-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
 pdf("../results/cis_eqtl_density_random.pdf", width = 10, height = 8)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in pdf("../results/cis_eqtl_density_random.pdf", width = 10, height = 8): cannot open file '../results/cis_eqtl_density_random.pdf'
+~~~
+{: .error}
+
+
+
+~~~
 print(out.plot)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-07-cis_eqtl_sliding_window-1.png" alt="plot of chunk cis_eqtl_sliding_window" width="612" style="display: block; margin: auto;" />
+
+~~~
 dev.off()
 ~~~
 {: .language-r}
@@ -251,8 +364,8 @@ dev.off()
 
 
 ~~~
-quartz_off_screen 
-                2 
+null device 
+          1 
 ~~~
 {: .output}
 
@@ -262,8 +375,6 @@ quartz_off_screen
 out.plot
 ~~~
 {: .language-r}
-
-<img src="../fig/rmd-07-cis_eqtl_sliding_window-1.png" alt="plot of chunk cis_eqtl_sliding_window" width="612" style="display: block; margin: auto;" />
 
 
 
@@ -385,11 +496,32 @@ for(i in 1:nrow(hotspots)) {
 ~~~
 {: .language-r}
 
+
+
+~~~
+Error: Cannot open file for writing:
+* '../results/chr1_hotspot_genes_random.csv'
+~~~
+{: .error}
+
 Number of genes in each hotspot.
 
 
 ~~~
 hotspots = data.frame(hotspots, count = sapply(hotspot.genes, nrow))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in (function (..., row.names = NULL, check.rows = FALSE, check.names = TRUE, : arguments imply differing number of rows: 1, 0
+~~~
+{: .error}
+
+
+
+~~~
 kable(hotspots, caption = "Number of genes per hotspot")
 ~~~
 {: .language-r}
@@ -398,22 +530,22 @@ kable(hotspots, caption = "Number of genes per hotspot")
 
 Table: Number of genes per hotspot
 
-|   |qtl_chr | center| proximal| distal| count|
-|:--|:-------|------:|--------:|------:|-----:|
-|1  |1       |  173.5|    171.5|  175.5|     0|
-|2  |2       |   81.5|     79.5|   83.5|     0|
-|3  |3       |   57.5|     55.5|   59.5|     1|
-|5  |5       |   75.0|     73.0|   77.0|     1|
-|6  |6       |    5.5|      3.5|    7.5|     1|
-|7  |7       |   37.0|     35.0|   39.0|     0|
-|8  |8       |  110.0|    108.0|  112.0|     1|
-|11 |11      |   69.5|     67.5|   71.5|     2|
-|12 |12      |  111.0|    109.0|  113.0|     0|
-|14 |14      |   22.0|     20.0|   24.0|     0|
-|15 |15      |   64.0|     62.0|   66.0|     0|
-|16 |16      |   93.5|     91.5|   95.5|     1|
-|17 |17      |   56.0|     54.0|   58.0|     0|
-|X  |X       |   53.5|     51.5|   55.5|     1|
+|qtl_chr | center| proximal| distal|
+|:-------|------:|--------:|------:|
+|1       |  173.5|    171.5|  175.5|
+|2       |   81.5|     79.5|   83.5|
+|3       |   57.5|     55.5|   59.5|
+|5       |   75.0|     73.0|   77.0|
+|6       |    5.5|      3.5|    7.5|
+|7       |   37.0|     35.0|   39.0|
+|8       |  110.0|    108.0|  112.0|
+|11      |   69.5|     67.5|   71.5|
+|12      |  111.0|    109.0|  113.0|
+|14      |   22.0|     20.0|   24.0|
+|15      |   64.0|     62.0|   66.0|
+|16      |   93.5|     91.5|   95.5|
+|17      |   56.0|     54.0|   58.0|
+|X       |   53.5|     51.5|   55.5|
 
 
 ~~~
@@ -433,12 +565,33 @@ for(i in 1:nrow(cis.hotspots)) {
 ~~~
 {: .language-r}
 
+
+
+~~~
+Error: Cannot open file for writing:
+* '../results/chr1_cis_hotspot_genes_random.csv'
+~~~
+{: .error}
+
 Number of genes in each cis-hotspot.
 
 
 ~~~
 cis.hotspots = data.frame(cis.hotspots, 
                           count = sapply(cis.hotspot.genes, nrow))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in (function (..., row.names = NULL, check.rows = FALSE, check.names = TRUE, : arguments imply differing number of rows: 1, 0
+~~~
+{: .error}
+
+
+
+~~~
 kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
 ~~~
 {: .language-r}
@@ -447,23 +600,23 @@ kable(cis.hotspots, caption = "Number of genes per cis-hotspot")
 
 Table: Number of genes per cis-hotspot
 
-|   |qtl_chr | center| proximal| distal| count|
-|:--|:-------|------:|--------:|------:|-----:|
-|1  |1       |   99.5|     97.5|  101.5|     1|
-|2  |2       |  116.5|    114.5|  118.5|     0|
-|3  |3       |   95.5|     93.5|   97.5|     1|
-|4  |4       |   42.5|     40.5|   44.5|     1|
-|5  |5       |  118.5|    116.5|  120.5|     1|
-|6  |6       |   48.5|     46.5|   50.5|     1|
-|7  |7       |   55.5|     53.5|   57.5|     0|
-|9  |9       |    9.5|      7.5|   11.5|     1|
-|10 |10      |  127.5|    125.5|  129.5|     1|
-|11 |11      |  103.5|    101.5|  105.5|     1|
-|14 |14      |    4.5|      2.5|    6.5|     1|
-|15 |15      |   82.5|     80.5|   84.5|     1|
-|16 |16      |   30.5|     28.5|   32.5|     1|
-|17 |17      |   56.0|     54.0|   58.0|     2|
-|18 |18      |   38.5|     36.5|   40.5|     1|
+|qtl_chr | center| proximal| distal|
+|:-------|------:|--------:|------:|
+|1       |   99.5|     97.5|  101.5|
+|2       |  116.5|    114.5|  118.5|
+|3       |   95.5|     93.5|   97.5|
+|4       |   42.5|     40.5|   44.5|
+|5       |  118.5|    116.5|  120.5|
+|6       |   48.5|     46.5|   50.5|
+|7       |   55.5|     53.5|   57.5|
+|9       |    9.5|      7.5|   11.5|
+|10      |  127.5|    125.5|  129.5|
+|11      |  103.5|    101.5|  105.5|
+|14      |    4.5|      2.5|    6.5|
+|15      |   82.5|     80.5|   84.5|
+|16      |   30.5|     28.5|   32.5|
+|17      |   56.0|     54.0|   58.0|
+|18      |   38.5|     36.5|   40.5|
 
 Get the expression of genes that map to each hotspot.
 
@@ -479,6 +632,14 @@ for(i in 1:length(hotspot.genes)) {
 }
 ~~~
 {: .language-r}
+
+
+
+~~~
+Error: Cannot open file for writing:
+* '../results/chr1_hotspot_genes_random.csv'
+~~~
+{: .error}
 
 ### Hotspot Gene Correlation
 

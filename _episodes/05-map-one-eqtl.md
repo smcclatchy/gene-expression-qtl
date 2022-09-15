@@ -7,11 +7,12 @@ exercises: 30
 questions:
 - "How do I map one gene expression trait?"
 objectives:
-- "????"
+- "QTL mapping of an expression data set"
 keypoints:
-- "????"
+- "To run a QTL analysis for expression data"
 source: Rmd
 ---
+
 
 
 
@@ -30,27 +31,30 @@ library(knitr)
 ~~~
 {: .language-r}
 
-## Load Data
+
+### Load Data
+
+Let's load the data. This time we are loading gene expression for ???? genes.  
 
 
 ~~~
-# expression data
+#expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
-# mapping data
+##phenotypes
+load("../data/attie_DO500_clinical.phenotypes.RData")
+
+##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
-
-# phenotypes
-load("../data/attie_DO500_clinical.phenotypes.RData")
+probs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
 ~~~
 {: .language-r}
 
+
 ### Expression Data
 
-
-Lets check the distribution
+Gene expression information is in the `counts` data object. Because we are working with `insulin tAUC` phenotype, let's map the expression counts for `Hnf1b` which is known to influence this phenotype is these data. Before we do, let's check the distribution for `Hnf1b` expression data.
 
 
 
@@ -61,69 +65,125 @@ hist(counts$ENSMUSG00000020679, main = "Hnf1b")
 
 <img src="../fig/rmd-05-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 
-These counts are normalised
+The histogram indicates that distribution of these counts are normalised.
+
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file
+The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file.  
 
+We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#the-marker-map)
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we load above
+We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
+
+We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#genotype-probabilities)
+
+
+### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
+
+The kinship matrix has already been calculated and loaded in above.  Again, we have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#kinship-matrix)
+
+
+### Covariates    
+
+Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
 
 
 ~~~
-dim(probs[[1]])
+###merging covariate data and expression data to test for sex, wave and diet_days.
+
+cov.counts <- merge(covar, counts, by=c("row.names"), sort=F)
+
+#testing covairates on expression data
+
+tmp = cov.counts %>%
+        select(mouse, sex, DOwave, diet_days, ENSMUSG00000020679) %>%
+        gather(expression, value, -mouse, -sex, -DOwave, -diet_days) %>%
+        group_by(expression) %>%
+        nest()
+mod_fxn = function(df) {
+  lm(value ~ sex + DOwave + diet_days, data = df)
+}
+tmp = tmp %>%
+  mutate(model = map(data, mod_fxn)) %>%
+  mutate(summ = map(model, tidy)) %>%
+  unnest(summ) %>%
+  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
 ~~~
 {: .language-r}
 
 
 
 ~~~
-[1]  500    8 4711
+Error in switch(format, pandoc = "simple", markdown = "pipe", format): EXPR must be a length 1 vector
+~~~
+{: .error}
+
+
+
+~~~
+print(tmp)
+~~~
+{: .language-r}
+
+
+
+~~~
+# A tibble: 1 × 2
+# Groups:   expression [1]
+  expression         data              
+  <chr>              <list>            
+1 ENSMUSG00000020679 <tibble [378 × 5]>
 ~~~
 {: .output}
 
 
-~~~
-plot_genoprob(probs, map, ind = 1, chr = 1)
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-05-geno_plot-1.png" alt="plot of chunk geno_plot" width="576" style="display: block; margin: auto;" />
-
-### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
-
-The kinship matrix has already been calculated and loaded in above
-
-
 
 ~~~
-n_samples <- 50
-heatmap(K[[1]][1:n_samples, 1:n_samples])
+tmp %>%
+  filter(term != "(Intercept)") %>%
+  mutate(neg.log.p = -log10(p.value)) %>%
+  ggplot(aes(term, neg.log.p)) +
+    geom_point() +
+    facet_wrap(~expression) +
+    labs(title = "Significance of Sex, Wave & Diet Days on Expression") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-05-kinship_probs-1.png" alt="plot of chunk kinship_probs" width="576" style="display: block; margin: auto;" />
 
-### Covariates    
 
-Now lets add the necessary covariates. For these analysis, lets see which covariates are significant (???)
+~~~
+Error in `filter()`:
+! Problem while computing `..1 = term != "(Intercept)"`.
+ℹ The error occurred in group 1: expression = "ENSMUSG00000020679".
+Caused by error in `mask$eval_all_filter()`:
+! object 'term' not found
+~~~
+{: .error}
+
+We can see that sex DOwave and diet are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
+
 
 
 ~~~
 # convert sex and DO wave (batch) to factors
 pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
+pheno_clin$diet_days = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave, data = pheno_clin)
+covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
 ~~~
 {: .language-r}
+
+
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now lets perform the genome scan!
+Now let's perform the genome scan!
 
 
 ~~~
@@ -135,8 +195,7 @@ qtl = scan1(genoprobs = probs,
 ~~~
 {: .language-r}
 
-Lets plot it
-
+Let's plot it
 
 
 ~~~
@@ -150,13 +209,10 @@ abline(h = 6, col = 2, lwd = 2)
 
 <img src="../fig/rmd-05-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
 
-### [Performing a permutation test](https://smcclatchy.github.io/mapping/10-perform-perm-test/) 
-
-Not in scripts
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 
-Lets find LOD peaks
+Let's find LOD peaks
 
 
 ~~~
@@ -181,19 +237,12 @@ Table: Phenotype QTL Peaks with LOD >= 6
 |ENSMUSG00000020679 |11  |  84.40138| 20.773852|  83.59326|  84.68618|
 |ENSMUSG00000020679 |17  |  72.00172|  6.363912|  70.93501|  72.03042|
 
-Lets plot them:
 
-should we?
-
-### [Estimated QTL effects](https://smcclatchy.github.io/mapping/11-est-qtl-effects/) 
-
-Not in scripts
-
-
-### [SNP Association Mapping](https://smcclatchy.github.io/mapping/12-snp-assoc/)
-
-Not in scripts
-
-### Searching for Candidate Genes
-
-Not in scripts
+> ## Challenge
+> Now choose another gene expression trait in `counts` data object and peform the same steps
+> 1). Check the distribution. Does it need transforming? 
+> 2). Are there any sex, batch, diet effects? 
+> 3). Run a genome scan with the genotype probabilities and kinship provided.  
+> 4). Plot the genome scan for this gene.
+> 5). Find the peaks above LOD score of 6.   
+{: .challenge}
