@@ -30,19 +30,6 @@ library(RColorBrewer)
 library(qtl2ggplot)
 
 source("../code/gg_transcriptome_map.R")
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in library(AnnotationHub): there is no package called 'AnnotationHub'
-~~~
-{: .error}
-
-
-
-~~~
 source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
