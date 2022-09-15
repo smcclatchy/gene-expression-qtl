@@ -1,5 +1,5 @@
 ---
-title: "Mapping a Gene Expression Trait"
+title: "Mapping A Single Gene Expression Trait"
 teaching: 30
 exercises: 30
 questions:
@@ -33,7 +33,7 @@ library(knitr)
 
 ### Load Data
 
-Let's load the data. This time we are loading gene expression for ???? genes.  
+Let's load the data. This time we are loading gene expression for `21,771` genes.  
 
 ```{r load_dependencies}
 
@@ -107,10 +107,8 @@ mod_fxn = function(df) {
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
-  unnest(summ) %>%
-  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
-
-print(tmp)
+  unnest(summ)
+# kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
 
 tmp %>%
   filter(term != "(Intercept)") %>%

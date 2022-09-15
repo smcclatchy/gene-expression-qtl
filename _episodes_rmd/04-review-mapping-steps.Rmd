@@ -104,7 +104,7 @@ We have already calculated genotype probabilities which we loaded above called `
 
 ```{r dim_genoprobs}
 
-dim(genoprobs[[1]])
+dim(probs[[1]])
 
 ```
 
@@ -147,10 +147,8 @@ mod_fxn = function(df) {
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
-  unnest(summ)
+  unnest(summ) 
 #  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
-
-print(tmp)
 
 tmp %>%
   filter(term != "(Intercept)") %>%

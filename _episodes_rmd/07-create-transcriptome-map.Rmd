@@ -21,7 +21,7 @@ knitr_fig_path("07-")
 
 ### Load Libraries  
 
-```{r load libraries, message=FALSE}
+```{r load libraries, message=FALSE, warnings=FALSE}
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
@@ -44,7 +44,8 @@ load("../data/attie_DO500_expr.datasets.RData")
 # mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
+# loading genoprobs
+probs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
 
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -53,6 +54,8 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 load("../data/dataset.islet.rnaseq.RData")
 
 expr.mrna <- counts
+
+
 ```
 ##making the transciptome map for the 50 cis/trans genes in last lesson
 
@@ -103,7 +106,7 @@ out.plot = ggtmap(data = lod_summary %>%
                     filter(qtl_lod >= 7.18), 
                   cis.points = TRUE, 
                   cis.radius = 4)
-pdf("../results/transcriptome_map_random.pdf", width = 10, height = 10)
+#pdf("../results/transcriptome_map_random.pdf", width = 10, height = 10)
 out.plot
 dev.off()
 out.plot
@@ -148,7 +151,7 @@ out.plot = ggplot(trans, aes(mid, cnt)) +
              panel.spacing = unit(0, "lines"),
              axis.text.x = element_text(angle = 90)) +
              labs(title = "trans-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-pdf("../results/trans_eqtl_density_random.pdf", width = 10, height = 8)
+#pdf("../results/trans_eqtl_density_random.pdf", width = 10, height = 8)
 print(out.plot)
 dev.off()
 out.plot
@@ -188,7 +191,7 @@ out.plot = ggplot(cis, aes(mid, cnt)) +
                    panel.spacing = unit(0, "lines"),
                    axis.text.x = element_text(angle = 90)) +
            labs(title = "cis-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-pdf("../results/cis_eqtl_density_random.pdf", width = 10, height = 8)
+#pdf("../results/cis_eqtl_density_random.pdf", width = 10, height = 8)
 print(out.plot)
 dev.off()
 out.plot
@@ -243,8 +246,8 @@ for(i in 1:nrow(hotspots)) {
                            (gene_chr == hotspots$qtl_chr[i] &
                             gene_start > hotspots$distal[i] + 1 &
                             gene_end < hotspots$proximal[i] - 1)))
-  write_csv(hotspot.genes[[i]], file = paste0("../results/chr",
-                                              names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
+  #write_csv(hotspot.genes[[i]], file = paste0("../results/chr",
+  #                                            names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
 }
 ```
 
@@ -265,9 +268,9 @@ for(i in 1:nrow(cis.hotspots)) {
     filter(qtl_chr == cis.hotspots$qtl_chr[i] &
              qtl_pos >= cis.hotspots$proximal[i] &
              qtl_pos <= cis.hotspots$distal[i])
-  write_csv(cis.hotspot.genes[[i]], 
-            file = paste0("../results/chr",
-                          names(cis.hotspot.genes)[i], "_cis_hotspot_genes_random.csv"))
+  #write_csv(cis.hotspot.genes[[i]], 
+  #          file = paste0("../results/chr",
+  #                        names(cis.hotspot.genes)[i], "_cis_hotspot_genes_random.csv"))
   }
 ```
 
@@ -288,7 +291,7 @@ for(i in 1:length(hotspot.genes)) {
   hotspot.genes[[i]] = left_join(hotspot.genes[[i]], 
                                  tmp, 
                                  by = "ensembl")
-  write_csv(hotspot.genes[[i]], path = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
+  #write_csv(hotspot.genes[[i]], path = paste0("../results/chr", names(hotspot.genes)[i], "_hotspot_genes_random.csv"))
 }
 ```
 
