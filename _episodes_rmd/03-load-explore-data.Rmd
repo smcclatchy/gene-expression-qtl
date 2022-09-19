@@ -48,11 +48,9 @@ see a description of each of these phenotypes. You can also view a table of
 the data dictionary.
 
 ```{r dict_phenos}
-kable(pheno_clin_dict)
-```
-
-```{r name_phenos}
-names(pheno_clin)
+pheno_clin_dict %>% 
+  select(name, formula, description) %>% 
+  kable()
 ```
 
 ```{r convert_factors}

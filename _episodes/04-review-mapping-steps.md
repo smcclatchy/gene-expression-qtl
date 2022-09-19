@@ -5,7 +5,7 @@ title: "Review Mapping Steps"
 teaching: 30
 exercises: 30
 questions:
-- "What are the steps ivolved in running QTL mapping in Diversity Outbred Mice?"
+- "What are the steps involved in running QTL mapping in Diversity Outbred Mice?"
 objectives:
 - "Reviewing the QTL mapping steps learnt in the first two days"
 keypoints:
@@ -31,22 +31,18 @@ library(RColorBrewer)
 ~~~
 {: .language-r}
 
-
-Before we begin to run QTL mapping on gene expression data to find eQTLs, let's review the main QTL mapping steps.  First, let's set our working dirctory to the directory where we want to run our analysis and store data for this course.  I've created a folder on my Desktop called `eQTL.Mapping.Course`.
-
-
-
-~~~
-setwd("/Users/corneb/Desktop/eQTL.Mapping.Course")
-~~~
-{: .language-r}
-
+Before we begin to run QTL mapping on gene expression data to find eQTLs, let's 
+review the main QTL mapping steps.
 
 ### Load Data
 
-For this review, we are using data from the Keller et al. [paper](https://academic.oup.com/genetics/article/209/1/335/5931013?login=false) that are freely available to [download](doi:10.5061/dryad.pj105).  Here we are loading in the phenotypes & mapping as well as the genoprobs.   If available, a link is provided to the original lesson in case you need a little more help. 
+For this review, we are using data from the Keller et al. [paper](https://academic.oup.com/genetics/article/209/1/335/5931013?login=false) 
+that are freely available to [download](doi:10.5061/dryad.pj105).  Here we are 
+loading in the phenotypes & mapping as well as the genoprobs.   If available, a 
+link is provided to the original lesson in case you need a little more help. 
 
-Let's load the data.  Hopefully you have already downloaded these beforehand and saved them in a directory called `data` created under `eQTL.Mapping.Course`.
+Let's load the data.  Hopefully you have already downloaded these beforehand and 
+saved them in a directory called `data` created under `eQTL.Mapping.Course`.
 
 
 ~~~
@@ -57,14 +53,17 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 load("../data/attie_DO500_mapping.data.RData")
 
 ##genoprobs
-probs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 ~~~
 {: .language-r}
 
 
 ### Phenotypes
 
-In this data set, we have 20 phenotypes for 500 diversity oubred mice. Since the paper is interested in type 2 dabetes and insulin secretion, let's chose `insulin tAUC` (area under the curve) for this review.   Before going ahead to perform QTL mapping, we need the check the phenotypes distrbution as r/qtl2 assumes a normal distribution of the phenotype. 
+In this data set, we have 20 phenotypes for 500 Diversity Outbred mice. Since 
+the paper is interested in type 2 diabetes and insulin secretion, let's choose 
+`insulin tAUC` (area under the curve) for this review.   
+Before going ahead to perform QTL mapping, we need the check the phenotypes distribution as r/qtl2 assumes a normal distribution of the phenotype. 
 
 
 
@@ -98,12 +97,16 @@ This looks much better!
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file.
+The marker map for each chromosome is stored in the `map` object. This is used 
+to plot the LOD scores calculated at each marker during QTL mapping.  Here we 
+are using the 69K grid marker file.
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
+We have already calculated genotype probabilities which we loaded above called 
+`probs`.  This contains the 8 state genotype probabilities using the 69k grid 
+map of the same 500 DO mice that also have clinical phenotypes. 
 
 
 
@@ -135,7 +138,6 @@ The kinship matrix has already been calculated and loaded in above
 
 ~~~
 n_samples <- 50
-
 heatmap(K[[1]][1:n_samples, 1:n_samples])
 ~~~
 {: .language-r}
@@ -145,7 +147,9 @@ heatmap(K[[1]][1:n_samples, 1:n_samples])
 
 ### Covariates    
 
-Now, let's add the necessary covariates. For these analysis, let's see which covariates are significant. In the data set we have `sex`, `DOwave` (or batch) and `diet_days` to test whether there are any gender, batch or diet effects.
+Now, let's add the necessary covariates. For these analysis, let's see which 
+covariates are significant. In the data set we have `sex`, `DOwave` (or batch) 
+and `diet_days` to test whether there are any gender, batch or diet effects.
 
 
 ~~~
@@ -179,7 +183,9 @@ rm(tmp)
 
 <img src="../fig/rmd-04-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
 
-We can see that sex and DOwave (especially the third batch) are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
+We can see that sex and DOwave (especially the third batch) are significant.  
+Here DOwave is the group or batch number as not all mice were submitted for 
+genotyping at the same time.  Because of this, we now have to correct for it.
 
 
 ~~~
@@ -219,7 +225,8 @@ plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 
-Lets find LOD peaks.  Here we are choosing to find peaks with a LOD score greater than 6. 
+Lets find LOD peaks.  Here we are choosing to find peaks with a LOD score 
+greater than 6. 
 
 
 ~~~
@@ -244,10 +251,27 @@ Table: Phenotype QTL Peaks with LOD >= 6
 
 
 > ## Challenge
-> Now choose another phenotype in `pheno_clin` and peform the same steps
-> 1). Check the distribution. Does it need transforming? 
-> 2). Are there any sex, batch, diet effects? 
-> 3). Run a genome scan with the genotype probabilities and kinship provided.  
-> 4). Plot the genome scan for this phenotype.
-> 5). Find the peaks above LOD score of 6.   
+> Now choose another phenotype in `pheno_clin` and perform the same steps.  
+> 1). Check the distribution. Does it need transforming?  
+> 2). Are there any sex, batch, diet effects?  
+> 3). Run a genome scan with the genotype probabilities and kinship provided.   
+> 4). Plot the genome scan for this phenotype.  
+> 5). Find the peaks above LOD score of 6.    
+> > ## Solution
+> > 
+> > ~~~
+> > # 1). Check the distribution. Does it need transforming?
+> > 
+> > 
+> > # 2). Are there any sex, batch, diet effects?
+> > 
+> > 
+> > # 3). Run a genome scan with the genotype probabilities and kinship provided.
+> > 
+> > # 4). Plot the genome scan for this phenotype.
+> > 
+> > # 5). Find the peaks above LOD score of 6. 
+> > ~~~
+> > {: .language-r}
+> {: .solution}
 {: .challenge}

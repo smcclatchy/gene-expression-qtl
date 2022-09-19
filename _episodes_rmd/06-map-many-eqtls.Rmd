@@ -18,7 +18,7 @@ knitr_fig_path("06-")
 
 ### Load Libraries  
 
-```{r load libraries, message=FALSE}
+```{r load libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
@@ -50,10 +50,7 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 
 
 ### Expression Data
-
-
 Lets check the distribution
-
 
 ```{r hist_untransformed}
 hist(counts$ENSMUSG00000020679, main = "Hnf1b (counts)")
@@ -96,9 +93,7 @@ covar = model.matrix(~sex + DOwave, data = pheno_clin)
 
 Now lets perform the genome scan!
 
-
 Pick 50 random genes (cis and trans genes)
-
 
 ### QTL Scans
 
@@ -128,6 +123,10 @@ if(file.exists(qtl.file)) {
 
 ### QTL plots
 
+```{r set_plot_rows_columns, echo=FALSE}
+par(mfrow=c(17, 3))
+```
+
 ```{r qtl_plots}
 for(i in 1:ncol(qtl)) {
   plot_scan1(x = qtl, 
@@ -136,7 +135,6 @@ for(i in 1:ncol(qtl)) {
              main = colnames(qtl)[i])
   abline(h = 6, col = 2, lwd = 2)
   }
-
 ```
 
 ### QTL Peaks
@@ -148,6 +146,17 @@ peaks = find_peaks(scan1_output = qtl,
                    threshold = lod_threshold, 
                    peakdrop = 4, 
                    prob = 0.95)
+```
+
+```{r short_qtl_peaks_table, echo=FALSE}
+peaks %>%
+  dplyr::select(-lodindex) %>%
+  arrange(chr, pos) %>%
+  kable(caption = "Expression QTL (eQTL) Peaks with LOD >= 6") %>%
+  head(n=12)
+```
+
+```{r qtl_peaks_table, eval=FALSE}
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
