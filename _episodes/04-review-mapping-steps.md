@@ -5,7 +5,7 @@ title: "Review Mapping Steps"
 teaching: 30
 exercises: 30
 questions:
-- "What are the steps involved in running QTL mapping in Diversity Outbred Mice?"
+- "What are the steps involved in running QTL mapping in Diversity Outbred mice?"
 objectives:
 - "Reviewing the QTL mapping steps learnt in the first two days"
 keypoints:
@@ -63,7 +63,8 @@ probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 In this data set, we have 20 phenotypes for 500 Diversity Outbred mice. Since 
 the paper is interested in type 2 diabetes and insulin secretion, let's choose 
 `insulin tAUC` (area under the curve) for this review.   
-Before going ahead to perform QTL mapping, we need the check the phenotypes distribution as r/qtl2 assumes a normal distribution of the phenotype. 
+Before going ahead to perform QTL mapping, we need the check the phenotypes 
+distribution as r/qtl2 assumes a normal distribution of the phenotype. 
 
 
 
@@ -249,15 +250,16 @@ Table: Phenotype QTL Peaks with LOD >= 6
 |:------------|:---|--------:|--------:|--------:|--------:|
 |Ins_tAUC_log |11  | 83.59467| 11.25884| 83.58553| 84.95444|
 
-
 > ## Challenge
 > Now choose another phenotype in `pheno_clin` and perform the same steps.  
 > 1). Check the distribution. Does it need transforming?  
 > 2). Are there any sex, batch, diet effects?  
 > 3). Run a genome scan with the genotype probabilities and kinship provided.   
 > 4). Plot the genome scan for this phenotype.  
-> 5). Find the peaks above LOD score of 6.    
+> 5). Find the peaks above LOD score of 6. 
+>
 > > ## Solution
+> > 
 > > 
 > > ~~~
 > > # 1). Check the distribution. Does it need transforming?
