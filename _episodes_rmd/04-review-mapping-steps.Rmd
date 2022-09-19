@@ -68,7 +68,7 @@ distribution as r/qtl2 assumes a normal distribution of the phenotype.
 hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
 ```
 
-Now, let's apply the `log()` function to this data to corect the distribution.
+Now, let's apply the `log()` function to this data to correct the distribution.
 
 ```{r log_transform}
 pheno_clin$Ins_tAUC_log <- log(pheno_clin$Ins_tAUC)

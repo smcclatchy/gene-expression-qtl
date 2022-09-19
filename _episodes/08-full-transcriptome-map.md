@@ -193,7 +193,8 @@ lod_summary = mutate(lod_summary, gene_chr = factor(gene_chr, levels = c(1:19, "
 
 ~~~
 Error in `mutate()`:
-! Problem while computing `gene_chr = factor(gene_chr, levels = c(1:19, "X"))`.
+! Problem while computing `gene_chr = factor(gene_chr,
+  levels = c(1:19, "X"))`.
 Caused by error in `factor()`:
 ! object 'gene_chr' not found
 ~~~
@@ -244,7 +245,8 @@ lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start 
 
 ~~~
 Error in `mutate()`:
-! Problem while computing `cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4)`.
+! Problem while computing `cis = (gene_chr == qtl_chr) &
+  (abs(gene_start - qtl_pos) < 4)`.
 Caused by error in `mask$eval_all_mutate()`:
 ! object 'gene_chr' not found
 ~~~
@@ -338,7 +340,8 @@ tmp[[i]] = lod_summary %>%
 
 ~~~
 Error in `filter()`:
-! Problem while computing `..1 = qtl_lod >= 7.18 & cis == FALSE`.
+! Problem while computing `..1 = qtl_lod >= 7.18 & cis ==
+  FALSE`.
 Caused by error in `mask$eval_all_filter()`:
 ! object 'cis' not found
 ~~~
@@ -452,7 +455,8 @@ tmp[[i]] = lod_summary %>%
 
 ~~~
 Error in `filter()`:
-! Problem while computing `..1 = qtl_lod >= 7.18 & cis == TRUE`.
+! Problem while computing `..1 = qtl_lod >= 7.18 & cis ==
+  TRUE`.
 Caused by error in `mask$eval_all_filter()`:
 ! object 'cis' not found
 ~~~

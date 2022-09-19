@@ -75,7 +75,7 @@ hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
 
 <img src="../fig/rmd-04-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 
-Now, let's apply the `log()` function to this data to corect the distribution.
+Now, let's apply the `log()` function to this data to correct the distribution.
 
 
 ~~~
