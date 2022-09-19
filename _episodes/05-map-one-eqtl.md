@@ -47,29 +47,17 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
-probs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 ~~~
 {: .language-r}
 
 
-
-~~~
-Warning in gzfile(file, "rb"): cannot open compressed file '../data/genotypes/
-attie_DO500_genoprobs_v5.rds', probable reason 'No such file or directory'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in gzfile(file, "rb"): cannot open the connection
-~~~
-{: .error}
-
-
 ### Expression Data
 
-Gene expression information is in the `counts` data object. Because we are working with `insulin tAUC` phenotype, let's map the expression counts for `Hnf1b` which is known to influence this phenotype is these data. Before we do, let's check the distribution for `Hnf1b` expression data.
+Gene expression information is in the `counts` data object. Because we are 
+working with `insulin tAUC` phenotype, let's map the expression counts for 
+`Hnf1b` which is known to influence this phenotype is these data. Before we do, 
+let's check the distribution for `Hnf1b` expression data.
 
 
 
@@ -85,26 +73,32 @@ The histogram indicates that distribution of these counts are normalised.
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file.  
+The marker map for each chromosome is stored in the `map` object. This is used 
+to plot the LOD scores calculated at each marker during QTL mapping.  Here we 
+are using the 69K grid marker file.  
 
 We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#the-marker-map)
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
+We have already calculated genotype probabilities which we loaded above called 
+`probs`.  This contains the 8 state genotype probabilities using the 69k grid 
+map of the same 500 DO mice that also have clinical phenotypes. 
 
 We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#genotype-probabilities)
 
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
 
-The kinship matrix has already been calculated and loaded in above.  Again, we have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#kinship-matrix)
+The kinship matrix has already been calculated and loaded in above.  Again, we 
+have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#kinship-matrix)
 
 
 ### Covariates    
 
-Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
+Now let's add the necessary covariates. For `Hnf1b` expression data, let's see 
+which covariates are significant.
 
 
 ~~~
@@ -142,7 +136,9 @@ rm(tmp)
 
 <img src="../fig/rmd-05-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
 
-We can see that sex DOwave and diet are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
+We can see that sex DOwave and diet are significant.  Here DOwave is the group 
+or batch number as not all mice were submitted for genotyping at the same time.  
+Because of this, we now have to correct for it.
 
 
 
@@ -171,13 +167,6 @@ qtl = scan1(genoprobs = probs,
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in scan1(genoprobs = probs, pheno = counts[, "ENSMUSG00000020679", : object 'probs' not found
-~~~
-{: .error}
-
 Let's plot it
 
 
@@ -186,29 +175,11 @@ plot_scan1(x = qtl,
            map = map, 
            lodcolumn = "ENSMUSG00000020679", 
            main = colnames(qtl))
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in plot_scan1(x = qtl, map = map, lodcolumn = "ENSMUSG00000020679", : object 'qtl' not found
-~~~
-{: .error}
-
-
-
-~~~
 abline(h = 6, col = 2, lwd = 2)
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
-~~~
-{: .error}
+<img src="../fig/rmd-05-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
 
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
@@ -222,19 +193,6 @@ peaks = find_peaks(scan1_output = qtl,
                    map = map, 
                    threshold = lod_threshold, 
                    peakdrop = 4, prob = 0.95)
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in align_scan1_map(scan1_output, map): object 'qtl' not found
-~~~
-{: .error}
-
-
-
-~~~
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
@@ -243,17 +201,40 @@ kable(peaks %>%
 
 
 
-~~~
-Error in dplyr::select(., -lodindex): object 'peaks' not found
-~~~
-{: .error}
+Table: Phenotype QTL Peaks with LOD >= 6
+
+|lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
+|:------------------|:---|---------:|---------:|---------:|---------:|
+|ENSMUSG00000020679 |9   | 109.08150|  6.714179| 107.32742| 111.54793|
+|ENSMUSG00000020679 |11  |  84.40138| 20.773852|  83.59326|  84.68618|
+|ENSMUSG00000020679 |17  |  72.00172|  6.363912|  70.93501|  72.03042|
 
 
 > ## Challenge
-> Now choose another gene expression trait in `counts` data object and peform the same steps
+> Now choose another gene expression trait in `counts` data object and perform 
+> the same steps.  
 > 1). Check the distribution. Does it need transforming? 
 > 2). Are there any sex, batch, diet effects? 
 > 3). Run a genome scan with the genotype probabilities and kinship provided.  
 > 4). Plot the genome scan for this gene.
-> 5). Find the peaks above LOD score of 6.   
+> 5). Find the peaks above LOD score of 6.  
+>
+> > ## Solution
+> > 
+> > 
+> > ~~~
+> > # 1). Check the distribution. Does it need transforming?
+> > 
+> > 
+> > # 2). Are there any sex, batch, diet effects?
+> > 
+> > 
+> > # 3). Run a genome scan with the genotype probabilities and kinship provided.
+> > 
+> > # 4). Plot the genome scan for this phenotype.
+> > 
+> > # 5). Find the peaks above LOD score of 6. 
+> > ~~~
+> > {: .language-r}
+> {: .solution}
 {: .challenge}

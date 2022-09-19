@@ -69,7 +69,7 @@ distribution as r/qtl2 assumes a normal distribution of the phenotype.
 
 
 ~~~
-hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
+hist(pheno_clin$Ins_tAUC, main = "Insulin Area Under the Curve")
 ~~~
 {: .language-r}
 
@@ -206,7 +206,8 @@ Now let's perform the genome scan!
 
 ~~~
 qtl = scan1(genoprobs = probs, 
-            pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+            pheno = pheno_clin[,"Ins_tAUC_log", 
+                               drop = FALSE], 
             kinship = K, 
             addcovar = covar)
 ~~~

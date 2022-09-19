@@ -74,19 +74,22 @@ These counts are normalised
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file
+The marker map for each chromosome is stored in the `map` object. This is used 
+to plot the LOD scores calculated at each marker during QTL mapping.  Here we 
+are using the 69K grid marker file.
 
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we load above
+We have already calculated genotype probabilities which we load above.
 
 
 
 ### Covariates    
 
-Now lets add the necessary covariates. For these analysis, lets see which covariates are significant (???)
+Now lets add the necessary covariates. For these analysis, lets see which 
+covariates are significant (???)
 
 
 ~~~

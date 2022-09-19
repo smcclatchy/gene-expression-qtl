@@ -65,7 +65,7 @@ distribution as r/qtl2 assumes a normal distribution of the phenotype.
 
 
 ```{r hist_untransformed}
-hist(pheno_clin$Ins_tAUC, main = "insulin tAUC")
+hist(pheno_clin$Ins_tAUC, main = "Insulin Area Under the Curve")
 ```
 
 Now, let's apply the `log()` function to this data to correct the distribution.
@@ -173,7 +173,8 @@ Now let's perform the genome scan!
 
 ```{r QTL, warning=FALSE, error=FALSE}
 qtl = scan1(genoprobs = probs, 
-            pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+            pheno = pheno_clin[,"Ins_tAUC_log", 
+                               drop = FALSE], 
             kinship = K, 
             addcovar = covar)
 ```
@@ -213,17 +214,6 @@ kable(peaks %>% select (-lodindex) %>%
 > > ## Solution
 > > 
 > > ```{r}
-> > # 1). Check the distribution. Does it need transforming?
-> > 
-> > 
-> > # 2). Are there any sex, batch, diet effects?
-> > 
-> > 
-> > # 3). Run a genome scan with the genotype probabilities and kinship provided.
-> > 
-> > # 4). Plot the genome scan for this phenotype.
-> >
-> > # 5). Find the peaks above LOD score of 6. 
 > >
 > >
 > > ```

@@ -25,7 +25,9 @@ keypoints:
 > 1). What does panel A show? What conclusions could you draw from panel A?   
 > 2). What does panel B show? What conclusions could you draw from panel B?   
 > 3). What does panel C show? What conclusions could you draw from panel C?  
-> 4). How are panels A through C related to one another? What story do they tell together?
+> 4). How are panels A through C related to one another? What story do they tell 
+> together?
+>
 > > ## Solution
 > >
 > > 
@@ -33,5 +35,3 @@ keypoints:
 > > 
 > {: .solution}
 {: .challenge}
-
-{% include links.md %}
