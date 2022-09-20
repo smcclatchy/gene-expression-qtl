@@ -49,7 +49,7 @@ the data dictionary.
 
 ```{r dict_phenos}
 pheno_clin_dict %>% 
-  select(name, formula, description) %>% 
+  select(description, formula) %>% 
   kable()
 ```
 
@@ -256,6 +256,9 @@ table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
 
 # look at raw counts
 dataset.islet.rnaseq$raw[1:6,1:6]
+
+# for RNA seq data, the greater the mean count, the greater the variance
+# genes with very low counts also have inflated variance
 
 # look at normalized counts
 dataset.islet.rnaseq$expr[1:6,1:6]

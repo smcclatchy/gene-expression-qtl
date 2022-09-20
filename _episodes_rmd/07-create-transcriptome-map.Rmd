@@ -45,7 +45,7 @@ load("../data/attie_DO500_expr.datasets.RData")
 load("../data/attie_DO500_mapping.data.RData")
 
 # loading genoprobs
-probs = readRDS("../data/genotypes/attie_DO500_genoprobs_v5.rds")
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
