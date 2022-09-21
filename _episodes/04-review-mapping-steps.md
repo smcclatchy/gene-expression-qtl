@@ -157,7 +157,7 @@ and `diet_days` to test whether there are any gender, batch or diet effects.
 ### Tests for sex, wave and diet_days.
 
 tmp = pheno_clin %>%
-        select(mouse, sex, DOwave, diet_days, Ins_tAUC_log) %>%
+        dplyr::select(mouse, sex, DOwave, diet_days, Ins_tAUC_log) %>%
         gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
         group_by(phenotype) %>%
         nest()
@@ -170,6 +170,31 @@ tmp = tmp %>%
   unnest(summ) 
 #  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
 
+tmp
+~~~
+{: .language-r}
+
+
+
+~~~
+# A tibble: 7 × 8
+# Groups:   phenotype [1]
+  phenotype    data               model  term  estimate std.e…¹ stati…²  p.value
+  <chr>        <list>             <list> <chr>    <dbl>   <dbl>   <dbl>    <dbl>
+1 Ins_tAUC_log <tibble [500 × 5]> <lm>   (Int…  4.49    0.447    10.1   1.10e-21
+2 Ins_tAUC_log <tibble [500 × 5]> <lm>   sexM   0.457   0.0742    6.17  1.48e- 9
+3 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.294   0.118    -2.49  1.33e- 2
+4 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.395   0.118    -3.36  8.46e- 4
+5 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.176   0.118    -1.49  1.38e- 1
+6 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.137   0.118    -1.16  2.46e- 1
+7 Ins_tAUC_log <tibble [500 × 5]> <lm>   diet…  0.00111 0.00346   0.322 7.48e- 1
+# … with abbreviated variable names ¹​std.error, ²​statistic
+~~~
+{: .output}
+
+
+
+~~~
 tmp %>%
   filter(term != "(Intercept)") %>%
   mutate(neg.log.p = -log10(p.value)) %>%
@@ -238,7 +263,7 @@ peaks = find_peaks(scan1_output = qtl, map = map,
                    peakdrop = 4, 
                    prob = 0.95)
 
-kable(peaks %>% select (-lodindex) %>% 
+kable(peaks %>% dplyr::select (-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ~~~
 {: .language-r}
@@ -262,19 +287,5 @@ Table: Phenotype QTL Peaks with LOD >= 6
 > > ## Solution
 > > 
 > > 
-> > ~~~
-> > # 1). Check the distribution. Does it need transforming?
-> > 
-> > 
-> > # 2). Are there any sex, batch, diet effects?
-> > 
-> > 
-> > # 3). Run a genome scan with the genotype probabilities and kinship provided.
-> > 
-> > # 4). Plot the genome scan for this phenotype.
-> > 
-> > # 5). Find the peaks above LOD score of 6. 
-> > ~~~
-> > {: .language-r}
 > {: .solution}
 {: .challenge}

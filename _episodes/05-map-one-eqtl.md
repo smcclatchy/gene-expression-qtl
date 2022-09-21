@@ -40,6 +40,7 @@ Let's load the data. This time we are loading gene expression for `21,771` genes
 ~~~
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
+load("../data/dataset.islet.rnaseq.RData")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -54,10 +55,12 @@ probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 ### Expression Data
 
-Gene expression information is in the `counts` data object. Because we are 
+Gene expression information is in the `norm` data object. These  counts have been normalised which has been explianed in a previous lesson [link???]. Because we are 
 working with `insulin tAUC` phenotype, let's map the expression counts for 
 `Hnf1b` which is known to influence this phenotype is these data. Before we do, 
 let's check the distribution for `Hnf1b` expression data.
+
+!! ADD here are about normalisation !!
 
 
 
@@ -104,12 +107,12 @@ which covariates are significant.
 ~~~
 ###merging covariate data and expression data to test for sex, wave and diet_days.
 
-cov.counts <- merge(covar, counts, by=c("row.names"), sort=F)
+cov.counts <- merge(covar, norm, by=c("row.names"), sort=F)
 
 #testing covairates on expression data
 
 tmp = cov.counts %>%
-        select(mouse, sex, DOwave, diet_days, ENSMUSG00000020679) %>%
+        dplyr::select(mouse, sex, DOwave, diet_days, ENSMUSG00000020679) %>%
         gather(expression, value, -mouse, -sex, -DOwave, -diet_days) %>%
         group_by(expression) %>%
         nest()
@@ -119,9 +122,31 @@ mod_fxn = function(df) {
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
-  unnest(summ)
-# kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
+  unnest(summ) 
+#  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
 
+tmp
+~~~
+{: .language-r}
+
+
+
+~~~
+# A tibble: 4 × 8
+# Groups:   expression [1]
+  expression         data     model  term      estimate std.e…¹ stati…²  p.value
+  <chr>              <list>   <list> <chr>        <dbl>   <dbl>   <dbl>    <dbl>
+1 ENSMUSG00000020679 <tibble> <lm>   (Interce… -1.70    0.506     -3.36 8.72e- 4
+2 ENSMUSG00000020679 <tibble> <lm>   sexM      -0.199   0.0824    -2.42 1.60e- 2
+3 ENSMUSG00000020679 <tibble> <lm>   DOwave     0.510   0.0370    13.8  3.73e-35
+4 ENSMUSG00000020679 <tibble> <lm>   diet_days  0.00403 0.00386    1.04 2.97e- 1
+# … with abbreviated variable names ¹​std.error, ²​statistic
+~~~
+{: .output}
+
+
+
+~~~
 tmp %>%
   filter(term != "(Intercept)") %>%
   mutate(neg.log.p = -log10(p.value)) %>%
@@ -136,7 +161,7 @@ rm(tmp)
 
 <img src="../fig/rmd-05-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
 
-We can see that sex DOwave and diet are significant.  Here DOwave is the group 
+We can see that sex, DOwave and diet are significant.  Here DOwave is the group 
 or batch number as not all mice were submitted for genotyping at the same time.  
 Because of this, we now have to correct for it.
 
@@ -152,7 +177,6 @@ covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
 ~~~
 {: .language-r}
 
-
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
 Now let's perform the genome scan!
@@ -160,7 +184,7 @@ Now let's perform the genome scan!
 
 ~~~
 qtl = scan1(genoprobs = probs, 
-            pheno = counts[,"ENSMUSG00000020679", drop = FALSE], 
+            pheno = norm[,"ENSMUSG00000020679", drop = FALSE], 
             kinship = K, 
             addcovar = covar, 
             cores = 2)
@@ -205,13 +229,14 @@ Table: Phenotype QTL Peaks with LOD >= 6
 
 |lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
 |:------------------|:---|---------:|---------:|---------:|---------:|
-|ENSMUSG00000020679 |9   | 109.08150|  6.714179| 107.32742| 111.54793|
-|ENSMUSG00000020679 |11  |  84.40138| 20.773852|  83.59326|  84.68618|
-|ENSMUSG00000020679 |17  |  72.00172|  6.363912|  70.93501|  72.03042|
+|ENSMUSG00000020679 |9   | 109.08150|  6.402594| 106.66772| 111.56048|
+|ENSMUSG00000020679 |11  |  84.40138| 36.878942|  83.64714|  84.40138|
+|ENSMUSG00000020679 |15  |  68.91018|  6.121254|  67.82232|  70.38004|
+|ENSMUSG00000020679 |18  |  70.89669|  6.042135|  33.80428|  71.96869|
 
 
 > ## Challenge
-> Now choose another gene expression trait in `counts` data object and perform 
+> Now choose another gene expression trait in `norm` data object and perform 
 > the same steps.  
 > 1). Check the distribution. Does it need transforming? 
 > 2). Are there any sex, batch, diet effects? 
@@ -222,19 +247,5 @@ Table: Phenotype QTL Peaks with LOD >= 6
 > > ## Solution
 > > 
 > > 
-> > ~~~
-> > # 1). Check the distribution. Does it need transforming?
-> > 
-> > 
-> > # 2). Are there any sex, batch, diet effects?
-> > 
-> > 
-> > # 3). Run a genome scan with the genotype probabilities and kinship provided.
-> > 
-> > # 4). Plot the genome scan for this phenotype.
-> > 
-> > # 5). Find the peaks above LOD score of 6. 
-> > ~~~
-> > {: .language-r}
 > {: .solution}
 {: .challenge}

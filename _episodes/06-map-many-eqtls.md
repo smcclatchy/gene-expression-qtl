@@ -34,7 +34,7 @@ source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
 
-## Load Data
+### Load Data
 
 
 ~~~
@@ -51,85 +51,156 @@ load("../data/attie_DO500_clinical.phenotypes.RData")
 ~~~
 {: .language-r}
 
+### Data Selection
+
+For this lesson, lets choose a random set of 50 gene expression phenotypes.
+
+
+
+
+~~~
+genes = colnames(norm)
+
+sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
+genes <- genes[sams]
+~~~
+{: .language-r}
 
 ### Expression Data
-Lets check the distribution
+
+Lets check the distributin of these 50 gene expression phenotypes
 
 
 ~~~
-hist(counts$ENSMUSG00000020679, main = "Hnf1b (counts)")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
-
-~~~
-hist(norm$ENSMUSG00000020679, main = "Hnf1b (norm)")
+for(gene in genes){
+  hist(norm[,gene], main = names(norm[gene]))
+  }
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
-
-These counts are normalised
+<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-3.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-4.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-5.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-6.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-7.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-8.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-9.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-10.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-11.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-12.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-13.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-14.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-15.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-16.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-17.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-18.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-19.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-20.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-21.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-22.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-23.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-24.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-25.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-26.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-27.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-28.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-29.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-30.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-31.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-32.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-33.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-34.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-35.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-36.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-37.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-38.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-39.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-40.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-41.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-42.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-43.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-44.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-45.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-46.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-47.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-48.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-49.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-50.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-51.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
+The histogram indicates that distribution of these counts are normalised (as they should be).
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used 
-to plot the LOD scores calculated at each marker during QTL mapping.  Here we 
-are using the 69K grid marker file.
+The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file.  
 
+We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#the-marker-map)
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we load above.
+We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
 
+We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#genotype-probabilities)
+
+
+### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
+
+The kinship matrix has already been calculated and loaded in above.  Again, we have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#kinship-matrix)
 
 
 ### Covariates    
 
-Now lets add the necessary covariates. For these analysis, lets see which 
-covariates are significant (???)
+Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
+
+
+~~~
+###merging covariate data and expression data to test for sex, wave and diet_days.
+
+cov.counts <- merge(covar, norm[,genes], by=c("row.names"), sort=F)
+
+#testing covairates on expression data
+
+tmp = cov.counts %>%
+        dplyr::select(mouse, sex, DOwave, diet_days, names(cov.counts[,genes])) %>%
+        gather(expression, value, -mouse, -sex, -DOwave, -diet_days) %>%
+        group_by(expression) %>%
+        nest()
+mod_fxn = function(df) {
+  lm(value ~ sex + DOwave + diet_days, data = df)
+}
+tmp = tmp %>%
+  mutate(model = map(data, mod_fxn)) %>%
+  mutate(summ = map(model, tidy)) %>%
+  unnest(summ) 
+#  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
+
+tmp
+~~~
+{: .language-r}
+
+
+
+~~~
+# A tibble: 204 × 8
+# Groups:   expression [51]
+   expression         data     model  term     estimate std.e…¹ stati…²  p.value
+   <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
+ 1 ENSMUSG00000020680 <tibble> <lm>   (Interc… -0.737   0.543    -1.36  1.75e- 1
+ 2 ENSMUSG00000020680 <tibble> <lm>   sexM      0.387   0.0884    4.38  1.55e- 5
+ 3 ENSMUSG00000020680 <tibble> <lm>   DOwave   -0.388   0.0398   -9.76  3.49e-20
+ 4 ENSMUSG00000020680 <tibble> <lm>   diet_da…  0.0119  0.00415   2.87  4.33e- 3
+ 5 ENSMUSG00000085665 <tibble> <lm>   (Interc… -0.402   0.616    -0.652 5.15e- 1
+ 6 ENSMUSG00000085665 <tibble> <lm>   sexM      0.107   0.100     1.06  2.89e- 1
+ 7 ENSMUSG00000085665 <tibble> <lm>   DOwave   -0.109   0.0452   -2.41  1.63e- 2
+ 8 ENSMUSG00000085665 <tibble> <lm>   diet_da…  0.00493 0.00471   1.05  2.96e- 1
+ 9 ENSMUSG00000009145 <tibble> <lm>   (Interc… -0.474   0.613    -0.774 4.40e- 1
+10 ENSMUSG00000009145 <tibble> <lm>   sexM     -0.0758  0.0999   -0.758 4.49e- 1
+# … with 194 more rows, and abbreviated variable names ¹​std.error, ²​statistic
+~~~
+{: .output}
+
+
+
+~~~
+tmp %>%
+  filter(term != "(Intercept)") %>%
+  mutate(neg.log.p = -log10(p.value)) %>%
+  ggplot(aes(term, neg.log.p)) +
+    geom_point() +
+    facet_wrap(~expression, ncol=10) +
+    labs(title = "Significance of Sex, Wave & Diet Days on Expression") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+rm(tmp)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-06-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
+
+We can see that `DOwave` is the most significant.  However, given that a few are influenced by `sex` and `diet_days`, we will have to correct for it. 
+
 
 
 ~~~
 # convert sex and DO wave (batch) to factors
 pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
+pheno_clin$diet_days = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave, data = pheno_clin)
+covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
 ~~~
 {: .language-r}
+
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now lets perform the genome scan!
-
-Pick 50 random genes (cis and trans genes)
+Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lesson. 
 
 ### QTL Scans
 
 
 ~~~
-genes = colnames(counts)
-chr11 = which(genes=="ENSMUSG00000020679")
-genes = genes[-chr11]
-
-sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
-genes <- genes[c(chr11, sams)]
-
-qtl.file = "../data/gene.counts_qtl_cis.trans_random.rds"
-
-qtl = NULL
+qtl.file = "../results/gene.norm_qtl_cis.trans_random.Rdata"
 
 if(file.exists(qtl.file)) {
-  qtl = readRDS(qtl.file)
+  load(qtl.file)
   } else {
     qtl = scan1(genoprobs = probs, 
-                pheno = counts[,genes, drop = FALSE],
+                pheno = norm[,genes, drop = FALSE],
                 kinship = K, 
                 addcovar = covar, 
                 cores = 2)
-    saveRDS(qtl, file = qtl.file)
+    save(qtl, file = qtl.file)
     }
 ~~~
 {: .language-r}
@@ -154,6 +225,8 @@ for(i in 1:ncol(qtl)) {
 
 ### QTL Peaks
 
+We are also going to save our peak results so we can use these again else where
+
 
 ~~~
 lod_threshold = 6
@@ -167,30 +240,30 @@ peaks = find_peaks(scan1_output = qtl,
 
 
 ~~~
- [1] "Table: Expression QTL (eQTL) Peaks with LOD >= 6"                         
- [2] ""                                                                         
- [3] "|lodcolumn          |chr |        pos|       lod|      ci_lo|      ci_hi|"
- [4] "|:------------------|:---|----------:|---------:|----------:|----------:|"
- [5] "|ENSMUSG00000089706 |1   |  99.660774| 13.502006|  97.226424| 110.897580|"
- [6] "|ENSMUSG00000022809 |1   | 156.039141|  7.356790| 155.767543| 161.069315|"
- [7] "|ENSMUSG00000040818 |1   | 158.378196|  6.025379| 154.582348| 192.703960|"
- [8] "|ENSMUSG00000027843 |1   | 190.869186|  7.670515| 154.502246| 190.893897|"
- [9] "|ENSMUSG00000026817 |2   |  32.649866| 14.659808|  32.582163|  32.877720|"
-[10] "|ENSMUSG00000035540 |2   |  71.207823| 10.033787|  69.444054|  72.066637|"
-[11] "|ENSMUSG00000027642 |2   |  71.876558|  6.566259|  69.446985|  72.228259|"
-[12] "|ENSMUSG00000024131 |2   |  72.186134|  6.653517|  70.133450|  74.887168|"
-~~~
-{: .output}
-
-
-~~~
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
 
-write_csv(peaks, "../data/gene.counts_qtl_peaks_random.csv")
+write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
 ~~~
 {: .language-r}
+
+
+~~~
+ [1] "Table: Expression QTL (eQTL) Peaks with LOD >= 6"                         
+ [2] ""                                                                         
+ [3] "|lodcolumn          |chr |        pos|       lod|      ci_lo|      ci_hi|"
+ [4] "|:------------------|:---|----------:|---------:|----------:|----------:|"
+ [5] "|ENSMUSG00000025911 |1   |   9.024093| 20.812935|   7.555186|   9.749030|"
+ [6] "|ENSMUSG00000026158 |1   |  22.453471| 10.275839|  22.302528|  23.759111|"
+ [7] "|ENSMUSG00000026123 |1   |  35.141829| 80.429567|  34.806469|  35.143241|"
+ [8] "|ENSMUSG00000025950 |1   |  66.925036|  7.565622|  63.301075|  68.389113|"
+ [9] "|ENSMUSG00000074628 |1   |  81.493012|  6.727482|  77.759922|  82.149689|"
+[10] "|ENSMUSG00000073633 |1   |  85.988854| 14.769918|  84.404656|  86.985597|"
+[11] "|ENSMUSG00000045903 |1   |  89.399281|  6.130738|  42.253039|  93.501778|"
+[12] "|ENSMUSG00000041734 |1   | 127.531953|  6.713639| 124.015913| 130.164080|"
+~~~
+{: .output}
 
 ### QTL Peaks Figure
 
@@ -229,3 +302,43 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 
 <img src="../fig/rmd-06-qtl_heatmap-1.png" alt="plot of chunk qtl_heatmap" width="612" style="display: block; margin: auto;" />
 
+> ## Challenge
+> What do the qtl scans for all gene exression traits look like?  
+> Don't worry, we've done the qtl scans for you!!!
+> You can read in this file, `..data/gene.norm_qtl_all.genes.Rdata`, which are the `scan1` results for all gene expression traits. 
+>
+> > ## Solution
+> > 
+> > 
+> > ~~~
+> > load("..data/gene.norm_qtl_all.genes.Rdata")
+> > 
+> > lod_threshold = 6
+> > peaks = find_peaks(scan1_output = qtl, 
+> >                map = map, 
+> >                threshold = lod_threshold, 
+> >                peakdrop = 4, 
+> >                prob = 0.95)
+> > write_csv(peaks, "../results/gene.norm_qtl_peaks.csv")
+> > 
+> > ## Peaks Figure
+> > peaks = peaks %>% arrange(lodcolumn)
+> > plot_peaks(peaks, 
+> >            map, 
+> >            col = c("blue","red"), 
+> >            lwd = 3, 
+> >            tick_height = 0.8, 
+> >            gap = 0, 
+> >            main = "LOD > 6")
+> > box()
+> > ggplot_peaks(peaks, 
+> >              map, 
+> >              col = c("blue","red"), 
+> >              legend.title = "LOD > 6") 
+> > 
+> > ## Heat Map
+> > qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
+> > ~~~
+> > {: .language-r}
+> {: .solution}
+{: .challenge}
