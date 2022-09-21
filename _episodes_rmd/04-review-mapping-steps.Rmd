@@ -127,7 +127,7 @@ and `diet_days` to test whether there are any gender, batch or diet effects.
 ### Tests for sex, wave and diet_days.
 
 tmp = pheno_clin %>%
-        select(mouse, sex, DOwave, diet_days, Ins_tAUC_log) %>%
+        dplyr::select(mouse, sex, DOwave, diet_days, Ins_tAUC_log) %>%
         gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
         group_by(phenotype) %>%
         nest()
@@ -139,6 +139,8 @@ tmp = tmp %>%
   mutate(summ = map(model, tidy)) %>%
   unnest(summ) 
 #  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
+
+tmp
 
 tmp %>%
   filter(term != "(Intercept)") %>%
@@ -199,7 +201,7 @@ peaks = find_peaks(scan1_output = qtl, map = map,
                    peakdrop = 4, 
                    prob = 0.95)
 
-kable(peaks %>% select (-lodindex) %>% 
+kable(peaks %>% dplyr::select (-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ```
 
@@ -213,7 +215,7 @@ kable(peaks %>% select (-lodindex) %>%
 >
 > > ## Solution
 > > 
-> > ```{r}
+> > ```{r, eval=F}
 > >
 > >
 > > ```

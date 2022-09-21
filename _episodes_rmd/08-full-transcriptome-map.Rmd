@@ -30,9 +30,6 @@ library(corrplot)
 library(RColorBrewer)
 library(qtl2ggplot)
 
-BiocManager::install("biomaRt")
-library(biomaRt)
-
 source("../code/gg_transcriptome_map.R")
 source("../code/qtl_heatmap.R")
 ```
@@ -44,32 +41,19 @@ source("../code/qtl_heatmap.R")
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
+##loading previous results
+load("../data/dataset.islet.rnaseq.RData")
+
 ##mapping data
 load("../data/attie_DO500_mapping.data.RData")
 
+##genoprobs
 probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
 
-##loading previous results
-load("../data/dataset.islet.rnaseq.RData")
-
-#annot.samples = dataset.islet.rnaseq$samples
-#names(annot.samples)[1] <- c("Mouse.ID")
-#annot.samples$Mouse.ID = gsub("[^[:alnum:]]", "", annot.samples$Mouse.ID)
-
-#annot.mrna = dataset.islet.rnaseq$annots
-#names(annot.mrna)[1] = c("id")
-#annot.mrna = annot.mrna %>% dplyr::rename(ensembl = id)
-
-expr.mrna <- counts
-
 ```
-##making the transcriptome map for the 50 cis/trans genes in last lesson
-
-
-Load in the LOD peaks over 6 from previous lesson.
 
 ```{r lod_summary,warning=FALSE,message=FALSE}
 
@@ -102,11 +86,10 @@ table(lod_summary$cis.trans)
 ### Plot Transcriptome Map
 
 ```{r fig.width=10,fig.height=10,warning=FALSE,message=FALSE}
+
 lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4))
 out.plot = ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
-pdf("../results/transcriptome_map.pdf", width = 10, height = 10)
-out.plot
-dev.off()
+
 out.plot
 ```
 
@@ -142,9 +125,7 @@ out.plot = ggplot(trans, aes(mid, cnt)) +
              panel.spacing = unit(0, "lines"),
              axis.text.x = element_text(angle = 90)) +
              labs(title = "trans-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-pdf("../results/trans_eqtl_density.pdf", width = 10, height = 8)
-print(out.plot)
-dev.off()
+
 out.plot
 ```
 
@@ -178,9 +159,7 @@ out.plot = ggplot(cis, aes(mid, cnt)) +
                    panel.spacing = unit(0, "lines"),
                    axis.text.x = element_text(angle = 90)) +
            labs(title = "cis-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-pdf("../results/cis_eqtl_density.pdf", width = 10, height = 8)
-print(out.plot)
-dev.off()
+
 out.plot
 ```
 
@@ -292,9 +271,7 @@ for(i in 1:length(hotspot.genes)) {
   side.colors = cut(hotspot.genes[[i]]$qtl_lod, breaks = 100)
   side.colors = colorRampPalette(rev(brewer.pal(9, "YlOrRd")))(length(levels(side.colors)))[as.numeric(side.colors)]
   names(side.colors) = rownames(tmp)
-  pdf(paste0("../results/hotspot_gene_cor_chr", chr, ".pdf"), width = 10, height = 10)
-  heatmap(tmp, symm = TRUE, scale = "none", main = paste("Chr", chr, "Gene Correlation"), breaks = breaks, col = colors, RowSideColors = side.colors, ColSideColors = side.colors)
-  dev.off()
+
   heatmap(tmp, symm = TRUE, scale = "none", main = paste("Chr", chr, "Gene Correlation"), breaks = breaks, col = colors, RowSideColors = side.colors, ColSideColors = side.colors)
 }
 ```
@@ -329,3 +306,4 @@ for(i in 1:length(hotspot.genes)) {
     labs(title = paste("Chr", names(hotspot.genes)[i], "Hotspot")))
 }
 ```
+

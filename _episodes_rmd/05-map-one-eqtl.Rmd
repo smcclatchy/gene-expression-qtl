@@ -39,6 +39,7 @@ Let's load the data. This time we are loading gene expression for `21,771` genes
 
 #expression data
 load("../data/attie_DO500_expr.datasets.RData")
+load("../data/dataset.islet.rnaseq.RData")
 
 ##phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
@@ -53,10 +54,12 @@ probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 ### Expression Data
 
-Gene expression information is in the `counts` data object. Because we are 
+Gene expression information is in the `norm` data object. These  counts have been normalised which has been explianed in a previous lesson [link???]. Because we are 
 working with `insulin tAUC` phenotype, let's map the expression counts for 
 `Hnf1b` which is known to influence this phenotype is these data. Before we do, 
 let's check the distribution for `Hnf1b` expression data.
+
+!! ADD here are about normalisation !!
 
 
 ```{r hist_untransformed}
@@ -99,12 +102,12 @@ which covariates are significant.
 
 ###merging covariate data and expression data to test for sex, wave and diet_days.
 
-cov.counts <- merge(covar, counts, by=c("row.names"), sort=F)
+cov.counts <- merge(covar, norm, by=c("row.names"), sort=F)
 
 #testing covairates on expression data
 
 tmp = cov.counts %>%
-        select(mouse, sex, DOwave, diet_days, ENSMUSG00000020679) %>%
+        dplyr::select(mouse, sex, DOwave, diet_days, ENSMUSG00000020679) %>%
         gather(expression, value, -mouse, -sex, -DOwave, -diet_days) %>%
         group_by(expression) %>%
         nest()
@@ -114,8 +117,10 @@ mod_fxn = function(df) {
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
-  unnest(summ)
-# kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
+  unnest(summ) 
+#  kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Expression")
+
+tmp
 
 tmp %>%
   filter(term != "(Intercept)") %>%
@@ -129,7 +134,7 @@ rm(tmp)
 
 ```
 
-We can see that sex DOwave and diet are significant.  Here DOwave is the group 
+We can see that sex, DOwave and diet are significant.  Here DOwave is the group 
 or batch number as not all mice were submitted for genotyping at the same time.  
 Because of this, we now have to correct for it.
 
@@ -145,14 +150,13 @@ covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
 
 ```
 
-
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
 Now let's perform the genome scan!
 
 ```{r QTL}
 qtl = scan1(genoprobs = probs, 
-            pheno = counts[,"ENSMUSG00000020679", drop = FALSE], 
+            pheno = norm[,"ENSMUSG00000020679", drop = FALSE], 
             kinship = K, 
             addcovar = covar, 
             cores = 2)
@@ -186,7 +190,7 @@ kable(peaks %>%
 
 
 > ## Challenge
-> Now choose another gene expression trait in `counts` data object and perform 
+> Now choose another gene expression trait in `norm` data object and perform 
 > the same steps.  
 > 1). Check the distribution. Does it need transforming? 
 > 2). Are there any sex, batch, diet effects? 
@@ -196,7 +200,7 @@ kable(peaks %>%
 >
 > > ## Solution
 > > 
-> > ```{r}
+> > ```{r, eval=F}
 > >
 > >
 > > ```
