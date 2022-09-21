@@ -141,12 +141,12 @@ tmp
  2 ENSMUSG00000020680 <tibble> <lm>   sexM      0.387   0.0884    4.38  1.55e- 5
  3 ENSMUSG00000020680 <tibble> <lm>   DOwave   -0.388   0.0398   -9.76  3.49e-20
  4 ENSMUSG00000020680 <tibble> <lm>   diet_da…  0.0119  0.00415   2.87  4.33e- 3
- 5 ENSMUSG00000085665 <tibble> <lm>   (Interc… -0.402   0.616    -0.652 5.15e- 1
- 6 ENSMUSG00000085665 <tibble> <lm>   sexM      0.107   0.100     1.06  2.89e- 1
- 7 ENSMUSG00000085665 <tibble> <lm>   DOwave   -0.109   0.0452   -2.41  1.63e- 2
- 8 ENSMUSG00000085665 <tibble> <lm>   diet_da…  0.00493 0.00471   1.05  2.96e- 1
- 9 ENSMUSG00000009145 <tibble> <lm>   (Interc… -0.474   0.613    -0.774 4.40e- 1
-10 ENSMUSG00000009145 <tibble> <lm>   sexM     -0.0758  0.0999   -0.758 4.49e- 1
+ 5 ENSMUSG00000034842 <tibble> <lm>   (Interc…  0.504   0.585     0.861 3.90e- 1
+ 6 ENSMUSG00000034842 <tibble> <lm>   sexM      0.417   0.0953    4.38  1.56e- 5
+ 7 ENSMUSG00000034842 <tibble> <lm>   DOwave   -0.196   0.0429   -4.57  6.68e- 6
+ 8 ENSMUSG00000034842 <tibble> <lm>   diet_da… -0.00176 0.00447  -0.394 6.94e- 1
+ 9 ENSMUSG00000034462 <tibble> <lm>   (Interc… -0.554   0.627    -0.884 3.77e- 1
+10 ENSMUSG00000034462 <tibble> <lm>   sexM      0.109   0.102     1.07  2.86e- 1
 # … with 194 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}

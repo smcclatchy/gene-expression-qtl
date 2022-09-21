@@ -456,12 +456,22 @@ DO026                 18                204                644
 ~~~
 {: .output}
 
+In order to make reasonable gene comparisons between samples, the count data needs to be normalized. Below, raw counts for 5 example genes are shown. Notice that the median count values (horizontal black bar in each boxplot) are not comparable between the genes.
+
+<img src="../fig/rmd-03-view_example_boxplots_raw-1.png" alt="plot of chunk view_example_boxplots_raw" width="612" style="display: block; margin: auto;" />
+
+If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are more comparable after normalizing and the count values are within the same range (-3 to 3).  Each gene count median is better aligned to the other medians after normalization.
+
+<img src="../fig/rmd-03-view_example_boxplots_normalized-1.png" alt="plot of chunk view_example_boxplots_normalized" width="612" style="display: block; margin: auto;" />
+
+<img src="../fig/rmd-03-visualize_mean_sd-1.png" alt="plot of chunk visualize_mean_sd" width="612" style="display: block; margin: auto;" />
+
+For RNA seq data, the greater the mean count, the greater the variance. Genes with very low counts also have inflated variance. Raw gene count averages and standard deviations are not independent of one another as shown in the plot below.
+
+<img src="../fig/rmd-03-visualize_mean_sd_log10-1.png" alt="plot of chunk visualize_mean_sd_log10" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
-# for RNA seq data, the greater the mean count, the greater the variance
-# genes with very low counts also have inflated variance
-
 # look at normalized counts
 dataset.islet.rnaseq$expr[1:6,1:6]
 ~~~
