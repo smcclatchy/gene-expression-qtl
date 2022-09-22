@@ -135,18 +135,18 @@ tmp
 ~~~
 # A tibble: 204 × 8
 # Groups:   expression [51]
-   expression         data     model  term     estimate std.e…¹ stati…²  p.value
-   <chr>              <list>   <list> <chr>       <dbl>   <dbl>   <dbl>    <dbl>
- 1 ENSMUSG00000020680 <tibble> <lm>   (Interc… -0.737   0.543    -1.36  1.75e- 1
- 2 ENSMUSG00000020680 <tibble> <lm>   sexM      0.387   0.0884    4.38  1.55e- 5
- 3 ENSMUSG00000020680 <tibble> <lm>   DOwave   -0.388   0.0398   -9.76  3.49e-20
- 4 ENSMUSG00000020680 <tibble> <lm>   diet_da…  0.0119  0.00415   2.87  4.33e- 3
- 5 ENSMUSG00000034842 <tibble> <lm>   (Interc…  0.504   0.585     0.861 3.90e- 1
- 6 ENSMUSG00000034842 <tibble> <lm>   sexM      0.417   0.0953    4.38  1.56e- 5
- 7 ENSMUSG00000034842 <tibble> <lm>   DOwave   -0.196   0.0429   -4.57  6.68e- 6
- 8 ENSMUSG00000034842 <tibble> <lm>   diet_da… -0.00176 0.00447  -0.394 6.94e- 1
- 9 ENSMUSG00000034462 <tibble> <lm>   (Interc… -0.554   0.627    -0.884 3.77e- 1
-10 ENSMUSG00000034462 <tibble> <lm>   sexM      0.109   0.102     1.07  2.86e- 1
+   expression         data     model  term    estimate std.e…¹ statis…²  p.value
+   <chr>              <list>   <list> <chr>      <dbl>   <dbl>    <dbl>    <dbl>
+ 1 ENSMUSG00000020680 <tibble> <lm>   (Inter… -0.737   0.543    -1.36   1.75e- 1
+ 2 ENSMUSG00000020680 <tibble> <lm>   sexM     0.387   0.0884    4.38   1.55e- 5
+ 3 ENSMUSG00000020680 <tibble> <lm>   DOwave  -0.388   0.0398   -9.76   3.49e-20
+ 4 ENSMUSG00000020680 <tibble> <lm>   diet_d…  0.0119  0.00415   2.87   4.33e- 3
+ 5 ENSMUSG00000024276 <tibble> <lm>   (Inter…  0.163   0.515     0.317  7.52e- 1
+ 6 ENSMUSG00000024276 <tibble> <lm>   sexM    -0.00410 0.0839   -0.0489 9.61e- 1
+ 7 ENSMUSG00000024276 <tibble> <lm>   DOwave  -0.489   0.0377  -13.0    5.35e-32
+ 8 ENSMUSG00000024276 <tibble> <lm>   diet_d…  0.00834 0.00394   2.12   3.47e- 2
+ 9 ENSMUSG00000022013 <tibble> <lm>   (Inter…  0.318   0.613     0.518  6.05e- 1
+10 ENSMUSG00000022013 <tibble> <lm>   sexM    -0.0997  0.0999   -0.998  3.19e- 1
 # … with 194 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}

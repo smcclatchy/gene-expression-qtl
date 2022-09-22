@@ -227,14 +227,11 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
                main = "Male Clinical Phenotype Correlation")
 ```
 
-
 ## Gene Expression Phenotypes
-
 ```{r load_expression_data}
 # load the expression data along with annotations and metadata
 load("../data/dataset.islet.rnaseq.RData")
 names(dataset.islet.rnaseq)
-kable(str(dataset.islet.rnaseq))
 ```
 
 ```{r view_annot_rawCounts_metadata}
@@ -270,6 +267,10 @@ boxplot(dataset.islet.rnaseq$expr[,c(5:9)],
 # look at normalized counts
 dataset.islet.rnaseq$expr[1:6,1:6]
 ```
+
+The expression data loaded provides LOD peaks for the eQTL analyses performed in
+this study. As a preview of what you will be doing next, extract the LOD peaks
+for chromosome 11.
 
 ```{r lod_peaks}
 # look at LOD peaks
