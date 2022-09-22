@@ -324,39 +324,92 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 
 ## Gene Expression Phenotypes
 
-### summarized data, matrices w/sample annotation, exp data, gene annotation, 
-### like bioconductor summarized experiment etc = whole set of rectangles
-
 
 ~~~
 # load the expression data along with annotations and metadata
 load("../data/dataset.islet.rnaseq.RData")
-
-# look at raw counts
-dataset.islet.rnaseq$raw[1:6,1:6]
+names(dataset.islet.rnaseq)
 ~~~
 {: .language-r}
 
 
 
 ~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021              10247                108                 29
-DO022              11838                187                 35
-DO023              12591                160                 19
-DO024              12424                216                 30
-DO025              10906                 76                 21
-DO026              12248                110                 34
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021                 15                120                703
-DO022                 18                136                747
-DO023                 18                275               1081
-DO024                 81                160                761
-DO025                  7                163                770
-DO026                 18                204                644
+[1] "annots"        "covar"         "covar.factors" "datatype"     
+[5] "display.name"  "expr"          "lod.peaks"     "raw"          
+[9] "samples"      
 ~~~
 {: .output}
 
+
+
+~~~
+kable(str(dataset.islet.rnaseq))
+~~~
+{: .language-r}
+
+
+
+~~~
+List of 9
+ $ annots       :'data.frame':	21771 obs. of  11 variables:
+  ..$ gene_id          : chr [1:21771] "ENSMUSG00000000001" "ENSMUSG00000000028" "ENSMUSG00000000037" "ENSMUSG00000000049" ...
+  ..$ symbol           : chr [1:21771] "Gnai3" "Cdc45" "Scml2" "Apoh" ...
+  ..$ chr              : chr [1:21771] "3" "16" "X" "11" ...
+  ..$ start            : num [1:21771] 108.1 18.8 161.1 108.3 121.2 ...
+  ..$ end              : num [1:21771] 108.1 18.8 161.3 108.4 121.3 ...
+  ..$ strand           : int [1:21771] -1 -1 1 1 1 1 1 1 1 1 ...
+  ..$ middle           : num [1:21771] 108.1 18.8 161.2 108.4 121.2 ...
+  ..$ nearest.marker.id: chr [1:21771] "3_108090236" "16_18817262" "X_161182677" "11_108369225" ...
+  ..$ biotype          : chr [1:21771] "protein_coding" "protein_coding" "protein_coding" "protein_coding" ...
+  ..$ module           : chr [1:21771] "darkgreen" "grey" "grey" "greenyellow" ...
+  ..$ hotspot          : chr [1:21771] NA NA NA NA ...
+ $ covar        : num [1:500, 1:5] 0 0 0 0 0 0 0 0 0 0 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : chr [1:500] "DO021" "DO022" "DO023" "DO024" ...
+  .. ..$ : chr [1:5] "sexM" "DOwave2" "DOwave3" "DOwave4" ...
+ $ covar.factors:'data.frame':	2 obs. of  2 variables:
+  ..$ column.name : chr [1:2] "sex" "DOwave"
+  ..$ display.name: chr [1:2] "Sex" "DO wave"
+ $ datatype     : chr "mRNA"
+ $ display.name : chr "Attie Islet Additive RNAseq"
+ $ expr         : num [1:378, 1:21771] -0.0986 0.9744 0.755 1.213 1.6224 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : chr [1:378] "DO021" "DO022" "DO023" "DO024" ...
+  .. ..$ : chr [1:21771] "ENSMUSG00000000001" "ENSMUSG00000000028" "ENSMUSG00000000037" "ENSMUSG00000000049" ...
+ $ lod.peaks    :'data.frame':	39958 obs. of  5 variables:
+  ..$ annot.id : chr [1:39958] "ENSMUSG00000037922" "ENSMUSG00000037926" "ENSMUSG00000037926" "ENSMUSG00000037933" ...
+  ..$ marker.id: chr [1:39958] "3_136728699" "2_164758936" "5_147178504" "5_147253583" ...
+  ..$ chrom    : chr [1:39958] "3" "2" "5" "5" ...
+  ..$ pos      : num [1:39958] 136.73 164.76 147.18 147.25 6.54 ...
+  ..$ lod      : num [1:39958] 11.98 7.09 6.25 8.58 6.07 ...
+ $ raw          : num [1:378, 1:21771] 10247 11838 12591 12424 10906 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : chr [1:378] "DO021" "DO022" "DO023" "DO024" ...
+  .. ..$ : chr [1:21771] "ENSMUSG00000000001" "ENSMUSG00000000028" "ENSMUSG00000000037" "ENSMUSG00000000049" ...
+ $ samples      :'data.frame':	378 obs. of  13 variables:
+  ..$ mouse.id          : chr [1:378] "DO021" "DO022" "DO023" "DO024" ...
+  ..$ sex               : Factor w/ 2 levels "F","M": 1 1 1 1 1 1 1 1 1 1 ...
+  ..$ sac_date          : chr [1:378] "2014-10-20" "2014-10-20" "2014-10-20" "2014-10-20" ...
+  ..$ partial_inflation : chr [1:378] NA NA NA NA ...
+  ..$ coat_color        : chr [1:378] "agouti" "agouti" "agouti" "white" ...
+  ..$ oGTT_date         : chr [1:378] "2014-09-22" "2014-09-22" "2014-09-22" "2014-09-22" ...
+  ..$ FAD_NAD_paired    : chr [1:378] "Unpaired" "Unpaired" "Unpaired" "Unpaired" ...
+  ..$ FAD_NAD_filter_set: chr [1:378] "535/70m" "535/70m" "535/70m" "535/70m" ...
+  ..$ crumblers         : chr [1:378] NA NA NA NA ...
+  ..$ birthdate         : chr [1:378] "2014-05-29" "2014-05-29" "2014-05-29" "2014-05-29" ...
+  ..$ DOwave            : Factor w/ 5 levels "1","2","3","4",..: 1 1 1 1 1 1 1 1 1 1 ...
+  ..$ chrM              : chr [1:378] "E" "G" "ABCD" "ABCD" ...
+  ..$ chrY              : chr [1:378] NA NA NA NA ...
+~~~
+{: .output}
+
+
+
+||
+||
+||
+||
 
 
 ~~~
@@ -395,8 +448,36 @@ ENSMUSG00000000058    <NA>
 
 
 ~~~
+# look at raw counts
+dataset.islet.rnaseq$raw[1:6,1:6]
+~~~
+{: .language-r}
+
+
+
+~~~
+      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
+DO021              10247                108                 29
+DO022              11838                187                 35
+DO023              12591                160                 19
+DO024              12424                216                 30
+DO025              10906                 76                 21
+DO026              12248                110                 34
+      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
+DO021                 15                120                703
+DO022                 18                136                747
+DO023                 18                275               1081
+DO024                 81                160                761
+DO025                  7                163                770
+DO026                 18                204                644
+~~~
+{: .output}
+
+
+
+~~~
 # look at sample metadata
-# mouse sex, birth dates and DO waves
+# summarize mouse sex, birth dates and DO waves
 table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
 ~~~
 {: .language-r}
@@ -428,47 +509,13 @@ sex  1  2  3  4  5
 ~~~
 {: .output}
 
-
-
-~~~
-# look at raw counts
-dataset.islet.rnaseq$raw[1:6,1:6]
-~~~
-{: .language-r}
-
-
-
-~~~
-      ENSMUSG00000000001 ENSMUSG00000000028 ENSMUSG00000000037
-DO021              10247                108                 29
-DO022              11838                187                 35
-DO023              12591                160                 19
-DO024              12424                216                 30
-DO025              10906                 76                 21
-DO026              12248                110                 34
-      ENSMUSG00000000049 ENSMUSG00000000056 ENSMUSG00000000058
-DO021                 15                120                703
-DO022                 18                136                747
-DO023                 18                275               1081
-DO024                 81                160                761
-DO025                  7                163                770
-DO026                 18                204                644
-~~~
-{: .output}
-
 In order to make reasonable gene comparisons between samples, the count data needs to be normalized. Below, raw counts for 5 example genes are shown. Notice that the median count values (horizontal black bar in each boxplot) are not comparable between the genes.
 
 <img src="../fig/rmd-03-view_example_boxplots_raw-1.png" alt="plot of chunk view_example_boxplots_raw" width="612" style="display: block; margin: auto;" />
 
-If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are more comparable after normalizing and the count values are within the same range (-3 to 3).  Each gene count median is better aligned to the other medians after normalization.
+If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are comparable and the count values are within the same range (-3 to +3).
 
 <img src="../fig/rmd-03-view_example_boxplots_normalized-1.png" alt="plot of chunk view_example_boxplots_normalized" width="612" style="display: block; margin: auto;" />
-
-<img src="../fig/rmd-03-visualize_mean_sd-1.png" alt="plot of chunk visualize_mean_sd" width="612" style="display: block; margin: auto;" />
-
-For RNA seq data, the greater the mean count, the greater the variance. Genes with very low counts also have inflated variance. Raw gene count averages and standard deviations are not independent of one another as shown in the plot below.
-
-<img src="../fig/rmd-03-visualize_mean_sd_log10-1.png" alt="plot of chunk visualize_mean_sd_log10" width="612" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -498,7 +545,6 @@ DO026         0.86427916         -0.3973634          0.2791826
 {: .output}
 
 
-
 ~~~
 # look at LOD peaks
 dataset.islet.rnaseq$lod.peaks[1:6,]
@@ -521,7 +567,7 @@ dataset.islet.rnaseq$lod.peaks[1:6,]
 
 
 ~~~
-# look at a region of interest
+# look at chromosome 11 LOD peaks
 chr11_peaks <- dataset.islet.rnaseq$annots %>% 
    select(gene_id, chr) %>% 
    filter(chr=="11") %>%
@@ -625,3 +671,21 @@ range(chr11_peaks$pos, na.rm = TRUE)
 [1]   3.126009 122.078650
 ~~~
 {: .output}
+
+
+
+~~~
+# view LOD scores by position
+chr11_peaks %>% arrange(desc(lod)) %>% 
+  ggplot(aes(pos, lod)) + geom_point()
+~~~
+{: .language-r}
+
+
+
+~~~
+Warning: Removed 602 rows containing missing values (geom_point).
+~~~
+{: .warning}
+
+<img src="../fig/rmd-03-lod_peaks-1.png" alt="plot of chunk lod_peaks" width="612" style="display: block; margin: auto;" />

@@ -20,13 +20,7 @@ Load the libraries.
 ```{r, load_tidyverse, message=FALSE}
 library(tidyverse)
 library(knitr)
-library(GGally)
 library(corrplot)
-library(broom)
-library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ```
@@ -236,26 +230,24 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 
 ## Gene Expression Phenotypes
 
-### summarized data, matrices w/sample annotation, exp data, gene annotation, 
-### like bioconductor summarized experiment etc = whole set of rectangles
-
 ```{r load_expression_data}
 # load the expression data along with annotations and metadata
 load("../data/dataset.islet.rnaseq.RData")
+names(dataset.islet.rnaseq)
+kable(str(dataset.islet.rnaseq))
+```
 
-# look at raw counts
-dataset.islet.rnaseq$raw[1:6,1:6]
-
+```{r view_annot_rawCounts_metadata}
 # look at gene annotations
 dataset.islet.rnaseq$annots[1:6,]
 
-# look at sample metadata
-# mouse sex, birth dates and DO waves
-table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
-table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
-
 # look at raw counts
 dataset.islet.rnaseq$raw[1:6,1:6]
+
+# look at sample metadata
+# summarize mouse sex, birth dates and DO waves
+table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
+table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
 ```
 
 In order to make reasonable gene comparisons between samples, the count data needs to be normalized. Below, raw counts for 5 example genes are shown. Notice that the median count values (horizontal black bar in each boxplot) are not comparable between the genes.
@@ -266,7 +258,7 @@ boxplot(dataset.islet.rnaseq$raw[,c(5:9)],
         main="Raw count distributions for 5 example genes")
 ```
 
-If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are more comparable after normalizing and the count values are within the same range (-3 to 3).  Each gene count median is better aligned to the other medians after normalization.
+If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are comparable and the count values are within the same range (-3 to +3).
 
 ```{r view_example_boxplots_normalized, echo=FALSE}
 par(las=2)
@@ -274,48 +266,16 @@ boxplot(dataset.islet.rnaseq$expr[,c(5:9)],
         main="Normalized count distributions for the same 5 example genes")
 ```
 
-```{r visualize_mean_sd, echo=FALSE}
-dataset.islet.rnaseq$raw %>%
-  as.data.frame() %>% 
-  pivot_longer(cols = starts_with("ENS"), 
-               names_to = "geneID", 
-               values_to = "counts") %>% 
-  group_by(geneID) %>% 
-  summarize(gene_average = mean(counts), gene_stdev = sd(counts)) %>% 
-  ungroup() %>%
-  ggplot(., aes(x = gene_average, y = gene_stdev)) +
-  geom_point(alpha = 0.5, fill = "grey", colour = "black") +
-  labs(x = "Gene count average",
-       y = "Gene count standard deviation") +
-  ggtitle("Mean - Standard deviation relationship in raw counts")
-```
-
-For RNA seq data, the greater the mean count, the greater the variance. Genes with very low counts also have inflated variance. Raw gene count averages and standard deviations are not independent of one another as shown in the plot below.
-
-```{r visualize_mean_sd_log10, echo=FALSE}
-dataset.islet.rnaseq$raw %>%
-  as.data.frame() %>% 
-  pivot_longer(cols = starts_with("ENS"), 
-               names_to = "geneID", 
-               values_to = "counts") %>% 
-  group_by(geneID) %>% 
-  summarize(gene_average = mean(counts), gene_stdev = sd(counts)) %>% 
-  ungroup() %>%
-  ggplot(., aes(x = log10(gene_average), y = log10(gene_stdev))) +
-  geom_point(alpha = 0.5, fill = "grey", colour = "black") +
-  labs(x = "Gene count average (log10 scale)",
-       y = "Gene count standard deviation (log10 scale)") +
-  ggtitle("Mean - Standard deviation relationship")
-```
-
-```{r explore_peaks}
+```{r normalized_counts}
 # look at normalized counts
 dataset.islet.rnaseq$expr[1:6,1:6]
+```
 
+```{r lod_peaks}
 # look at LOD peaks
 dataset.islet.rnaseq$lod.peaks[1:6,]
 
-# look at a region of interest
+# look at chromosome 11 LOD peaks
 chr11_peaks <- dataset.islet.rnaseq$annots %>% 
    select(gene_id, chr) %>% 
    filter(chr=="11") %>%
@@ -337,4 +297,8 @@ chr11_peaks %>% arrange(desc(lod)) %>% head()
 # range of LOD scores and positions
 range(chr11_peaks$lod, na.rm = TRUE)
 range(chr11_peaks$pos, na.rm = TRUE)
+
+# view LOD scores by position
+chr11_peaks %>% arrange(desc(lod)) %>% 
+  ggplot(aes(pos, lod)) + geom_point()
 ```
