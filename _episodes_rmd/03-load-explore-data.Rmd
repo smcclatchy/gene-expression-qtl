@@ -254,6 +254,7 @@ for those counts. Notice that most of the count data values lie off of this
 line, indicating that these gene counts are not normally distributed. 
 
 ```{r view_manual_qqplot_raw, echo=FALSE}
+library(rafalib)
 ps <- ( seq(0,99) + 0.5 )/100
 qs <- quantile(dataset.islet.rnaseq$raw[,1], ps)
 normalqs <- qnorm(ps, 
@@ -265,19 +266,22 @@ plot(normalqs, qs,
 abline(0,1) # identity line
 ```
 
-The same plot can be drawn as shown below, with the diagonal line representing
-a standard normal distribution with mean 0 and standard deviation 1.
+The same plot can be drawn as shown below. The diagonal line represents a 
+standard normal distribution with mean 0 and standard deviation 1. Count data
+values are plotted against this standard normal distribution.
 
 ```{r view_qqplot_raw}
 qqnorm(dataset.islet.rnaseq$raw[,1], 
-     xlab="Standard normal distribution percentiles", 
+     xlab="Theoretical normal percentiles", 
      ylab="Count percentiles",
      main="Count distribution for gene ENSMUSG00000000001")
 qqline(dataset.islet.rnaseq$raw[,1]) 
 ```
 
 Q-Q plots for the first six genes show that count data for these genes are not
-normally distributed. 
+normally distributed. They are also not on the same scale. The y-axis values for
+each subplot range to 20,000 counts in the first subplot, 250 in the second, 80
+in the third, and so on. 
 
 ```{r view_qqplots_raw}
 par(mfrow=c(2,3))
@@ -287,32 +291,9 @@ for (i in 1:6) {
   }
 ```
 
-Boxplots of raw counts for 5 example genes are shown below. Notice that the 
-median count values (horizontal black bar in each boxplot) are not comparable 
-between the genes.
-
-```{r view_example_boxplots_raw, echo=FALSE}
-par(las=2)
-boxplot(dataset.islet.rnaseq$raw[,c(5:9)], 
-        main="Raw count distributions for 5 example genes")
-```
-
-If you compare raw and normalized (scaled) gene count distributions, you can see 
-that the median count values are comparable and the normalized count values are 
-within the same range. 
-
-```{r view_example_boxplots_normalized, echo=FALSE}
-par(las=2)
-boxplot(dataset.islet.rnaseq$expr[,c(5:9)], 
-        main="Normalized count distributions for the same 5 example genes")
-```
-
-```{r normalized_counts}
-# look at normalized counts
-dataset.islet.rnaseq$expr[1:6,1:6]
-```
-
-Q-Q plots of these data show that they are normally distributed now.
+Q-Q plots of the normalized expression data for the first six genes show that 
+the data values match the diagonal line well, meaning that they are now normally
+distributed. They are also all on the same scale now as well.
 
 ```{r view_qqplots_normalized}
 par(mfrow=c(2,3))
@@ -320,6 +301,25 @@ for (i in 1:6) {
   qqnorm(dataset.islet.rnaseq$expr[,i])
   qqline(dataset.islet.rnaseq$expr[,i])
   }
+```
+
+Boxplots of raw counts for 5 example genes are shown at left below. Notice that 
+the median count values (horizontal black bar in each boxplot) are not 
+comparable between the genes because the counts are not on the same scale. At
+right, boxplots for the same 5 genes show normalized count data on the same 
+scale.
+
+```{r view_example_boxplots}
+par(las=2, mfrow=c(1,2))
+boxplot(dataset.islet.rnaseq$raw[,c(5:9)], 
+        main="Raw count distributions for 5 example genes")
+boxplot(dataset.islet.rnaseq$expr[,c(5:9)], 
+        main="Normalized count distributions for the same 5 example genes")
+```
+
+```{r normalized_counts}
+# look at normalized counts
+dataset.islet.rnaseq$expr[1:6,1:6]
 ```
 
 The expression data loaded provides LOD peaks for the eQTL analyses performed in
