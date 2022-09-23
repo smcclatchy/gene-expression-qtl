@@ -247,7 +247,49 @@ table(dataset.islet.rnaseq$samples[, c("sex", "birthdate")])
 table(dataset.islet.rnaseq$samples[, c("sex", "DOwave")])
 ```
 
-In order to make reasonable gene comparisons between samples, the count data needs to be normalized. Below, raw counts for 5 example genes are shown. Notice that the median count values (horizontal black bar in each boxplot) are not comparable between the genes.
+In order to make reasonable gene comparisons between samples, the count data 
+need to be normalized. In the quantile-quantile (Q-Q) plot below, count data for 
+the first gene are plotted over a diagonal line tracing a normal distribution 
+for those counts. Notice that most of the count data values lie off of this 
+line, indicating that these gene counts are not normally distributed. 
+
+```{r view_manual_qqplot_raw, echo=FALSE}
+ps <- ( seq(0,99) + 0.5 )/100
+qs <- quantile(dataset.islet.rnaseq$raw[,1], ps)
+normalqs <- qnorm(ps, 
+                  mean(dataset.islet.rnaseq$raw[,1]),
+                  popsd(dataset.islet.rnaseq$raw[,1]))
+plot(normalqs, qs, 
+     xlab="Normal percentiles", ylab="Count percentiles",
+     main="Count distribution for gene ENSMUSG00000000001")
+abline(0,1) # identity line
+```
+
+The same plot can be drawn as shown below, with the diagonal line representing
+a standard normal distribution with mean 0 and standard deviation 1.
+
+```{r view_qqplot_raw}
+qqnorm(dataset.islet.rnaseq$raw[,1], 
+     xlab="Standard normal distribution percentiles", 
+     ylab="Count percentiles",
+     main="Count distribution for gene ENSMUSG00000000001")
+qqline(dataset.islet.rnaseq$raw[,1]) 
+```
+
+Q-Q plots for the first six genes show that count data for these genes are not
+normally distributed. 
+
+```{r view_qqplots_raw}
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$raw[,i])
+  qqline(dataset.islet.rnaseq$raw[,i])
+  }
+```
+
+Boxplots of raw counts for 5 example genes are shown below. Notice that the 
+median count values (horizontal black bar in each boxplot) are not comparable 
+between the genes.
 
 ```{r view_example_boxplots_raw, echo=FALSE}
 par(las=2)
@@ -255,7 +297,9 @@ boxplot(dataset.islet.rnaseq$raw[,c(5:9)],
         main="Raw count distributions for 5 example genes")
 ```
 
-If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are comparable and the count values are within the same range (-3 to +3).
+If you compare raw and normalized (scaled) gene count distributions, you can see 
+that the median count values are comparable and the normalized count values are 
+within the same range. 
 
 ```{r view_example_boxplots_normalized, echo=FALSE}
 par(las=2)
@@ -266,6 +310,16 @@ boxplot(dataset.islet.rnaseq$expr[,c(5:9)],
 ```{r normalized_counts}
 # look at normalized counts
 dataset.islet.rnaseq$expr[1:6,1:6]
+```
+
+Q-Q plots of these data show that they are normally distributed now.
+
+```{r view_qqplots_normalized}
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$expr[,i])
+  qqline(dataset.islet.rnaseq$expr[,i])
+  }
 ```
 
 The expression data loaded provides LOD peaks for the eQTL analyses performed in

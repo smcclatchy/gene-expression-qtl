@@ -20,13 +20,7 @@ Load the libraries.
 ~~~
 library(tidyverse)
 library(knitr)
-library(GGally)
 library(corrplot)
-library(broom)
-library(qtl2)
-library(qtl2convert)
-library(qtl2ggplot)
-library(RColorBrewer)
 # the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
 # compliments of Daniel Gatti. See Data Dryad entry for more information.
 ~~~
@@ -227,6 +221,23 @@ tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
   mutate(summ = map(model, tidy)) %>%
   unnest(summ)
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in `mutate()`:
+! Problem while computing `summ = map(model, tidy)`.
+ℹ The error occurred in group 1: phenotype = "food_ave".
+Caused by error in `as_mapper()`:
+! object 'tidy' not found
+~~~
+{: .error}
+
+
+
+~~~
 # kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
 ~~~
 {: .language-r}
@@ -245,7 +256,16 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-sex_diet_wave_effects-1.png" alt="plot of chunk sex_diet_wave_effects" width="612" style="display: block; margin: auto;" />
+
+
+~~~
+Error in `filter()`:
+! Problem while computing `..1 = term != "(Intercept)"`.
+ℹ The error occurred in group 1: phenotype = "food_ave".
+Caused by error in `mask$eval_all_filter()`:
+! object 'term' not found
+~~~
+{: .error}
 
 ### Weight vs. Food Intake
 
@@ -281,6 +301,23 @@ tmp = pheno_clin_log %>%
   unnest(summ) %>%
   filter(term != "(Intercept)") %>%
   mutate(p.adj = p.adjust(p.value))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in `mutate()`:
+! Problem while computing `summ = map(model, tidy)`.
+ℹ The error occurred in group 1: week = 2wk.
+Caused by error in `as_mapper()`:
+! object 'tidy' not found
+~~~
+{: .error}
+
+
+
+~~~
 # kable(tmp, caption = "Effects of Sex and Food Intake on Body Weight")
 ~~~
 {: .language-r}
@@ -321,9 +358,7 @@ corrplot.mixed(tmp, upper = "ellipse", lower = "number",
 
 <img src="../fig/rmd-03-male_corr_plot-1.png" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
 
-
 ## Gene Expression Phenotypes
-
 
 ~~~
 # load the expression data along with annotations and metadata
@@ -340,76 +375,6 @@ names(dataset.islet.rnaseq)
 [9] "samples"      
 ~~~
 {: .output}
-
-
-
-~~~
-kable(str(dataset.islet.rnaseq))
-~~~
-{: .language-r}
-
-
-
-~~~
-List of 9
- $ annots       :'data.frame':	21771 obs. of  11 variables:
-  ..$ gene_id          : chr [1:21771] "ENSMUSG00000000001" "ENSMUSG00000000028" "ENSMUSG00000000037" "ENSMUSG00000000049" ...
-  ..$ symbol           : chr [1:21771] "Gnai3" "Cdc45" "Scml2" "Apoh" ...
-  ..$ chr              : chr [1:21771] "3" "16" "X" "11" ...
-  ..$ start            : num [1:21771] 108.1 18.8 161.1 108.3 121.2 ...
-  ..$ end              : num [1:21771] 108.1 18.8 161.3 108.4 121.3 ...
-  ..$ strand           : int [1:21771] -1 -1 1 1 1 1 1 1 1 1 ...
-  ..$ middle           : num [1:21771] 108.1 18.8 161.2 108.4 121.2 ...
-  ..$ nearest.marker.id: chr [1:21771] "3_108090236" "16_18817262" "X_161182677" "11_108369225" ...
-  ..$ biotype          : chr [1:21771] "protein_coding" "protein_coding" "protein_coding" "protein_coding" ...
-  ..$ module           : chr [1:21771] "darkgreen" "grey" "grey" "greenyellow" ...
-  ..$ hotspot          : chr [1:21771] NA NA NA NA ...
- $ covar        : num [1:500, 1:5] 0 0 0 0 0 0 0 0 0 0 ...
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:500] "DO021" "DO022" "DO023" "DO024" ...
-  .. ..$ : chr [1:5] "sexM" "DOwave2" "DOwave3" "DOwave4" ...
- $ covar.factors:'data.frame':	2 obs. of  2 variables:
-  ..$ column.name : chr [1:2] "sex" "DOwave"
-  ..$ display.name: chr [1:2] "Sex" "DO wave"
- $ datatype     : chr "mRNA"
- $ display.name : chr "Attie Islet Additive RNAseq"
- $ expr         : num [1:378, 1:21771] -0.0986 0.9744 0.755 1.213 1.6224 ...
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:378] "DO021" "DO022" "DO023" "DO024" ...
-  .. ..$ : chr [1:21771] "ENSMUSG00000000001" "ENSMUSG00000000028" "ENSMUSG00000000037" "ENSMUSG00000000049" ...
- $ lod.peaks    :'data.frame':	39958 obs. of  5 variables:
-  ..$ annot.id : chr [1:39958] "ENSMUSG00000037922" "ENSMUSG00000037926" "ENSMUSG00000037926" "ENSMUSG00000037933" ...
-  ..$ marker.id: chr [1:39958] "3_136728699" "2_164758936" "5_147178504" "5_147253583" ...
-  ..$ chrom    : chr [1:39958] "3" "2" "5" "5" ...
-  ..$ pos      : num [1:39958] 136.73 164.76 147.18 147.25 6.54 ...
-  ..$ lod      : num [1:39958] 11.98 7.09 6.25 8.58 6.07 ...
- $ raw          : num [1:378, 1:21771] 10247 11838 12591 12424 10906 ...
-  ..- attr(*, "dimnames")=List of 2
-  .. ..$ : chr [1:378] "DO021" "DO022" "DO023" "DO024" ...
-  .. ..$ : chr [1:21771] "ENSMUSG00000000001" "ENSMUSG00000000028" "ENSMUSG00000000037" "ENSMUSG00000000049" ...
- $ samples      :'data.frame':	378 obs. of  13 variables:
-  ..$ mouse.id          : chr [1:378] "DO021" "DO022" "DO023" "DO024" ...
-  ..$ sex               : Factor w/ 2 levels "F","M": 1 1 1 1 1 1 1 1 1 1 ...
-  ..$ sac_date          : chr [1:378] "2014-10-20" "2014-10-20" "2014-10-20" "2014-10-20" ...
-  ..$ partial_inflation : chr [1:378] NA NA NA NA ...
-  ..$ coat_color        : chr [1:378] "agouti" "agouti" "agouti" "white" ...
-  ..$ oGTT_date         : chr [1:378] "2014-09-22" "2014-09-22" "2014-09-22" "2014-09-22" ...
-  ..$ FAD_NAD_paired    : chr [1:378] "Unpaired" "Unpaired" "Unpaired" "Unpaired" ...
-  ..$ FAD_NAD_filter_set: chr [1:378] "535/70m" "535/70m" "535/70m" "535/70m" ...
-  ..$ crumblers         : chr [1:378] NA NA NA NA ...
-  ..$ birthdate         : chr [1:378] "2014-05-29" "2014-05-29" "2014-05-29" "2014-05-29" ...
-  ..$ DOwave            : Factor w/ 5 levels "1","2","3","4",..: 1 1 1 1 1 1 1 1 1 1 ...
-  ..$ chrM              : chr [1:378] "E" "G" "ABCD" "ABCD" ...
-  ..$ chrY              : chr [1:378] NA NA NA NA ...
-~~~
-{: .output}
-
-
-
-||
-||
-||
-||
 
 
 ~~~
@@ -509,11 +474,70 @@ sex  1  2  3  4  5
 ~~~
 {: .output}
 
-In order to make reasonable gene comparisons between samples, the count data needs to be normalized. Below, raw counts for 5 example genes are shown. Notice that the median count values (horizontal black bar in each boxplot) are not comparable between the genes.
+In order to make reasonable gene comparisons between samples, the count data needs to be normalized. In the quantile-quantile plot below, count data for the first
+gene are plotted over a diagonal line tracing a normal distribution for those
+counts. Notice that few of the count values lie upon this line, indicating that
+these gene counts are not normally distributed. 
+
+
+~~~
+Error in popsd(dataset.islet.rnaseq$raw[, 1]): could not find function "popsd"
+~~~
+{: .error}
+
+
+
+~~~
+Error in plot(normalqs, qs, xlab = "Normal percentiles", ylab = "Count percentiles", : object 'normalqs' not found
+~~~
+{: .error}
+
+
+
+~~~
+Error in int_abline(a = a, b = b, h = h, v = v, untf = untf, ...): plot.new has not been called yet
+~~~
+{: .error}
+
+The same plot can be drawn as shown below, with the diagonal line representing
+a standard normal distribution with mean 0 and standard deviation 1.
+
+
+~~~
+qqnorm(dataset.islet.rnaseq$raw[,1], 
+     xlab="Standard normal distribution percentiles", 
+     ylab="Count percentiles",
+     main="Count distribution for gene ENSMUSG00000000001")
+qqline(dataset.islet.rnaseq$raw[,1]) 
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-view_qqplot_raw-1.png" alt="plot of chunk view_qqplot_raw" width="612" style="display: block; margin: auto;" />
+
+QQ plots for the first six genes show that count data for these genes are not
+normally distributed. 
+
+
+~~~
+par(mfrow=c(2,3))
+for (i in 1:6) {
+  qqnorm(dataset.islet.rnaseq$raw[,i])
+  qqline(dataset.islet.rnaseq$raw[,i])
+  }
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-view_qqplots_raw-1.png" alt="plot of chunk view_qqplots_raw" width="612" style="display: block; margin: auto;" />
+
+Boxplots of raw counts for 5 example genes are shown below. Notice that the 
+median count values (horizontal black bar in each boxplot) are not comparable 
+between the genes.
 
 <img src="../fig/rmd-03-view_example_boxplots_raw-1.png" alt="plot of chunk view_example_boxplots_raw" width="612" style="display: block; margin: auto;" />
 
-If you compare raw and normalized (scaled) gene count distributions, you can see that the median count values are comparable and the count values are within the same range (-3 to +3).
+If you compare raw and normalized (scaled) gene count distributions, you can see 
+that the median count values are comparable and the count values are within the 
+same range.
 
 <img src="../fig/rmd-03-view_example_boxplots_normalized-1.png" alt="plot of chunk view_example_boxplots_normalized" width="612" style="display: block; margin: auto;" />
 
@@ -543,6 +567,10 @@ DO025        -0.03281516         -0.2587715          1.5530179
 DO026         0.86427916         -0.3973634          0.2791826
 ~~~
 {: .output}
+
+The expression data loaded provides LOD peaks for the eQTL analyses performed in
+this study. As a preview of what you will be doing next, extract the LOD peaks
+for chromosome 11.
 
 
 ~~~
