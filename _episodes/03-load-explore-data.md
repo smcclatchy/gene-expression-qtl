@@ -21,8 +21,9 @@ Load the libraries.
 library(tidyverse)
 library(knitr)
 library(corrplot)
-# the following analysis is from File S1 Attie_eQTL_paper_physiology.Rmd 
-# compliments of Daniel Gatti. See Data Dryad entry for more information.
+# the following analysis is derived from supplementary 
+# File S1 Attie_eQTL_paper_physiology.Rmd 
+# by Daniel Gatti. See Data Dryad entry for more information.
 ~~~
 {: .language-r}
 
@@ -89,44 +90,53 @@ pheno_clin_dict %>%
 |weight_10wk        |Body weight at indicated date; units are gm.                                                                                                                                                                                                            |NA                               |
 |DOwave             |Wave (i.e., batch) of DO mice                                                                                                                                                                                                                           |NA                               |
 
-
-~~~
-# convert sex and DO wave (batch) to factors
-pheno_clin$sex = factor(pheno_clin$sex)
-pheno_clin$DOwave = factor(pheno_clin$DOwave)
-~~~
-{: .language-r}
-
-### Figure 1 Boxplots
+### Boxplots
+Boxplots are a great way to view the distribution of the data and to identify 
+any outliers. The following boxplots display repeated measurements of body 
+weight, glucose, insulin and triglyceride.
 
 
 ~~~
-pheno_clin %>%
+# pull out body weights over time and place in long form
+body_weights <- pheno_clin %>%
   select(mouse, sex, starts_with("weight")) %>%
-  gather(week, value, -mouse, -sex) %>%
-  separate(week, c("tmp", "week")) %>%
-  mutate(week = factor(week, levels = c("2wk", "6wk", "10wk"))) %>%
-  ggplot(aes(week, value, fill = sex)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    labs(title = "Body Weight", y = "Weight")
+  pivot_longer(cols=starts_with("weight"), 
+               names_to = "week",
+               values_to = "weight", 
+               names_transform = list(week = readr::parse_number))
+
+# redefine week as a factor so that plot will render correctly
+body_weights$week <- as.factor(body_weights$week)
+
+# plot body weights on a log 10 scale
+ggplot(body_weights, aes(week, weight, fill = sex)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  labs(title = "Body Weight", y = "Weight (g)")
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-03-bw_boxplot-1.png" alt="plot of chunk bw_boxplot" width="612" style="display: block; margin: auto;" />
 
+Repeat boxplots for glucose, insulin and triglyceride measurements in the same 
+manner as for weight.
+
 
 ~~~
-pheno_clin %>%
-  select(mouse, sex, starts_with("Glu")) %>%
-  select(mouse, sex, ends_with("wk")) %>%
-  gather(week, value, -mouse, -sex) %>%
-  separate(week, c("tmp", "week")) %>%
-  mutate(week = factor(week, levels = c("6wk", "10wk", "14wk"))) %>%
-  ggplot(aes(week, value, fill = sex)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    labs(title = "Glucose", y = "Glucose")
+glucose <- pheno_clin %>%
+  select(mouse, sex, (starts_with("Glu_") & ends_with("wk"))) %>%
+  pivot_longer(cols=starts_with("Glu"), 
+               names_to = "week",
+               values_to = "glucose", 
+               names_transform = list(week = readr::parse_number))
+
+# redefine week as a factor so that plot will render correctly
+glucose$week <- as.factor(glucose$week)
+
+ggplot(glucose, aes(week, glucose, fill = sex)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  labs(title = "Fasting Plasma Glucose", y = "Glucose (mg/dl)")
 ~~~
 {: .language-r}
 
@@ -134,16 +144,19 @@ pheno_clin %>%
 
 
 ~~~
-pheno_clin %>%
-  select(mouse, sex, starts_with("Ins")) %>%
-  select(mouse, sex, ends_with("wk")) %>%
-  gather(week, value, -mouse, -sex) %>%
-  separate(week, c("tmp", "week")) %>%
-  mutate(week = factor(week, levels = c("6wk", "10wk", "14wk"))) %>%
-  ggplot(aes(week, value, fill = sex)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    labs(title = "Insulin", y = "Insulin")
+insulin <- pheno_clin %>%
+  select(mouse, sex, (starts_with("Ins_") & ends_with("wk"))) %>%
+  pivot_longer(cols=starts_with("Ins"), 
+               names_to = "week",
+               values_to = "insulin", 
+               names_transform = list(week = readr::parse_number))
+# redefine week as a factor so that plot will render correctly
+insulin$week <- as.factor(insulin$week)
+
+ggplot(insulin, aes(week, insulin, fill = sex)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  labs(title = "Fasting Plasma Insulin", y = "Insulin (ng/ml)")
 ~~~
 {: .language-r}
 
@@ -151,16 +164,20 @@ pheno_clin %>%
 
 
 ~~~
-pheno_clin %>%
+triglyceride <- pheno_clin %>%
   select(mouse, sex, starts_with("TG")) %>%
-  select(mouse, sex, ends_with("wk")) %>%
-  gather(week, value, -mouse, -sex) %>%
-  separate(week, c("tmp", "week")) %>%
-  mutate(week = factor(week, levels = c("6wk", "10wk", "14wk"))) %>%
-  ggplot(aes(week, value, fill = sex)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    labs(title = "TG", y = "TG")
+  pivot_longer(cols=starts_with("TG"), 
+               names_to = "week",
+               values_to = "triglyceride", 
+               names_transform = list(week = readr::parse_number))
+
+# redefine week as a factor so that plot will render correctly
+triglyceride$week <- as.factor(triglyceride$week)
+
+ggplot(triglyceride, aes(week, triglyceride, fill = sex)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  labs(title = "Fasting Plasma Triglyceride", y = "Triglyceride (mg/dl)")
 ~~~
 {: .language-r}
 
@@ -168,10 +185,11 @@ pheno_clin %>%
 
 
 ~~~
-pheno_clin %>%
-  select(mouse, sex, num_islets:Ins_tAUC, food_ave) %>%
-  gather(phenotype, value, -mouse, -sex) %>%
-  ggplot(aes(sex, value, fill = sex)) +
+remaining_phenos <- pheno_clin %>%
+  select(mouse, sex, diet_days:Ins_tAUC, food_ave) %>% 
+  pivot_longer(!c(mouse, sex), names_to = "phenotype", values_to = "value")
+  
+ggplot(remaining_phenos, aes(sex, value, fill = sex)) +
     geom_boxplot() +
     scale_y_log10() +
     facet_wrap(~phenotype, scales = "free_y")
@@ -206,6 +224,14 @@ pheno_clin_std %>%
 <img src="../fig/rmd-03-pheno_std-1.png" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
 
 ### Tests for sex, wave and diet_days.
+
+
+~~~
+# convert sex and DO wave (batch) to factors
+pheno_clin$sex = factor(pheno_clin$sex)
+pheno_clin$DOwave = factor(pheno_clin$DOwave)
+~~~
+{: .language-r}
 
 
 ~~~
@@ -549,6 +575,8 @@ boxplot(dataset.islet.rnaseq$expr[,c(5:9)],
 
 <img src="../fig/rmd-03-view_example_boxplots-1.png" alt="plot of chunk view_example_boxplots" width="612" style="display: block; margin: auto;" />
 
+Have a look at the first several rows of normalized count data.
+
 
 ~~~
 # look at normalized counts
@@ -577,8 +605,8 @@ DO026         0.86427916         -0.3973634          0.2791826
 {: .output}
 
 The expression data loaded provides LOD peaks for the eQTL analyses performed in
-this study. As a preview of what you will be doing next, extract the LOD peaks
-for chromosome 11.
+this study. As a preview of what you will be doing next, look at the first 
+several rows of LOD peak values and extract the LOD peaks for chromosome 11.
 
 
 ~~~
