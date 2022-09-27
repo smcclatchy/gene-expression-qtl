@@ -20,16 +20,26 @@ source: Rmd
 
 ~~~
 library(tidyverse)
-library(qtl2)
-library(qtl2convert)
-library(GGally)
-library(broom)
 library(knitr)
-library(corrplot)
-library(RColorBrewer)
+library(broom)
+library(qtl2)
 library(qtl2ggplot)
+library(RColorBrewer)
 
 source("../code/gg_transcriptome_map.R")
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in library(AnnotationHub): there is no package called 'AnnotationHub'
+~~~
+{: .error}
+
+
+
+~~~
 source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
@@ -72,13 +82,14 @@ Lets check the distributin of these 50 gene expression phenotypes
 
 
 ~~~
+par(mfrow=c(2,5))
 for(gene in genes){
   hist(norm[,gene], main = names(norm[gene]))
   }
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-3.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-4.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-5.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-6.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-7.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-8.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-9.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-10.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-11.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-12.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-13.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-14.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-15.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-16.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-17.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-18.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-19.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-20.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-21.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-22.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-23.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-24.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-25.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-26.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-27.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-28.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-29.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-30.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-31.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-32.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-33.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-34.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-35.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-36.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-37.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-38.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-39.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-40.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-41.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-42.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-43.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-44.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-45.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-46.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-47.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-48.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-49.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-50.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-51.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-hist_untransformed-1.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-2.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-3.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-4.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-5.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-hist_untransformed-6.png" alt="plot of chunk hist_untransformed" width="612" style="display: block; margin: auto;" />
 The histogram indicates that distribution of these counts are normalised (as they should be).
 
 ### The Marker Map  
@@ -141,12 +152,12 @@ tmp
  2 ENSMUSG00000020680 <tibble> <lm>   sexM     0.387   0.0884    4.38   1.55e- 5
  3 ENSMUSG00000020680 <tibble> <lm>   DOwave  -0.388   0.0398   -9.76   3.49e-20
  4 ENSMUSG00000020680 <tibble> <lm>   diet_d…  0.0119  0.00415   2.87   4.33e- 3
- 5 ENSMUSG00000024276 <tibble> <lm>   (Inter…  0.163   0.515     0.317  7.52e- 1
- 6 ENSMUSG00000024276 <tibble> <lm>   sexM    -0.00410 0.0839   -0.0489 9.61e- 1
- 7 ENSMUSG00000024276 <tibble> <lm>   DOwave  -0.489   0.0377  -13.0    5.35e-32
- 8 ENSMUSG00000024276 <tibble> <lm>   diet_d…  0.00834 0.00394   2.12   3.47e- 2
- 9 ENSMUSG00000022013 <tibble> <lm>   (Inter…  0.318   0.613     0.518  6.05e- 1
-10 ENSMUSG00000022013 <tibble> <lm>   sexM    -0.0997  0.0999   -0.998  3.19e- 1
+ 5 ENSMUSG00000042595 <tibble> <lm>   (Inter… -0.0315  0.539    -0.0584 9.53e- 1
+ 6 ENSMUSG00000042595 <tibble> <lm>   sexM    -0.159   0.0878   -1.81   7.05e- 2
+ 7 ENSMUSG00000042595 <tibble> <lm>   DOwave  -0.430   0.0395  -10.9    3.54e-24
+ 8 ENSMUSG00000042595 <tibble> <lm>   diet_d…  0.00928 0.00412   2.25   2.48e- 2
+ 9 ENSMUSG00000018362 <tibble> <lm>   (Inter…  0.404   0.617     0.654  5.14e- 1
+10 ENSMUSG00000018362 <tibble> <lm>   sexM     0.00986 0.101     0.0980 9.22e- 1
 # … with 194 more rows, and abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
@@ -166,7 +177,7 @@ rm(tmp)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-covariates sig-1.png" alt="plot of chunk covariates sig" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-covariates_sig-1.png" alt="plot of chunk covariates_sig" width="612" style="display: block; margin: auto;" />
 
 We can see that `DOwave` is the most significant.  However, given that a few are influenced by `sex` and `diet_days`, we will have to correct for it. 
 
@@ -205,12 +216,29 @@ if(file.exists(qtl.file)) {
 ~~~
 {: .language-r}
 
+
+
+~~~
+Warning in gzfile(file, "wb"): cannot open compressed file '../results/
+gene.norm_qtl_cis.trans_random.Rdata', probable reason 'No such file or
+directory'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in gzfile(file, "wb"): cannot open the connection
+~~~
+{: .error}
+
 ### QTL plots
 
 
 
 
 ~~~
+par(mfrow=c(2,5))
 for(i in 1:ncol(qtl)) {
   plot_scan1(x = qtl, 
              map = map, 
@@ -221,7 +249,7 @@ for(i in 1:ncol(qtl)) {
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-06-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-2.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-3.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-4.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-5.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-6.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-7.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-8.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-9.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-10.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-11.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-12.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-13.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-14.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-15.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-16.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-17.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-18.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-19.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-20.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-21.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-22.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-23.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-24.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-25.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-26.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-27.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-28.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-29.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-30.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-31.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-32.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-33.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-34.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-35.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-36.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-37.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-38.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-39.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-40.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-41.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-42.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-43.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-44.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-45.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-46.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-47.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-48.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-49.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-50.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-51.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-06-qtl_plots-1.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-2.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-3.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-4.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-5.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" /><img src="../fig/rmd-06-qtl_plots-6.png" alt="plot of chunk qtl_plots" width="612" style="display: block; margin: auto;" />
 
 ### QTL Peaks
 
@@ -250,20 +278,28 @@ write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
 
 
 ~~~
- [1] "Table: Expression QTL (eQTL) Peaks with LOD >= 6"                         
- [2] ""                                                                         
- [3] "|lodcolumn          |chr |        pos|       lod|      ci_lo|      ci_hi|"
- [4] "|:------------------|:---|----------:|---------:|----------:|----------:|"
- [5] "|ENSMUSG00000025911 |1   |   9.024093| 20.812935|   7.555186|   9.749030|"
- [6] "|ENSMUSG00000026158 |1   |  22.453471| 10.275839|  22.302528|  23.759111|"
- [7] "|ENSMUSG00000026123 |1   |  35.141829| 80.429567|  34.806469|  35.143241|"
- [8] "|ENSMUSG00000025950 |1   |  66.925036|  7.565622|  63.301075|  68.389113|"
- [9] "|ENSMUSG00000074628 |1   |  81.493012|  6.727482|  77.759922|  82.149689|"
-[10] "|ENSMUSG00000073633 |1   |  85.988854| 14.769918|  84.404656|  86.985597|"
-[11] "|ENSMUSG00000045903 |1   |  89.399281|  6.130738|  42.253039|  93.501778|"
-[12] "|ENSMUSG00000041734 |1   | 127.531953|  6.713639| 124.015913| 130.164080|"
+ [1] "Table: Expression QTL (eQTL) Peaks with LOD >= 6"                          
+ [2] ""                                                                          
+ [3] "|lodcolumn          |chr |        pos|        lod|      ci_lo|      ci_hi|"
+ [4] "|:------------------|:---|----------:|----------:|----------:|----------:|"
+ [5] "|ENSMUSG00000000253 |1   |  52.300976|   7.771644|  51.376669|  56.740769|"
+ [6] "|ENSMUSG00000026281 |1   |  93.674791|   7.646306|  92.748305| 127.433890|"
+ [7] "|ENSMUSG00000026564 |1   | 166.716584|  49.274983| 166.175328| 167.180333|"
+ [8] "|ENSMUSG00000026564 |1   | 187.116565|   6.043650| 185.199517| 187.881323|"
+ [9] "|ENSMUSG00000099041 |2   |  29.994299|  30.127871|  29.811045|  30.391883|"
+[10] "|ENSMUSG00000016024 |2   | 108.929956|   7.339921| 107.294893| 110.755203|"
+[11] "|ENSMUSG00000033808 |2   | 120.184965|   9.604828| 118.869573| 128.053931|"
+[12] "|ENSMUSG00000033213 |2   | 121.578185|  87.485589| 121.557557| 123.193374|"
 ~~~
 {: .output}
+
+
+
+~~~
+Error: Cannot open file for writing:
+* '../results/gene.norm_qtl_peaks_random.csv'
+~~~
+{: .error}
 
 ### QTL Peaks Figure
 
