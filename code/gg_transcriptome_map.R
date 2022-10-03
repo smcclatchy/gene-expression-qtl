@@ -137,6 +137,7 @@ ggtmap = function(data, color.points = FALSE, cis.points = FALSE, cis.radius = 2
       geom_point(aes(color = cis), alpha = 0.5) + 
       scale_color_manual(values = cis.colors) +
       facet_grid(gene_chr ~ qtl_chr, scales = "free", shrink = TRUE) +
+      labs(x = "QTL Position", y = "Gene Position") +
       theme(panel.background = element_blank(),
 	        panel.border = element_rect(fill = 0, color = "grey70"),
 	        panel.grid.minor = element_blank(),
@@ -150,6 +151,7 @@ ggtmap = function(data, color.points = FALSE, cis.points = FALSE, cis.radius = 2
         if(color.points) scale_color_continuous(low = "grey50", high = "red") 
       } +
       facet_grid(gene_chr ~ qtl_chr, scales = "free", shrink = TRUE) +
+      labs(x = "QTL Position", y = "Gene Position") +
       theme(panel.background = element_blank(),
 	  	    panel.border = element_rect(fill = 0, color = "grey70"),
 	  	    panel.grid.minor = element_blank(),
@@ -160,3 +162,55 @@ ggtmap = function(data, color.points = FALSE, cis.points = FALSE, cis.radius = 2
 
 } # ggtmap()
 
+
+# Plot the density of eQTL along the chromosomes.
+# Arguments:
+# data: data.frame (or tibble) with the following columns:
+#       ensembl: (required) character string containing the Ensembl gene ID.
+#       qtl_chr: (required) character string containing QTL chromsome.
+#       qtl_pos: (required) floating point number containing the QTL position 
+#                in Mb.
+#       qtl_lod: (optional) floating point number containing the LOD score.
+#       gene_chr:  (optional) character string containing transcript chromosome.
+#       gene_start: (optional) character string containing transcript start 
+#                 postion in Mb.
+#       gene_end:  (optional) character string containing transcript end
+#                position in Mb.
+# lod_thr: numeric value that is the LOD above which QTL will be retained.
+#          Default = 7.
+eqtl_density_plot = function(data, lod_thr = 7) {
+  
+  # Create a set of rolling breakpoints, 4 Mb apart.
+  breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
+  
+  tmp = as.list(1:ncol(breaks)) 
+  
+  for(i in 1:ncol(breaks)) {
+    tmp[[i]] = data %>%
+                 filter(qtl_lod >= lod_thr) %>%
+                 arrange(qtl_chr, qtl_pos) %>%
+                 group_by(qtl_chr) %>%
+                 mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
+                 group_by(qtl_chr, win) %>% 
+                 summarize(cnt = n()) %>%
+                 separate(win, into = c("other", "prox", "dist")) %>%
+                 mutate(prox = as.numeric(prox), 
+                        dist = as.numeric(dist), 
+                        mid  = 0.5 * (prox + dist)) %>%
+                 dplyr::select(qtl_chr, mid, cnt)
+  } # for(i)
+  
+  trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
+  rm(tmp)
+  
+  ggplot(trans, aes(mid, cnt)) +
+    geom_line() +
+    geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
+    facet_grid(.~qtl_chr, scales = "free") +
+    theme(panel.background = element_blank(),
+          panel.border = element_rect(fill = 0, color = "grey70"),
+          panel.spacing = unit(0, "lines"),
+          axis.text.x = element_text(angle = 90)) +
+    labs(title = "eQTL Density Plot", x = "Mb", y = "Number of Transcripts")
+  
+} # eqtl_density_plot()
