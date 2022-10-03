@@ -22,146 +22,120 @@ knitr_fig_path("08-")
 library(tidyverse)
 library(qtl2)
 library(qtl2convert)
-#library(qtl2db)
-library(GGally)
-library(broom)
+#library(GGally)
+#library(broom)
 library(knitr)
-library(corrplot)
+#library(corrplot)
 library(RColorBrewer)
 library(qtl2ggplot)
 
 source("../code/gg_transcriptome_map.R")
-source("../code/qtl_heatmap.R")
 ```
 
 ## Load Data
 
+Load in the RNA-seq eQTL mapping results.
+
 ```{r load_dependencies}
-
-#expression data
-load("../data/attie_DO500_expr.datasets.RData")
-
 ##loading previous results
 load("../data/dataset.islet.rnaseq.RData")
-
-##mapping data
-load("../data/attie_DO500_mapping.data.RData")
-
-##genoprobs
-probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
-
-##phenotypes
-load("../data/attie_DO500_clinical.phenotypes.RData")
-
 ```
 
-```{r lod_summary,warning=FALSE,message=FALSE}
+Next, we need to format the column names of our eQTL results to that the `ggtmap` function can use the results.
 
+```{r lod_summary,warning=FALSE,message=FALSE}
 lod_summary = dataset.islet.rnaseq$lod.peaks
 
-ensembl = get_ensembl_genes()
-id    = ensembl$gene_id
-chr   = seqnames(ensembl)
-start = start(ensembl) * 1e-6
-end   = end(ensembl)   * 1e-6
-df = data.frame(ensembl = id, gene_chr = chr, gene_start = start, gene_end = end,
-     stringsAsFactors = F)
-colnames(lod_summary)[colnames(lod_summary) == "annot.id"] = "ensembl"
-colnames(lod_summary)[colnames(lod_summary) == "chrom"] = "qtl_chr"
-colnames(lod_summary)[colnames(lod_summary) == "pos"] = "qtl_pos"
-colnames(lod_summary)[colnames(lod_summary) == "lod"] = "qtl_lod"
-lod_summary = left_join(lod_summary, df, by = "ensembl")
-lod_summary = mutate(lod_summary, gene_chr = factor(gene_chr, levels = c(1:19, "X")),
-                     qtl_chr = factor(qtl_chr, levels = c(1:19, "X")))
+# Get gene positions.
+ensembl <- get_ensembl_genes()
+df <- data.frame(ensembl    = ensembl$gene_id, 
+                 gene_chr   = seqnames(ensembl), 
+                 gene_start = start(ensembl) * 1e-6, 
+                 gene_end   = end(ensembl)   * 1e-6,
+                 stringsAsFactors = F)
+
+# Create eQTL table for transcriptome map function.
+lod_summary <- lod_summary %>% 
+                 rename(annot.id  = "ensembl",
+                        chrom     = "qtl_chr",
+                        pos       = "qtl_pos",
+                        lod       = "qtl_lod") %>% 
+                 left_join(df, by = "ensembl") %>% 
+                 mutate(marker.id = str_c(qtl_chr, qtl_pos * 1e6, sep = "_"),
+                        gene_chr  = factor(gene_chr, levels = c(1:19, "X")),
+                        qtl_chr   = factor(qtl_chr, levels = c(1:19, "X"))) %>% 
+                 mutate(cis = if_else(qtl_chr == gene_chr & abs(gene_start - qtl_pos) < 4, "cis", "trans"))
+
 rm(df)
-
-## summary:
-
-lod_summary$cis.trans <- ifelse(lod_summary$qtl_chr == lod_summary$gene_chr, "cis", "trans")
-table(lod_summary$cis.trans)
-
 ```
 
 
 ### Plot Transcriptome Map
 
-```{r fig.width=10,fig.height=10,warning=FALSE,message=FALSE}
+In the previous lesson, we mapped the QTL locations of 50 genes. In this lesson, we will map the QTL positions of `r nrow(lod_summary)` genes.
 
-lod_summary = mutate(lod_summary, cis = (gene_chr == qtl_chr) & (abs(gene_start - qtl_pos) < 4))
-out.plot = ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
-
-out.plot
+```{r fig.width=6,fig.height=6,warning=FALSE,message=FALSE}
+ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
 ```
+
+This transcriptome map is definitely a lot more crowded than the one in the previous lesson. Again, the gene locations are shown on the X-axis and the QTL locations are shown on the Y-axis. 
+
+> ## Challenge
+> What paterns among the points do you see in the transcriptome map?
+>
+> > ## Solution
+> > 
+> > There are at least two patterns. One is the dense diagonal line of cis-eQTL. The other is the increased
+> > density of QTL in vertical lines.
+> {: .solution}
+{: .challenge}
+
+> ## Challenge
+> What would a horizontal band in the transcriptome map mean?
+>
+> > ## Solution
+> > 
+> > A horizontal band would mean that one gene has strong QTL on many chromosomes. While one gene might be regulated by more than one locus, it is unlikely that dozens of loci would have strong QTL for one gene. So a horizontal band would mean that there is a problem with the data. 
+> {: .solution}
+{: .challenge}
 
 ### QTL Density Plot
 
-```{r trans_eqtl_sliding_window,warning=FALSE,message=FALSE}
-breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
-tmp = as.list(1:ncol(breaks)) 
-for(i in 1:ncol(breaks)) {
-tmp[[i]] = lod_summary %>%
-             filter(qtl_lod >= 7.18 & cis == FALSE) %>%
-             arrange(qtl_chr, qtl_pos) %>%
-             group_by(qtl_chr) %>%
-             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
-             group_by(qtl_chr, win) %>% 
-             summarize(cnt = n()) %>%
-             separate(win, into = c("other", "prox", "dist")) %>%
-             mutate(prox = as.numeric(prox), 
-                    dist = as.numeric(dist), 
-                    mid = 0.5 * (prox + dist)) %>%
-             dplyr::select(qtl_chr, mid, cnt)
-}
+In the transcriptome map above, we noticed vertical banding patterns in the eQTL, which indicate that one locus may regulate the expression of dozens of genes. How many genes are regulated by each locus and which genes are they? In order to adress this question, we need to make a plot of the density of eQTL along the genome. This is like stacking up the eQTL onto the X-axis.
 
-trans = bind_rows(tmp[[1]], tmp[[1]], tmp[[3]], tmp[[4]])
-rm(tmp)
+We have provided a function to do this in the "gg_transcriptome_map.R" file in the "code" directory of this lesson. The function is called `eqtl_density_plot` and takes the following arguments:
 
-out.plot = ggplot(trans, aes(mid, cnt)) +
-             geom_line() +
-             geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
-             facet_grid(.~qtl_chr, scales = "free") +
-             theme(panel.background = element_blank(),
-             panel.border = element_rect(fill = 0, color = "grey70"),
-             panel.spacing = unit(0, "lines"),
-             axis.text.x = element_text(angle = 90)) +
-             labs(title = "trans-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
+> data: data.frame (or tibble) with the following columns:
+>       ensembl: (required) character string containing the Ensembl gene ID.
+>       qtl_chr: (required) character string containing QTL chromsome.
+>       qtl_pos: (required) floating point number containing the QTL position 
+>                in Mb.
+>       qtl_lod: (optional) floating point number containing the LOD score.
+>       gene_chr:  (optional) character string containing transcript chromosome.
+>       gene_start: (optional) character string containing transcript start 
+>                 postion in Mb.
+>       gene_end:  (optional) character string containing transcript end
+>                position in Mb.
+> lod_thr: numeric value that is the LOD above which QTL will be retained.
+>          Default = 7.
 
-out.plot
+This function has been designed to use the same data structure as we used to create the transcriptome map. First, we will look at the locations of the cis-eQTL. We must also select a LOD threshold. We will use 7.18 since this is what was used in the Keller et al. paper.
+
+```{r cis_eqtl_density,fig.width=6}
+eqtl_density_plot(data = filter(lod_summary, cis == "cis"), lod_thr = 7.18)
 ```
 
-```{r cis_eqtl_sliding_window,warning=FALSE,message=FALSE}
-breaks = matrix(c(seq(0, 200, 4), seq(1, 201, 4), seq(2, 202, 4), seq(3, 203, 4)), ncol = 4)
-tmp = as.list(1:ncol(breaks)) 
-for(i in 1:ncol(breaks)) {
-tmp[[i]] = lod_summary %>%
-             filter(qtl_lod >= 7.18 & cis == TRUE) %>%
-             arrange(qtl_chr, qtl_pos) %>%
-             group_by(qtl_chr) %>%
-             mutate(win = cut(qtl_pos, breaks = breaks[,i])) %>%
-             group_by(qtl_chr, win) %>% 
-             summarize(cnt = n()) %>%
-             separate(win, into = c("other", "prox", "dist")) %>%
-             mutate(prox = as.numeric(prox), 
-                    dist = as.numeric(dist), 
-                    mid = 0.5 * (prox + dist)) %>%
-             dplyr::select(qtl_chr, mid, cnt)
-}
+> TBD: Add interpretion of plot.
 
-cis = bind_rows(tmp[[1]], tmp[[2]], tmp[[3]], tmp[[4]])
-rm(tmp1, tmp2, tmp3, tmp4)
+Next, we will create an eQTL density plot of the trans-eQTL.
 
-out.plot = ggplot(cis, aes(mid, cnt)) +
-             geom_line(color = "#4286f4") +
-             geom_hline(aes(yintercept = 100), linetype = 2, color = "grey50") +
-             facet_grid(.~qtl_chr, scales = "free") +
-             theme(panel.background = element_blank(),
-                   panel.border = element_rect(fill = 0, color = "grey70"),
-                   panel.spacing = unit(0, "lines"),
-                   axis.text.x = element_text(angle = 90)) +
-           labs(title = "cis-eQTL Histogram", x = "Mb", y = "Number of Transcripts")
-
-out.plot
+```{r trans_eqtl_density,fig.width=6}
+eqtl_density_plot(data = filter(lod_summary, cis == "trans"), lod_thr = 7.18)
 ```
+
+Compare this plot with the transcriptome map, in which we saw vertical bands of eQTL. Do the peaks in the eQTL density plot match the bands in the transcriptome map?
+
+
 
 
 ```{r num_cis_eqtl}

@@ -5,9 +5,7 @@ exercises: 30
 questions:
 - "How do I map many genes?"
 objectives:
-- "????"
-keypoints:
-- "????"
+- "To map several genes at the same time"
 source: Rmd
 ---
 
@@ -30,51 +28,60 @@ source("../code/gg_transcriptome_map.R")
 source("../code/qtl_heatmap.R")
 ```
 
+Before we begin this lesson, we need to create another directory called `results` in our main directory.  You can do this by clicking on the "Files" tab and navigate into the main directory.  Then select "New Folder" and name it "results".
+
 ### Load Data
 
 ```{r load_dependencies}
 # expression data
 load("../data/attie_DO500_expr.datasets.RData")
 
-# mapping data
-load("../data/attie_DO500_mapping.data.RData")
-
-probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
+# data from paper
+load("../data/dataset.islet.rnaseq.RData")
 
 # phenotypes
 load("../data/attie_DO500_clinical.phenotypes.RData")
+
+# mapping data
+load("../data/attie_DO500_mapping.data.RData")
+
+# genotype probabilities
+probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 ```
 
 ### Data Selection
 
 For this lesson, lets choose a random set of 50 gene expression phenotypes.
 
-```{r choosing_data_hidden, echo=F}
+```{r choosing_data_hidden, echo=F, eval=F}
 genes = colnames(norm)
 chr11 = which(genes=="ENSMUSG00000020679")
 genes = genes[-chr11]
 
 sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
 genes <- genes[c(chr11, sams)]
-
 ```
 
-```{r choosing_data_shown, eval=F, echo=T}
+```{r choosing_data_shown, echo=T}
 genes = colnames(norm)
 
 sams <- sample(length(genes), 50, replace = FALSE, prob = NULL)
 genes <- genes[sams]
 
+gene.info <- dataset.islet.rnaseq$annots[genes,]
+rownames(gene.info) = NULL
+kable(gene.info)
+
 ```
 
 ### Expression Data
 
-Lets check the distributin of these 50 gene expression phenotypes
+Lets check the distribution for the first 20 gene expression phenotypes. If you would like to check the distribution of all 50 genes, change `for(gene in genes[1:20])` in the code below to `for(gene in genes)`.
 
 ```{r hist_untransformed}
-par(mfrow=c(2,5))
-for(gene in genes){
-  hist(norm[,gene], main = names(norm[gene]))
+par(mfrow=c(3,4))
+for(gene in genes[1:20]){
+  hist(norm[,gene], main = gene)
   }
 
 ```
@@ -82,26 +89,22 @@ The histogram indicates that distribution of these counts are normalised (as the
 
 ### The Marker Map  
 
-The marker map for each chromosome is stored in the `map` object. This is used to plot the LOD scores calculated at each marker during QTL mapping.  Here we are using the 69K grid marker file.  
-
-We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#the-marker-map)
+We are using the same marker map as in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/04-review-mapping-steps/index.html#the-marker-map)
 
 
 ### Genotype probabilities  
 
-We have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid map of the same 500 DO mice that also have clinical phenotypes. 
-
-We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#genotype-probabilities)
+We have explored this earlier in th previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/04-review-mapping-steps/index.html#genotype-probabilities).  But, as a reminder, we have already calculated genotype probabilities which we loaded above called `probs`.  This contains the 8 state genotype probabilities using the 69k grid  map of the same 500 DO mice that also have clinical phenotypes. 
 
 
 ### [Kinship Matrix](https://smcclatchy.github.io/mapping/04-calc-kinship/)
 
-The kinship matrix has already been calculated and loaded in above.  Again, we have explored this in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/05-review-mapping-steps/index.html#kinship-matrix)
+We have explored the kinship matrix in the previous [lesson](https://smcclatchy.github.io/gene-expression-qtl/04-review-mapping-steps/index.html#kinship-matrix). It has already been calculated and loaded in above. 
 
 
 ### Covariates    
 
-Now let's add the necessary covariates. For `Hnf1b` expression data, let's see which covariates are significant.
+Now let's add the necessary covariates. For these 50 gene expression data, let's see which covariates are significant.
 
 ```{r covariates_sig}
 
@@ -139,7 +142,7 @@ rm(tmp)
 
 ```
 
-We can see that `DOwave` is the most significant.  However, given that a few are influenced by `sex` and `diet_days`, we will have to correct for it. 
+We can see that `DOwave` is the most significant.  However, given that a few are influenced by `sex` and `diet_days`, we will have to correct for those as well. 
 
 
 ```{r covariates}
@@ -155,13 +158,13 @@ covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
 
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lesson. 
+Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lessons. 
 
 ### QTL Scans
 
 ```{r qtl_scans}
 
-qtl.file = "../results/gene.norm_qtl_cis.trans_random.Rdata"
+qtl.file = "../results/gene.norm_qtl_cis.trans.Rdata"
 
 if(file.exists(qtl.file)) {
   load(qtl.file)
@@ -178,13 +181,23 @@ if(file.exists(qtl.file)) {
 
 ### QTL plots
 
+Let's plot the first 20 gene expression phenotypes.  If you would like to plot all 50, change `for(i in 1:20)` in the code below to `for(i in 1:ncol(qtl))`.
+
 ```{r set_plot_rows_columns, echo=FALSE}
 par(mfrow=c(17, 3))
+
+#for(i in 1:ncol(qtl)) {
+#  plot_scan1(x = qtl, 
+#             map = map, 
+#             lodcolumn = i, 
+#             main = colnames(qtl)[i])
+#  abline(h = 6, col = 2, lwd = 2)
+#  }
 ```
 
 ```{r qtl_plots}
-par(mfrow=c(2,5))
-for(i in 1:ncol(qtl)) {
+par(mfrow=c(3,4))
+for(i in 1:20) {
   plot_scan1(x = qtl, 
              map = map, 
              lodcolumn = i, 
@@ -195,7 +208,7 @@ for(i in 1:ncol(qtl)) {
 
 ### QTL Peaks
 
-We are also going to save our peak results so we can use these again else where
+We are also going to save our peak results so we can use these again else where.  First, lets get out peaks with a LOD score greater than 6. 
 
 ```{r qtl_peaks}
 lod_threshold = 6
@@ -206,42 +219,26 @@ peaks = find_peaks(scan1_output = qtl,
                    prob = 0.95)
 ```
 
+We will save these peaks into a csv file. 
+
 ```{r qtl_peaks_table, eval=FALSE}
 kable(peaks %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
 
-write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
+write_csv(peaks, "../results/gene.norm_qtl_peaks_cis.trans.csv")
 ```
 
 ```{r short_qtl_peaks_table, echo=FALSE}
-peaks %>%
-  dplyr::select(-lodindex) %>%
-  arrange(chr, pos) %>%
-  kable(caption = "Expression QTL (eQTL) Peaks with LOD >= 6") %>%
-  head(n=12)
+kable(peaks %>% 
+        dplyr::select(-lodindex) %>% 
+        arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6" %>%
+        head(n=25))
 
-write_csv(peaks, "../results/gene.norm_qtl_peaks_random.csv")
+write_csv(peaks, "../results/gene.norm_qtl_peaks_cis.trans.csv")
 ```
 
 ### QTL Peaks Figure
-
-```{r qtl_peaks_figure}
-peaks = peaks %>%
-  arrange(lodcolumn)
-plot_peaks(peaks, 
-           map, 
-           col = c("blue","red"), 
-           lwd = 3, 
-           tick_height = 0.8, 
-           gap = 0, 
-           main = "LOD > 6")
-box()
-ggplot_peaks(peaks, 
-             map, 
-             col = c("blue","red"), 
-             legend.title = "LOD > 6") 
-```
 
 ```{r qtl_heatmap}
 
@@ -250,14 +247,13 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 ```
 
 > ## Challenge
-> What do the qtl scans for all gene exression traits look like?  
-> Don't worry, we've done the qtl scans for you!!!
-> You can read in this file, `..data/gene.norm_qtl_all.genes.Rdata`, which are the `scan1` results for all gene expression traits. 
+> What do the qtl scans for all gene exression traits look like? *Note:* Don't worry, we've done the qtl scans for you!!!
+> You can read in this file, `../data/gene.norm_qtl_all.genes.Rdata`, which are the `scan1` results for all gene expression traits. 
 >
 > > ## Solution
 > > 
 > > ```{r, eval=F}
-> > load("..data/gene.norm_qtl_all.genes.Rdata")
+> > load("../data/gene.norm_qtl_all.genes.Rdata")
 > >
 > > lod_threshold = 6
 > > peaks = find_peaks(scan1_output = qtl, 
@@ -265,22 +261,7 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 > >                threshold = lod_threshold, 
 > >                peakdrop = 4, 
 > >                prob = 0.95)
-> > write_csv(peaks, "../results/gene.norm_qtl_peaks.csv")
-> >
-> > ## Peaks Figure
-> > peaks = peaks %>% arrange(lodcolumn)
-> > plot_peaks(peaks, 
-> >            map, 
-> >            col = c("blue","red"), 
-> >            lwd = 3, 
-> >            tick_height = 0.8, 
-> >            gap = 0, 
-> >            main = "LOD > 6")
-> > box()
-> > ggplot_peaks(peaks, 
-> >              map, 
-> >              col = c("blue","red"), 
-> >              legend.title = "LOD > 6") 
+> > write_csv(peaks, "../results/gene.norm_qtl_all.genes_peaks.csv")
 > >
 > > ## Heat Map
 > > qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
