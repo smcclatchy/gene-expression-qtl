@@ -85,7 +85,20 @@ for(gene in genes[1:20]){
   }
 
 ```
-The histogram indicates that distribution of these counts are normalised (as they should be).
+
+Check the distributions.  Do they all have a normal distribution?
+
+You will notice that the distribtion of some genes are skewed to the left.  This means that that only a small amount of samples have data and therefore, will need to be removed. 
+
+```{r qc_genes}
+
+limit = nrow(norm) * 0.25
+
+genes0 = which(as.numeric(colSums(counts[,genes] == 0)) > limit) 
+
+genes <- genes[-genes0]
+
+```
 
 ### The Marker Map  
 
@@ -104,9 +117,9 @@ We have explored the kinship matrix in the previous [lesson](https://smcclatchy.
 
 ### Covariates    
 
-Now let's add the necessary covariates. For these 50 gene expression data, let's see which covariates are significant.
+Now let's add the necessary covariates. For these 50 gene expression data, we will correct for `DOwave`,`sex` and `diet_days`.
 
-```{r covariates_sig}
+```{r covariates_sig, eval =F}
 
 ###merging covariate data and expression data to test for sex, wave and diet_days.
 
@@ -140,9 +153,9 @@ tmp %>%
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
 rm(tmp)
 
-```
-
 We can see that `DOwave` is the most significant.  However, given that a few are influenced by `sex` and `diet_days`, we will have to correct for those as well. 
+
+```
 
 
 ```{r covariates}

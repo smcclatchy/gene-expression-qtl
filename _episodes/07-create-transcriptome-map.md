@@ -107,7 +107,7 @@ count(lod_summary, cis.trans)
 ~~~
 Error in `group_by()`:
 ! Must group by variables found in `.data`.
-x Column `cis.trans` is not found.
+✖ Column `cis.trans` is not found.
 ~~~
 {: .error}
 

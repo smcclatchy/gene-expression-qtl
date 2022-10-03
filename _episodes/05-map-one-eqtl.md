@@ -26,61 +26,6 @@ If you have started a new R session, you will need to load the libraries again. 
 
 ~~~
 library(tidyverse)
-~~~
-{: .language-r}
-
-
-
-~~~
-Warning: package 'tidyverse' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'tibble' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'tidyr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'readr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'dplyr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'stringr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'forcats' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
 library(knitr)
 library(broom)
 library(qtl2)
@@ -211,15 +156,15 @@ tmp
 
 
 ~~~
-# A tibble: 4 x 8
+# A tibble: 4 × 8
 # Groups:   expression [1]
-  expression         data     model  term      estimate std.e~1 stati~2  p.value
+  expression         data     model  term      estimate std.e…¹ stati…²  p.value
   <chr>              <list>   <list> <chr>        <dbl>   <dbl>   <dbl>    <dbl>
-1 ENSMUSG00000020679 <tibble> <lm>   (Interce~ -1.70    0.506     -3.36 8.72e- 4
+1 ENSMUSG00000020679 <tibble> <lm>   (Interce… -1.70    0.506     -3.36 8.72e- 4
 2 ENSMUSG00000020679 <tibble> <lm>   sexM      -0.199   0.0824    -2.42 1.60e- 2
 3 ENSMUSG00000020679 <tibble> <lm>   DOwave     0.510   0.0370    13.8  3.73e-35
 4 ENSMUSG00000020679 <tibble> <lm>   diet_days  0.00403 0.00386    1.04 2.97e- 1
-# ... with abbreviated variable names 1: std.error, 2: statistic
+# … with abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
 
