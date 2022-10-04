@@ -185,7 +185,7 @@ rm(tmp)
 
 <img src="../fig/rmd-05-covariatesa_sig-1.png" alt="plot of chunk covariatesa_sig" width="612" style="display: block; margin: auto;" />
 
-We can see that sex and DOwave are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
+We can see that sex and DOwave are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.  Considering the paper included the covariate, `diet_days`, we will include that as well. 
 
 
 

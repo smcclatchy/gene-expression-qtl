@@ -70,7 +70,7 @@ genes <- genes[sams]
 
 gene.info <- dataset.islet.rnaseq$annots[genes,]
 rownames(gene.info) = NULL
-kable(gene.info)
+kable(gene.info[1:10,])
 
 ```
 
@@ -88,15 +88,12 @@ for(gene in genes[1:20]){
 
 Check the distributions.  Do they all have a normal distribution?
 
-You will notice that the distribtion of some genes are skewed to the left.  This means that that only a small amount of samples have data and therefore, will need to be removed. 
+You will notice that the distribtion of some genes are skewed to the left.  This means that that only a small amount of samples have data and therefore, will need to be removed.  A suitable qc would be keeping expression data that have at least 5% of that samples with more than 10 reads.
 
 ```{r qc_genes}
 
-limit = nrow(norm) * 0.25
-
-genes0 = which(as.numeric(colSums(counts[,genes] == 0)) > limit) 
-
-genes <- genes[-genes0]
+genes_qc <- which(as.numeric(colSums(counts[,genes] > 10)) >= 0.05 * nrow(counts[,genes]))
+genes <- genes[genes_qc]
 
 ```
 
@@ -119,7 +116,7 @@ We have explored the kinship matrix in the previous [lesson](https://smcclatchy.
 
 Now let's add the necessary covariates. For these 50 gene expression data, we will correct for `DOwave`,`sex` and `diet_days`.
 
-```{r covariates_sig, eval =F}
+```{r covariates_sig, eval=F, echo=F}
 
 ###merging covariate data and expression data to test for sex, wave and diet_days.
 
@@ -235,7 +232,7 @@ peaks = find_peaks(scan1_output = qtl,
 We will save these peaks into a csv file. 
 
 ```{r qtl_peaks_table, eval=FALSE}
-kable(peaks %>% 
+kable(peaks[1:10,] %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Expression QTL (eQTL) Peaks with LOD >= 6")
 
@@ -243,7 +240,7 @@ write_csv(peaks, "../results/gene.norm_qtl_peaks_cis.trans.csv")
 ```
 
 ```{r short_qtl_peaks_table, echo=FALSE}
-kable(peaks %>% 
+kable(peaks[1:10,] %>% 
         dplyr::select(-lodindex) %>% 
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6" %>%
         head(n=25))
@@ -269,7 +266,7 @@ qtl_heatmap(qtl = qtl, map = map, low.thr = 3.5)
 > > load("../data/gene.norm_qtl_all.genes.Rdata")
 > >
 > > lod_threshold = 6
-> > peaks = find_peaks(scan1_output = qtl, 
+> > peaks = find_peaks(scan1_output = qtl.all, 
 > >                map = map, 
 > >                threshold = lod_threshold, 
 > >                peakdrop = 4, 

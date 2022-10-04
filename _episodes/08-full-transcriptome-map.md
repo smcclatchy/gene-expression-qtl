@@ -33,13 +33,6 @@ source("../code/gg_transcriptome_map.R")
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in library(AnnotationHub): there is no package called 'AnnotationHub'
-~~~
-{: .error}
-
 ## Load Data
 
 Load in the RNA-seq eQTL mapping results.
@@ -59,37 +52,12 @@ lod_summary = dataset.islet.rnaseq$lod.peaks
 
 # Get gene positions.
 ensembl <- get_ensembl_genes()
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in get_ensembl_genes(): could not find function "get_ensembl_genes"
-~~~
-{: .error}
-
-
-
-~~~
 df <- data.frame(ensembl    = ensembl$gene_id, 
                  gene_chr   = seqnames(ensembl), 
                  gene_start = start(ensembl) * 1e-6, 
                  gene_end   = end(ensembl)   * 1e-6,
                  stringsAsFactors = F)
-~~~
-{: .language-r}
 
-
-
-~~~
-Error in data.frame(ensembl = ensembl$gene_id, gene_chr = seqnames(ensembl), : object 'ensembl' not found
-~~~
-{: .error}
-
-
-
-~~~
 # Create eQTL table for transcriptome map function.
 lod_summary <- lod_summary %>% 
                  rename(annot.id  = "ensembl",
@@ -101,21 +69,7 @@ lod_summary <- lod_summary %>%
                         gene_chr  = factor(gene_chr, levels = c(1:19, "X")),
                         qtl_chr   = factor(qtl_chr, levels = c(1:19, "X"))) %>% 
                  mutate(cis = if_else(qtl_chr == gene_chr & abs(gene_start - qtl_pos) < 4, "cis", "trans"))
-~~~
-{: .language-r}
 
-
-
-~~~
-Error in `chr_as_locations()`:
-! Can't rename columns that don't exist.
-✖ Column `ensembl` doesn't exist.
-~~~
-{: .error}
-
-
-
-~~~
 rm(df)
 ~~~
 {: .language-r}
@@ -131,12 +85,7 @@ ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.ra
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, : could not find function "ggtmap"
-~~~
-{: .error}
+<img src="../fig/rmd-08-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="432" style="display: block; margin: auto;" />
 
 This transcriptome map is definitely a lot more crowded than the one in the previous lesson. Again, the gene locations are shown on the X-axis and the QTL locations are shown on the Y-axis. 
 
@@ -190,9 +139,68 @@ eqtl_density_plot(data = filter(lod_summary, cis == "cis"), lod_thr = 7.18)
 
 
 ~~~
-Error in eqtl_density_plot(data = filter(lod_summary, cis == "cis"), lod_thr = 7.18): could not find function "eqtl_density_plot"
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
 ~~~
-{: .error}
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 652 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+
+
+~~~
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
+~~~
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 646 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+
+
+~~~
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
+~~~
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 640 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+
+
+~~~
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
+~~~
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 640 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+<img src="../fig/rmd-08-cis_eqtl_density-1.png" alt="plot of chunk cis_eqtl_density" width="432" style="display: block; margin: auto;" />
 
 > TBD: Add interpretion of plot.
 
@@ -207,9 +215,68 @@ eqtl_density_plot(data = filter(lod_summary, cis == "trans"), lod_thr = 7.18)
 
 
 ~~~
-Error in eqtl_density_plot(data = filter(lod_summary, cis == "trans"), : could not find function "eqtl_density_plot"
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
 ~~~
-{: .error}
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 612 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+
+
+~~~
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
+~~~
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 617 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+
+
+~~~
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
+~~~
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 615 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+
+
+~~~
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
+~~~
+{: .output}
+
+
+
+~~~
+Warning: Expected 3 pieces. Additional pieces discarded in 611 rows [1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].
+~~~
+{: .warning}
+
+<img src="../fig/rmd-08-trans_eqtl_density-1.png" alt="plot of chunk trans_eqtl_density" width="432" style="display: block; margin: auto;" />
 
 Compare this plot with the transcriptome map, in which we saw vertical bands of eQTL. Do the peaks in the eQTL density plot match the bands in the transcriptome map?
 
@@ -222,32 +289,19 @@ tmp = lod_summary %>%
         filter(qtl_lod >= 7.18) %>%
         group_by(cis) %>%
         count()
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in `filter()`:
-! Problem while computing `..1 = qtl_lod >= 7.18`.
-Caused by error in `mask$eval_all_filter()`:
-! object 'qtl_lod' not found
-~~~
-{: .error}
-
-
-
-~~~
 kable(tmp, caption = "Number of cis- and trans-eQTL")
 ~~~
 {: .language-r}
 
 
 
-~~~
-Error in kable(tmp, caption = "Number of cis- and trans-eQTL"): object 'tmp' not found
-~~~
-{: .error}
+Table: Number of cis- and trans-eQTL
+
+|cis   |     n|
+|:-----|-----:|
+|cis   | 12677|
+|trans |  5617|
+|NA    |   526|
 
 
 
@@ -255,13 +309,6 @@ Error in kable(tmp, caption = "Number of cis- and trans-eQTL"): object 'tmp' not
 rm(tmp)
 ~~~
 {: .language-r}
-
-
-
-~~~
-Warning in rm(tmp): object 'tmp' not found
-~~~
-{: .warning}
 
 ## Islet RNASeq eQTL Hotspots
 
@@ -343,7 +390,7 @@ hotspot.genes = as.list(hotspots$qtl_chr)
 
 
 ~~~
-Error in as.list(hotspots$qtl_chr): object 'hotspots' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.list': object 'hotspots' not found
 ~~~
 {: .error}
 
@@ -382,7 +429,7 @@ for(i in 1:nrow(hotspots)) {
 
 
 ~~~
-Error in nrow(hotspots): object 'hotspots' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'nrow': object 'hotspots' not found
 ~~~
 {: .error}
 
@@ -424,7 +471,7 @@ cis.hotspot.genes = as.list(cis.hotspots$qtl_chr)
 
 
 ~~~
-Error in as.list(cis.hotspots$qtl_chr): object 'cis.hotspots' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.list': object 'cis.hotspots' not found
 ~~~
 {: .error}
 
@@ -460,7 +507,7 @@ for(i in 1:nrow(cis.hotspots)) {
 
 
 ~~~
-Error in nrow(cis.hotspots): object 'cis.hotspots' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'nrow': object 'cis.hotspots' not found
 ~~~
 {: .error}
 
@@ -553,7 +600,7 @@ hotspot.pcs = as.list(names(hotspot.genes))
 
 
 ~~~
-Error in as.list(names(hotspot.genes)): object 'hotspot.genes' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.list': object 'hotspot.genes' not found
 ~~~
 {: .error}
 
@@ -595,7 +642,7 @@ wave.col = as.numeric(as.factor(do.wave[,1]))
 
 
 ~~~
-Error in is.factor(x): object 'do.wave' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'as.factor': object 'do.wave' not found
 ~~~
 {: .error}
 

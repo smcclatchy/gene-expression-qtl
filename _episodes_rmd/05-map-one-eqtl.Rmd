@@ -24,7 +24,7 @@ If you have started a new R session, you will need to load the libraries again. 
 
 ### Load Libraries  
 
-```{r load_libraries, message=FALSE}
+```{r load_libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(knitr)
 library(broom)
@@ -138,7 +138,7 @@ rm(tmp)
 
 ```
 
-We can see that sex and DOwave are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.
+We can see that sex and DOwave are significant.  Here DOwave is the group or batch number as not all mice were submitted for genotyping at the same time.  Because of this, we now have to correct for it.  Considering the paper included the covariate, `diet_days`, we will include that as well. 
 
 
 ```{r covariates}
