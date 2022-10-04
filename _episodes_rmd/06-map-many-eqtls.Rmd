@@ -16,6 +16,14 @@ knitr_fig_path("06-")
 
 ### Load Libraries  
 
+For this lesson, we need to install two more libraries and load them.  You can do this by typing the following code:
+
+```{r installing_packages, eval=F}
+BiocManager::install(c("AnnotationHub","rtracklayer"))
+```
+
+Let's install our libraries, and source two other R scripts.
+
 ```{r load_libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(knitr)

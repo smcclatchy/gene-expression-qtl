@@ -15,6 +15,16 @@ source: Rmd
 
 ### Load Libraries  
 
+For this lesson, we need to install two more libraries and load them.  You can do this by typing the following code:
+
+
+~~~
+BiocManager::install(c("AnnotationHub","rtracklayer"))
+~~~
+{: .language-r}
+
+Let's install our libraries, and source two other R scripts.
+
 
 ~~~
 library(tidyverse)
@@ -73,18 +83,18 @@ kable(gene.info[1:10,])
 
 
 
-|gene_id            |symbol        |chr |     start|       end| strand|    middle|nearest.marker.id |biotype        |module        |hotspot |
-|:------------------|:-------------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------|:-------------|:-------|
-|ENSMUSG00000028468 |Rgp1          |4   |  43.57872|  43.58749|      1|  43.58310|4_43563716        |protein_coding |purple        |NA      |
-|ENSMUSG00000025997 |Ikzf2         |1   |  69.53121|  69.68596|     -1|  69.60859|1_69597344        |protein_coding |pink          |NA      |
-|ENSMUSG00000022946 |Dopey2        |16  |  93.71191|  93.81059|      1|  93.76125|16_93760924       |protein_coding |darkturquoise |NA      |
-|ENSMUSG00000097828 |6430562O15Rik |13  |  99.39692|  99.41286|     -1|  99.40489|13_99415662       |lincRNA        |grey          |NA      |
-|ENSMUSG00000022871 |Fetub         |16  |  22.91838|  22.93977|      1|  22.92907|16_22944187       |protein_coding |grey          |NA      |
-|ENSMUSG00000082596 |Gm14227       |2   | 155.19863| 155.19926|     -1| 155.19895|2_155195795       |pseudogene     |grey          |NA      |
-|ENSMUSG00000071519 |Prss3         |6   |  41.37380|  41.37768|     -1|  41.37574|6_41406513        |protein_coding |darkgrey      |NA      |
-|ENSMUSG00000031642 |Sh3rf1        |8   |  61.22417|  61.39607|      1|  61.31012|8_61412377        |protein_coding |grey          |NA      |
-|ENSMUSG00000064037 |Gpn1          |5   |  31.49474|  31.51290|      1|  31.50382|5_31505343        |protein_coding |turquoise     |NA      |
-|ENSMUSG00000062760 |1810041L15Rik |15  |  84.37920|  84.44710|     -1|  84.41315|15_84428571       |protein_coding |greenyellow   |NA      |
+|gene_id            |symbol  |chr |     start|       end| strand|    middle|nearest.marker.id |biotype        |module      |hotspot |
+|:------------------|:-------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------|:-----------|:-------|
+|ENSMUSG00000071713 |Csf2rb  |15  |  78.32599|  78.35100|      1|  78.33849|15_78454291       |protein_coding |darkorange  |NA      |
+|ENSMUSG00000081281 |Gm6274  |X   |  36.66822|  36.66901|      1|  36.66862|X_36633623        |pseudogene     |grey        |NA      |
+|ENSMUSG00000094151 |Gm7233  |14  |  43.17987|  43.18799|      1|  43.18393|14_43250273       |protein_coding |grey        |NA      |
+|ENSMUSG00000062014 |Gmfb    |14  |  46.80815|  46.82224|     -1|  46.81520|14_46817858       |protein_coding |green       |NA      |
+|ENSMUSG00000027313 |Chac1   |2   | 119.35123| 119.35438|      1| 119.35281|2_119169488       |protein_coding |skyblue     |NA      |
+|ENSMUSG00000030653 |Pde2a   |7   | 101.42169| 101.51283|      1| 101.46726|7_101608964       |protein_coding |lightyellow |NA      |
+|ENSMUSG00000035580 |Kcnh8   |17  |  52.60271|  52.97919|      1|  52.79095|17_52790159       |protein_coding |turquoise   |NA      |
+|ENSMUSG00000080772 |Gm12543 |4   |  59.83368|  59.83422|      1|  59.83395|4_59832197        |pseudogene     |grey        |NA      |
+|ENSMUSG00000018446 |C1qbp   |11  |  70.97784|  70.98303|     -1|  70.98043|11_71120660       |protein_coding |darkred     |NA      |
+|ENSMUSG00000018593 |Sparc   |11  |  55.39450|  55.42008|     -1|  55.40729|11_55409101       |protein_coding |lightyellow |NA      |
 
 ### Expression Data
 
