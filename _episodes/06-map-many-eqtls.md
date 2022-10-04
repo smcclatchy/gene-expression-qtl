@@ -83,18 +83,18 @@ kable(gene.info[1:10,])
 
 
 
-|gene_id            |symbol  |chr |     start|       end| strand|    middle|nearest.marker.id |biotype        |module      |hotspot |
-|:------------------|:-------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------|:-----------|:-------|
-|ENSMUSG00000071713 |Csf2rb  |15  |  78.32599|  78.35100|      1|  78.33849|15_78454291       |protein_coding |darkorange  |NA      |
-|ENSMUSG00000081281 |Gm6274  |X   |  36.66822|  36.66901|      1|  36.66862|X_36633623        |pseudogene     |grey        |NA      |
-|ENSMUSG00000094151 |Gm7233  |14  |  43.17987|  43.18799|      1|  43.18393|14_43250273       |protein_coding |grey        |NA      |
-|ENSMUSG00000062014 |Gmfb    |14  |  46.80815|  46.82224|     -1|  46.81520|14_46817858       |protein_coding |green       |NA      |
-|ENSMUSG00000027313 |Chac1   |2   | 119.35123| 119.35438|      1| 119.35281|2_119169488       |protein_coding |skyblue     |NA      |
-|ENSMUSG00000030653 |Pde2a   |7   | 101.42169| 101.51283|      1| 101.46726|7_101608964       |protein_coding |lightyellow |NA      |
-|ENSMUSG00000035580 |Kcnh8   |17  |  52.60271|  52.97919|      1|  52.79095|17_52790159       |protein_coding |turquoise   |NA      |
-|ENSMUSG00000080772 |Gm12543 |4   |  59.83368|  59.83422|      1|  59.83395|4_59832197        |pseudogene     |grey        |NA      |
-|ENSMUSG00000018446 |C1qbp   |11  |  70.97784|  70.98303|     -1|  70.98043|11_71120660       |protein_coding |darkred     |NA      |
-|ENSMUSG00000018593 |Sparc   |11  |  55.39450|  55.42008|     -1|  55.40729|11_55409101       |protein_coding |lightyellow |NA      |
+|gene_id            |symbol        |chr |      start|        end| strand|     middle|nearest.marker.id |biotype        |module         |hotspot |
+|:------------------|:-------------|:---|----------:|----------:|------:|----------:|:-----------------|:--------------|:--------------|:-------|
+|ENSMUSG00000030339 |Ltbr          |6   | 125.306571| 125.313885|     -1| 125.310228|6_125336952       |protein_coding |royalblue      |NA      |
+|ENSMUSG00000028024 |Enpep         |3   | 129.269175| 129.332720|     -1| 129.300948|3_129312957       |protein_coding |grey           |NA      |
+|ENSMUSG00000040693 |Slco4c1       |1   |  96.818784|  96.872171|     -1|  96.845478|1_96845353        |protein_coding |grey           |NA      |
+|ENSMUSG00000028150 |Rorc          |3   |  94.372794|  94.398276|      1|  94.385535|3_94387832        |protein_coding |grey           |NA      |
+|ENSMUSG00000025092 |Hspa12a       |19  |  58.795751|  58.860984|     -1|  58.828368|19_58753833       |protein_coding |white          |NA      |
+|ENSMUSG00000097537 |2610020C07Rik |16  |  11.203383|  11.225796|      1|  11.214590|16_11193504       |lincRNA        |darkolivegreen |NA      |
+|ENSMUSG00000074059 |Fbxw18        |9   | 109.676734| 109.702700|     -1| 109.689717|9_109686322       |protein_coding |grey           |NA      |
+|ENSMUSG00000079469 |Pigb          |9   |  73.007419|  73.040378|     -1|  73.023898|9_73024958        |protein_coding |grey60         |NA      |
+|ENSMUSG00000039714 |Cplx3         |9   |  57.600019|  57.606281|     -1|  57.603150|9_57602989        |protein_coding |grey           |NA      |
+|ENSMUSG00000096667 |Gm22862       |16  |   3.353752|   3.353872|     -1|   3.353812|16_3355414        |miRNA          |grey           |NA      |
 
 ### Expression Data
 
@@ -113,7 +113,7 @@ for(gene in genes[1:20]){
 
 Check the distributions.  Do they all have a normal distribution?
 
-You will notice that the distribtion of some genes are skewed to the left.  This means that that only a small amount of samples have data and therefore, will need to be removed.  A suitable qc would be keeping expression data that have at least 5% of that samples with more than 10 reads.
+You will notice that the distribtion of some genes are skewed to the left.  This means that that only a small amount of samples have data and therefore, will need to be removed.  A suitable qc would be keeping expression data that have at least 5% of the samples with more than 10 reads.
 
 
 ~~~
@@ -229,18 +229,18 @@ write_csv(peaks, "../results/gene.norm_qtl_peaks_cis.trans.csv")
 
 Table: Phenotype QTL Peaks with LOD >= 6
 
-|lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
-|:------------------|:---|---------:|---------:|---------:|---------:|
-|ENSMUSG00000025997 |1   |  71.28936| 11.463933| 70.865231|  72.27892|
-|ENSMUSG00000022946 |2   | 156.69942|  6.296416| 63.818489| 161.18852|
-|ENSMUSG00000028468 |4   |  43.55901| 25.706600| 43.554301|  44.07278|
-|ENSMUSG00000022946 |6   |  38.46705|  6.335678| 31.584037| 140.17979|
-|ENSMUSG00000022946 |9   | 116.84036|  6.306425|  6.279555| 116.94145|
-|ENSMUSG00000097828 |13  |  79.49712|  7.430048| 75.694789|  81.28496|
-|ENSMUSG00000097828 |13  |  99.50293| 87.073387| 99.275890|  99.51644|
-|ENSMUSG00000022871 |16  |  15.25272| 14.349866| 14.327274|  15.91839|
-|ENSMUSG00000022946 |16  |  93.84631| 14.974706| 93.707536|  93.91750|
-|ENSMUSG00000025997 |X   |  97.40981|  6.399558|  7.169823| 100.36223|
+|lodcolumn          |chr |       pos|       lod|      ci_lo|     ci_hi|
+|:------------------|:---|---------:|---------:|----------:|---------:|
+|ENSMUSG00000030339 |2   | 165.48591|  6.209535|   8.690542| 165.72050|
+|ENSMUSG00000028024 |3   | 129.39067| 92.464341| 129.382808| 129.47164|
+|ENSMUSG00000025092 |5   | 146.68827|  6.233493|   9.852555| 151.83362|
+|ENSMUSG00000030339 |6   | 125.33695| 56.844968| 125.226964| 125.47192|
+|ENSMUSG00000030339 |7   |  30.52771|  7.135398|  29.686889|  34.42942|
+|ENSMUSG00000028024 |7   | 109.09633|  8.095317| 103.288648| 109.27894|
+|ENSMUSG00000097537 |12  | 117.98840|  6.851064| 116.974351| 120.12062|
+|ENSMUSG00000025092 |14  |  88.57777|  6.539342|  80.478741|  92.35269|
+|ENSMUSG00000097537 |16  |  10.47957| 13.931060|   9.971609|  11.87123|
+|ENSMUSG00000025092 |19  |  58.91065| 26.056973|  58.686130|  59.01886|
 
 ### QTL Peaks Figure
 

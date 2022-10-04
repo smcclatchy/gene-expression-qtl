@@ -57,7 +57,7 @@ probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 Raw gene expression counts are in the `counts` data object. These counts have been normalised and saved in the `norm` data object. More information is about normalisation is [here](https://whoatemycookie.github.io/gene-expression-qtl/03-load-explore-data/index.html#gene-expression-phenotypes).  
 
-To view the contents of either one of these data , click the table on the right hand side either `norm` or `counts` in the Environment tab. If you type in `names(counts)`, you will see the names all start with `ENSMUSG`. These are Ensembl IDs.  If we want to see which gene these IDs correspond to, type in `dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots`, which gives information about each gene, including ensemble id, gene symbol as well as start & stop location of the gene and chromsome on which the gene lies.  
+To view the contents of either one of these data , click the table on the right hand side either `norm` or `counts` in the Environment tab. If you type in `names(counts)`, you will see the names all start with `ENSMUSG`. These are Ensembl IDs.  If we want to see which gene these IDs correspond to, type in `dataset.islet.rnaseq$annots`, which gives information about each gene, including ensemble id, gene symbol as well as start & stop location of the gene and chromsome on which the gene lies.  
 
 Because we are working with the `insulin tAUC` phenotype, let's map the expression counts for `Hnf1b` which is known to influence this phenotype is these data.   First, we need to find the Ensembl ID for this gene:
 

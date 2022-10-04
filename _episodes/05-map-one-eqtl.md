@@ -60,7 +60,7 @@ probs = readRDS("../data/attie_DO500_genoprobs_v5.rds")
 
 Raw gene expression counts are in the `counts` data object. These counts have been normalised and saved in the `norm` data object. More information is about normalisation is [here](https://whoatemycookie.github.io/gene-expression-qtl/03-load-explore-data/index.html#gene-expression-phenotypes).  
 
-To view the contents of either one of these data , click the table on the right hand side either `norm` or `counts` in the Environment tab. If you type in `names(counts)`, you will see the names all start with `ENSMUSG`. These are Ensembl IDs.  If we want to see which gene these IDs correspond to, type in `dataset.islet.rnaseq$annots[dataset.islet.rnaseq$annots`, which gives information about each gene, including ensemble id, gene symbol as well as start & stop location of the gene and chromsome on which the gene lies.  
+To view the contents of either one of these data , click the table on the right hand side either `norm` or `counts` in the Environment tab. If you type in `names(counts)`, you will see the names all start with `ENSMUSG`. These are Ensembl IDs.  If we want to see which gene these IDs correspond to, type in `dataset.islet.rnaseq$annots`, which gives information about each gene, including ensemble id, gene symbol as well as start & stop location of the gene and chromsome on which the gene lies.  
 
 Because we are working with the `insulin tAUC` phenotype, let's map the expression counts for `Hnf1b` which is known to influence this phenotype is these data.   First, we need to find the Ensembl ID for this gene:
 
@@ -156,15 +156,15 @@ tmp
 
 
 ~~~
-# A tibble: 4 x 8
+# A tibble: 4 × 8
 # Groups:   expression [1]
-  expression         data     model  term      estimate std.e~1 stati~2  p.value
+  expression         data     model  term      estimate std.e…¹ stati…²  p.value
   <chr>              <list>   <list> <chr>        <dbl>   <dbl>   <dbl>    <dbl>
-1 ENSMUSG00000020679 <tibble> <lm>   (Interce~ -1.70    0.506     -3.36 8.72e- 4
+1 ENSMUSG00000020679 <tibble> <lm>   (Interce… -1.70    0.506     -3.36 8.72e- 4
 2 ENSMUSG00000020679 <tibble> <lm>   sexM      -0.199   0.0824    -2.42 1.60e- 2
 3 ENSMUSG00000020679 <tibble> <lm>   DOwave     0.510   0.0370    13.8  3.73e-35
 4 ENSMUSG00000020679 <tibble> <lm>   diet_days  0.00403 0.00386    1.04 2.97e- 1
-# ... with abbreviated variable names 1: std.error, 2: statistic
+# … with abbreviated variable names ¹​std.error, ²​statistic
 ~~~
 {: .output}
 
