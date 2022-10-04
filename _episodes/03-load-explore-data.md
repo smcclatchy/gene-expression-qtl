@@ -19,76 +19,8 @@ Load the libraries.
 
 ~~~
 library(tidyverse)
-~~~
-{: .language-r}
-
-
-
-~~~
-Warning: package 'tidyverse' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'tibble' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'tidyr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'readr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'dplyr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'stringr' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
-Warning: package 'forcats' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
 library(knitr)
 library(corrplot)
-~~~
-{: .language-r}
-
-
-
-~~~
-Warning: package 'corrplot' was built under R version 4.1.3
-~~~
-{: .warning}
-
-
-
-~~~
 # the following analysis is derived from supplementary 
 # File S1 Attie_eQTL_paper_physiology.Rmd 
 # by Daniel Gatti. See Data Dryad entry for more information.
@@ -323,7 +255,7 @@ tmp = tmp %>%
 ~~~
 Error in `mutate()`:
 ! Problem while computing `summ = map(model, tidy)`.
-i The error occurred in group 1: phenotype = "food_ave".
+ℹ The error occurred in group 1: phenotype = "food_ave".
 Caused by error in `as_mapper()`:
 ! object 'tidy' not found
 ~~~
@@ -355,7 +287,7 @@ rm(tmp)
 ~~~
 Error in `filter()`:
 ! Problem while computing `..1 = term != "(Intercept)"`.
-i The error occurred in group 1: phenotype = "food_ave".
+ℹ The error occurred in group 1: phenotype = "food_ave".
 Caused by error in `mask$eval_all_filter()`:
 ! object 'term' not found
 ~~~
@@ -403,7 +335,7 @@ tmp = pheno_clin_log %>%
 ~~~
 Error in `mutate()`:
 ! Problem while computing `summ = map(model, tidy)`.
-i The error occurred in group 1: week = 2wk.
+ℹ The error occurred in group 1: week = 2wk.
 Caused by error in `as_mapper()`:
 ! object 'tidy' not found
 ~~~
@@ -573,12 +505,6 @@ need to be normalized. In the quantile-quantile (Q-Q) plot below, count data for
 the first gene are plotted over a diagonal line tracing a normal distribution 
 for those counts. Notice that most of the count data values lie off of this 
 line, indicating that these gene counts are not normally distributed. 
-
-
-~~~
-Warning: package 'rafalib' was built under R version 4.1.3
-~~~
-{: .warning}
 
 <img src="../fig/rmd-03-view_manual_qqplot_raw-1.png" alt="plot of chunk view_manual_qqplot_raw" width="612" style="display: block; margin: auto;" />
 
