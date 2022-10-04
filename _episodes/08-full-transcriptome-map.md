@@ -87,15 +87,24 @@ ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.ra
 
 <img src="../fig/rmd-08-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="432" style="display: block; margin: auto;" />
 
-This transcriptome map is definitely a lot more crowded than the one in the previous lesson. Again, the gene locations are shown on the X-axis and the QTL locations are shown on the Y-axis. 
+This transcriptome map is definitely a lot more crowded than the one in the previous lesson. Again, the gene locations are shown on the X-axis and the QTL locations are shown on the Y-axis.
 
 > ## Challenge
-> What paterns among the points do you see in the transcriptome map?
+> What patterns among the points do you see in the transcriptome map?
 >
 > > ## Solution
 > > 
 > > There are at least two patterns. One is the dense diagonal line of cis-eQTL. The other is the increased
 > > density of QTL in vertical lines.
+> {: .solution}
+{: .challenge}
+
+> ## Challenge
+> What would a vertical band in the transcriptome map mean?
+>
+> > ## Solution
+> > 
+> > A vertical band indicates that one locus regulates the expression of many genes. 
 > {: .solution}
 {: .challenge}
 
@@ -108,25 +117,23 @@ This transcriptome map is definitely a lot more crowded than the one in the prev
 > {: .solution}
 {: .challenge}
 
+Look at the transcriptome map. How many vertical bands do you see and which chromosomes are they on?
+
 ### QTL Density Plot
 
-In the transcriptome map above, we noticed vertical banding patterns in the eQTL, which indicate that one locus may regulate the expression of dozens of genes. How many genes are regulated by each locus and which genes are they? In order to adress this question, we need to make a plot of the density of eQTL along the genome. This is like stacking up the eQTL onto the X-axis.
+In the transcriptome map above, we noticed vertical banding patterns in the eQTL, which indicate that one locus may regulate the expression of dozens of genes. How many genes are regulated by each locus and which genes are they? In order to address this question, we need to make a plot of the density of eQTL along the genome. This is like stacking up the eQTL onto the X-axis.
 
 We have provided a function to do this in the "gg_transcriptome_map.R" file in the "code" directory of this lesson. The function is called `eqtl_density_plot` and takes the following arguments:
 
-> data: data.frame (or tibble) with the following columns:
->       ensembl: (required) character string containing the Ensembl gene ID.
->       qtl_chr: (required) character string containing QTL chromsome.
->       qtl_pos: (required) floating point number containing the QTL position 
->                in Mb.
->       qtl_lod: (optional) floating point number containing the LOD score.
->       gene_chr:  (optional) character string containing transcript chromosome.
->       gene_start: (optional) character string containing transcript start 
->                 postion in Mb.
->       gene_end:  (optional) character string containing transcript end
->                position in Mb.
-> lod_thr: numeric value that is the LOD above which QTL will be retained.
->          Default = 7.
+* data: data.frame (or tibble) with the following columns:
+    * ensembl: (required) character string containing the Ensembl gene ID.
+    * qtl_chr: (required) character string containing QTL chromsome.
+    * qtl_pos: (required) floating point number containing the QTL position in Mb.
+    * qtl_lod: (optional) floating point number containing the LOD score.
+    * gene_chr:  (optional) character string containing transcript chromosome.
+    * gene_start: (optional) character string containing transcript start postion in Mb.
+    * gene_end:  (optional) character string containing transcript end position in Mb.
+* lod_thr: numeric value that is the LOD above which QTL will be retained. Default = 7.
 
 This function has been designed to use the same data structure as we used to create the transcriptome map. First, we will look at the locations of the cis-eQTL. We must also select a LOD threshold. We will use 7.18 since this is what was used in the Keller et al. paper.
 
@@ -202,9 +209,9 @@ Warning: Expected 3 pieces. Additional pieces discarded in 640 rows [1, 2, 3, 4,
 
 <img src="../fig/rmd-08-cis_eqtl_density-1.png" alt="plot of chunk cis_eqtl_density" width="432" style="display: block; margin: auto;" />
 
-> TBD: Add interpretion of plot.
+In the plot above, there are many loci that have many genes associated with their expression. Some loci have over 100 genes associated with them. For example, there is a locus on chromosome 17 that may regulate over 100 genes. In this case, we are looking at cis-eQTL, QTL which are co-located with the gene. What might this mean biologically? Perhaps there is a mutation which causes a region of chromatin to open, which leads to increased expression of a set of genes. This increased expression may have biological consequences. 
 
-Next, we will create an eQTL density plot of the trans-eQTL.
+Next, we will create an eQTL density plot of the trans-eQTL. These are QTL for which the gene and QTL are far from each other.
 
 
 ~~~
@@ -278,41 +285,15 @@ Warning: Expected 3 pieces. Additional pieces discarded in 611 rows [1, 2, 3, 4,
 
 <img src="../fig/rmd-08-trans_eqtl_density-1.png" alt="plot of chunk trans_eqtl_density" width="432" style="display: block; margin: auto;" />
 
-Compare this plot with the transcriptome map, in which we saw vertical bands of eQTL. Do the peaks in the eQTL density plot match the bands in the transcriptome map?
+In this case, we see much taller peaks than in the cis-eQTL density plot. Compare this plot with the transcriptome map, in which we saw vertical bands of eQTL. Do the peaks in the eQTL density plot match the bands in the transcriptome map?
 
-
-
-
-
-~~~
-tmp = lod_summary %>%
-        filter(qtl_lod >= 7.18) %>%
-        group_by(cis) %>%
-        count()
-kable(tmp, caption = "Number of cis- and trans-eQTL")
-~~~
-{: .language-r}
-
-
-
-Table: Number of cis- and trans-eQTL
-
-|cis   |     n|
-|:-----|-----:|
-|cis   | 12677|
-|trans |  5617|
-|NA    |   526|
-
-
-
-~~~
-rm(tmp)
-~~~
-{: .language-r}
+There are many potential explanations for a trans-eQTL band. There may be a polymorphism in a transcription factor which alters the expression of many other genes. Or there may be a polymorphism that alters an amino acid and prevents it from binding properly to another protein in a signalling cascade. Biologists are often interested in these trans-eQTL bands, which are called "eQTL hotspots". A set of over 100 genes with differential expression between  genotypes may help us ot understand the biology behind variation in higher level phenotypes. It is also possible that one of the genes with a cis-eQTL under the eQTL hotspot regulates the expression of the remaining hotspot genes.
 
 ## Islet RNASeq eQTL Hotspots
 
 ### Select eQTL Hotspots
+
+There are several decisions to make when selecting eQTL hotspots. What LOD threshold should you use to select the genes that comprise hotspots? What number of genes should you use as a threshold to call a peak an eQTL hotspot? 
 
 Select trans-eQTL hotspots with more than 100 genes at the 7.18 LOD thresholds. Retain the maximum per chromosome.
 

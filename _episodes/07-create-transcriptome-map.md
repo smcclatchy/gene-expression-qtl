@@ -43,17 +43,14 @@ lod_summary <- read.csv("../results/gene.norm_qtl_peaks_cis.trans.csv")
 
 In order to use the `ggtmap` function, we need to provide specific column names. These are documented in the "gg_transcriptome_map.R" file in the code directory of this workshop. The required column names are:
 
-> data: data.frame (or tibble) with the following columns:
->       ensembl: (required) character string containing the Ensembl gene ID.
->       qtl_chr: (required) character string containing QTL chromsome.
->       qtl_pos: (required) floating point number containing the QTL position 
->                in Mb.
->       qtl_lod: (optional) floating point number containing the LOD score.
->       gene_chr:  (optional) character string containing transcript chromosome.
->       gene_start: (optional) character string containing transcript start 
->                 postion in Mb.
->       gene_end:  (optional) character string containing transcript end
->                position in Mb.
+* data: data.frame (or tibble) with the following columns:
+    * ensembl: (required) character string containing the Ensembl gene ID.
+    * qtl_chr: (required) character string containing QTL chromsome.
+    * qtl_pos: (required) floating point number containing the QTL position in Mb.
+    * qtl_lod: (optional) floating point number containing the LOD score.
+    * gene_chr:  (optional) character string containing transcript chromosome.
+    * gene_start: (optional) character string containing transcript start postion in Mb.
+    * gene_end:  (optional) character string containing transcript end position in Mb.
 
 
 ~~~
@@ -107,7 +104,7 @@ count(lod_summary, cis.trans)
 ~~~
 Error in `group_by()`:
 ! Must group by variables found in `.data`.
-✖ Column `cis.trans` is not found.
+x Column `cis.trans` is not found.
 ~~~
 {: .error}
 
