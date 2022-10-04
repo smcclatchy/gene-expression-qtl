@@ -24,7 +24,7 @@ If you have started a new R session, you will need to load the libraries again. 
 
 ### Load Libraries  
 
-```{r load_libraries, message=FALSE, warning=FALSE}
+```{r load_libraries, message=FALSE}
 library(tidyverse)
 library(knitr)
 library(broom)
