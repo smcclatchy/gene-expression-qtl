@@ -95,18 +95,19 @@ We can tabluate the number of cis- and trans-eQTL that we have and add this to o
 ~~~
 lod_summary <- lod_summary %>% 
                      mutate(cis = if_else(qtl_chr == gene_chr & abs(gene_start - qtl_pos) < 4, "cis", "trans"))
-count(lod_summary, cis.trans)
+count(lod_summary, cis)
 ~~~
 {: .language-r}
 
 
 
 ~~~
-Error in `group_by()`:
-! Must group by variables found in `.data`.
-x Column `cis.trans` is not found.
+    cis  n
+1   cis 31
+2 trans 64
+3  <NA>  1
 ~~~
-{: .error}
+{: .output}
 
 ### Plot Transcriptome Map
 
