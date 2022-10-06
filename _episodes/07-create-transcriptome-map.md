@@ -30,13 +30,6 @@ source("../code/gg_transcriptome_map.R")
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in library(AnnotationHub): there is no package called 'AnnotationHub'
-~~~
-{: .error}
-
 ## Load Data
 
 Load in the LOD peaks over 6 from previous lesson.
@@ -78,37 +71,12 @@ In order to use the `ggtmap` function, we need to provide specific column names.
 ~~~
 # Get gene positions.
 ensembl <- get_ensembl_genes()
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in get_ensembl_genes(): could not find function "get_ensembl_genes"
-~~~
-{: .error}
-
-
-
-~~~
 df <- data.frame(ensembl    = ensembl$gene_id, 
                  gene_chr   = seqnames(ensembl), 
                  gene_start = start(ensembl) * 1e-6, 
                  gene_end   = end(ensembl)   * 1e-6,
                  stringsAsFactors = F)
-~~~
-{: .language-r}
 
-
-
-~~~
-Error in data.frame(ensembl = ensembl$gene_id, gene_chr = seqnames(ensembl), : object 'ensembl' not found
-~~~
-{: .error}
-
-
-
-~~~
 lod_summary <- lod_summary %>% 
                  rename(lodcolumn = "ensembl",
                         chr       = "qtl_chr",
@@ -124,7 +92,7 @@ lod_summary <- lod_summary %>%
 
 
 ~~~
-Error in rename(., lodcolumn = "ensembl", chr = "qtl_chr", pos = "qtl_pos", : object 'lod_summary' not found
+Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rename': object 'lod_summary' not found
 ~~~
 {: .error}
 
@@ -189,7 +157,7 @@ ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.ra
 
 
 ~~~
-Error in ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, : could not find function "ggtmap"
+Error in h(simpleError(msg, call)): error in evaluating the argument 'table' in selecting a method for function '%in%': error in evaluating the argument 'x' in selecting a method for function 'colnames': object 'lod_summary' not found
 ~~~
 {: .error}
 

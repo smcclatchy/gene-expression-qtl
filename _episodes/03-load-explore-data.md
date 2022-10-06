@@ -223,76 +223,6 @@ pheno_clin_std %>%
 
 <img src="../fig/rmd-03-pheno_std-1.png" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
 
-### Tests for sex, wave and diet_days.
-
-
-~~~
-# convert sex and DO wave (batch) to factors
-pheno_clin$sex = factor(pheno_clin$sex)
-pheno_clin$DOwave = factor(pheno_clin$DOwave)
-~~~
-{: .language-r}
-
-
-~~~
-tmp = pheno_clin_log %>%
-        select(mouse, sex, DOwave, diet_days, num_islets:weight_10wk) %>%
-        gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
-        group_by(phenotype) %>%
-        nest()
-mod_fxn = function(df) {
-  lm(value ~ sex + DOwave + diet_days, data = df)
-}
-tmp = tmp %>%
-  mutate(model = map(data, mod_fxn)) %>%
-  mutate(summ = map(model, tidy)) %>%
-  unnest(summ)
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in `mutate()`:
-! Problem while computing `summ = map(model, tidy)`.
-ℹ The error occurred in group 1: phenotype = "food_ave".
-Caused by error in `as_mapper()`:
-! object 'tidy' not found
-~~~
-{: .error}
-
-
-
-~~~
-# kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
-~~~
-{: .language-r}
-
-
-~~~
-tmp %>%
-  filter(term != "(Intercept)") %>%
-  mutate(neg.log.p = -log10(p.value)) %>%
-  ggplot(aes(term, neg.log.p)) +
-    geom_point() +
-    facet_wrap(~phenotype) +
-    labs(title = "Significance of Sex, Wave & Diet Days on Phenotypes") +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-rm(tmp)
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in `filter()`:
-! Problem while computing `..1 = term != "(Intercept)"`.
-ℹ The error occurred in group 1: phenotype = "food_ave".
-Caused by error in `mask$eval_all_filter()`:
-! object 'term' not found
-~~~
-{: .error}
-
 ### Weight vs. Food Intake
 
 
@@ -311,42 +241,6 @@ pheno_clin_log %>%
 {: .language-r}
 
 <img src="../fig/rmd-03-bw_vs_food-1.png" alt="plot of chunk bw_vs_food" width="612" style="display: block; margin: auto;" />
-
-
-~~~
-model_fxn = function(df) { lm(value ~ sex*food_ave, data = df) }
-tmp = pheno_clin_log %>%
-  select(mouse, sex, food_ave:weight_10wk) %>%
-  gather(phenotype, value, -mouse, -sex, -food_ave) %>%
-  separate(phenotype, c("phenotype", "week")) %>%
-  mutate(week = factor(week, levels = c("2wk", "6wk", "10wk"))) %>%
-  group_by(week) %>%
-  nest() %>%
-  mutate(model = map(data, model_fxn)) %>%
-  mutate(summ = map(model, tidy)) %>%
-  unnest(summ) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(p.adj = p.adjust(p.value))
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in `mutate()`:
-! Problem while computing `summ = map(model, tidy)`.
-ℹ The error occurred in group 1: week = 2wk.
-Caused by error in `as_mapper()`:
-! object 'tidy' not found
-~~~
-{: .error}
-
-
-
-~~~
-# kable(tmp, caption = "Effects of Sex and Food Intake on Body Weight")
-~~~
-{: .language-r}
 
 ### Correlation Plots
 
@@ -744,12 +638,5 @@ chr11_peaks %>% arrange(desc(lod)) %>%
   ggplot(aes(pos, lod)) + geom_point()
 ~~~
 {: .language-r}
-
-
-
-~~~
-Warning: Removed 602 rows containing missing values (geom_point).
-~~~
-{: .warning}
 
 <img src="../fig/rmd-03-lod_peaks-1.png" alt="plot of chunk lod_peaks" width="612" style="display: block; margin: auto;" />

@@ -18,6 +18,19 @@ keypoints:
 
 
 
+GWAS studies show that most disease-associated variants are found in non-coding
+regions. This fact leads to the idea that regulation of gene expression is an
+important mechanism enabling genetic variants to affect complex traits. 
+Mediation analysis can identify a causal chain from genetic variants to 
+molecular and clinical phenotypes. It is widely used in the social sciences 
+including psychology. In biomedicine, mediation analysis has been employed to
+investigate how gene expression mediates the effects of genetic variants on 
+complex phenotypes and disease.
+
+Below, a genetic variant (non-coding SNP) indirectly regulates expression of 
+gene 2 through a mediator, gene 1. The SNP regulates expression of gene 1 in 
+cis, and expression of gene 1 influences expression of gene 2 in trans.  
+
 ![A non-coding SNP affects expression of gene 1 in cis. Gene 1 mediates expression of gene 2.](../fig/mediator-gene1.png)
 
 ![Chromosome 13 gene Akr1e1 is affected by expression in both cis and trans by genes on chromosomes 13 and 4.](../fig/LOD-plot-Akr1e1.png)
