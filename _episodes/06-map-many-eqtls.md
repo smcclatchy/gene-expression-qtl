@@ -35,6 +35,19 @@ library(qtl2ggplot)
 library(RColorBrewer)
 
 source("../code/gg_transcriptome_map.R")
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in library(AnnotationHub): there is no package called 'AnnotationHub'
+~~~
+{: .error}
+
+
+
+~~~
 source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
@@ -83,18 +96,18 @@ kable(gene.info[1:10,])
 
 
 
-|gene_id            |symbol        |chr |      start|        end| strand|     middle|nearest.marker.id |biotype        |module         |hotspot |
-|:------------------|:-------------|:---|----------:|----------:|------:|----------:|:-----------------|:--------------|:--------------|:-------|
-|ENSMUSG00000030339 |Ltbr          |6   | 125.306571| 125.313885|     -1| 125.310228|6_125336952       |protein_coding |royalblue      |NA      |
-|ENSMUSG00000028024 |Enpep         |3   | 129.269175| 129.332720|     -1| 129.300948|3_129312957       |protein_coding |grey           |NA      |
-|ENSMUSG00000040693 |Slco4c1       |1   |  96.818784|  96.872171|     -1|  96.845478|1_96845353        |protein_coding |grey           |NA      |
-|ENSMUSG00000028150 |Rorc          |3   |  94.372794|  94.398276|      1|  94.385535|3_94387832        |protein_coding |grey           |NA      |
-|ENSMUSG00000025092 |Hspa12a       |19  |  58.795751|  58.860984|     -1|  58.828368|19_58753833       |protein_coding |white          |NA      |
-|ENSMUSG00000097537 |2610020C07Rik |16  |  11.203383|  11.225796|      1|  11.214590|16_11193504       |lincRNA        |darkolivegreen |NA      |
-|ENSMUSG00000074059 |Fbxw18        |9   | 109.676734| 109.702700|     -1| 109.689717|9_109686322       |protein_coding |grey           |NA      |
-|ENSMUSG00000079469 |Pigb          |9   |  73.007419|  73.040378|     -1|  73.023898|9_73024958        |protein_coding |grey60         |NA      |
-|ENSMUSG00000039714 |Cplx3         |9   |  57.600019|  57.606281|     -1|  57.603150|9_57602989        |protein_coding |grey           |NA      |
-|ENSMUSG00000096667 |Gm22862       |16  |   3.353752|   3.353872|     -1|   3.353812|16_3355414        |miRNA          |grey           |NA      |
+|gene_id            |symbol   |chr |      start|        end| strand|     middle|nearest.marker.id |biotype        |module  |hotspot |
+|:------------------|:--------|:---|----------:|----------:|------:|----------:|:-----------------|:--------------|:-------|:-------|
+|ENSMUSG00000003282 |Plag1    |4   |   3.900996|   3.938423|     -1|   3.919710|4_3922207         |protein_coding |white   |NA      |
+|ENSMUSG00000020184 |Mdm2     |10  | 117.688888| 117.710758|     -1| 117.699823|10_117696312      |protein_coding |orange  |NA      |
+|ENSMUSG00000058952 |Cfi      |3   | 129.836739| 129.875328|      1| 129.856034|3_129918506       |protein_coding |grey    |NA      |
+|ENSMUSG00000052305 |Hbb-bs   |7   | 103.826534| 103.828096|     -1| 103.827315|7_103735454       |protein_coding |grey    |NA      |
+|ENSMUSG00000055733 |Nap1l3   |X   | 122.394565| 122.397385|     -1| 122.395975|X_122228767       |protein_coding |green   |NA      |
+|ENSMUSG00000068606 |Gm4841   |18  |  60.268301|  60.273267|     -1|  60.270784|18_60231339       |protein_coding |magenta |NA      |
+|ENSMUSG00000068480 |Gm7551   |7   |  65.785141|  65.785932|      1|  65.785536|7_65765622        |pseudogene     |grey    |NA      |
+|ENSMUSG00000098104 |Gm6085   |1   |   4.687934|   4.689403|     -1|   4.688668|1_4548703         |pseudogene     |grey    |NA      |
+|ENSMUSG00000021264 |Yy1      |12  | 108.792973| 108.816632|      1| 108.804802|12_108782354      |protein_coding |brown   |NA      |
+|ENSMUSG00000032875 |Arhgef17 |7   | 100.869746| 100.932161|     -1| 100.900954|7_100914347       |protein_coding |purple  |NA      |
 
 ### Expression Data
 
@@ -178,6 +191,21 @@ if(file.exists(qtl.file)) {
 ~~~
 {: .language-r}
 
+
+
+~~~
+Warning in gzfile(file, "wb"): cannot open compressed file '../results/
+gene.norm_qtl_cis.trans.Rdata', probable reason 'Invalid argument'
+~~~
+{: .warning}
+
+
+
+~~~
+Error in gzfile(file, "wb"): cannot open the connection
+~~~
+{: .error}
+
 ### QTL plots
 
 Let's plot the first 20 gene expression phenotypes.  If you would like to plot all 50, change `for(i in 1:20)` in the code below to `for(i in 1:ncol(qtl))`.
@@ -229,18 +257,26 @@ write_csv(peaks, "../results/gene.norm_qtl_peaks_cis.trans.csv")
 
 Table: Phenotype QTL Peaks with LOD >= 6
 
-|lodcolumn          |chr |       pos|       lod|      ci_lo|     ci_hi|
-|:------------------|:---|---------:|---------:|----------:|---------:|
-|ENSMUSG00000030339 |2   | 165.48591|  6.209535|   8.690542| 165.72050|
-|ENSMUSG00000028024 |3   | 129.39067| 92.464341| 129.382808| 129.47164|
-|ENSMUSG00000025092 |5   | 146.68827|  6.233493|   9.852555| 151.83362|
-|ENSMUSG00000030339 |6   | 125.33695| 56.844968| 125.226964| 125.47192|
-|ENSMUSG00000030339 |7   |  30.52771|  7.135398|  29.686889|  34.42942|
-|ENSMUSG00000028024 |7   | 109.09633|  8.095317| 103.288648| 109.27894|
-|ENSMUSG00000097537 |12  | 117.98840|  6.851064| 116.974351| 120.12062|
-|ENSMUSG00000025092 |14  |  88.57777|  6.539342|  80.478741|  92.35269|
-|ENSMUSG00000097537 |16  |  10.47957| 13.931060|   9.971609|  11.87123|
-|ENSMUSG00000025092 |19  |  58.91065| 26.056973|  58.686130|  59.01886|
+|lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
+|:------------------|:---|---------:|---------:|---------:|---------:|
+|ENSMUSG00000058952 |3   | 129.72847| 72.536897| 129.64361| 129.91851|
+|ENSMUSG00000003282 |5   | 137.00639|  6.065932|  19.20559| 138.73485|
+|ENSMUSG00000055733 |6   |  55.54583|  7.013031|  53.51902| 124.49064|
+|ENSMUSG00000003282 |7   |  45.62219|  8.153162|  44.72134|  46.36880|
+|ENSMUSG00000052305 |7   |  79.24486|  6.841924|  76.03982| 109.09397|
+|ENSMUSG00000020184 |8   |  34.68507|  6.193078|  15.85660|  84.11561|
+|ENSMUSG00000020184 |10  |  99.03240|  7.394502|  96.42540| 100.55667|
+|ENSMUSG00000068606 |10  | 115.77734|  6.053313| 109.92949| 122.50375|
+|ENSMUSG00000020184 |10  | 117.89731| 10.319738| 116.83728| 117.97266|
+|ENSMUSG00000052305 |16  |  92.61709|  6.383724|  91.07674|  94.89728|
+
+
+
+~~~
+Error: Cannot open file for writing:
+* '../results/gene.norm_qtl_peaks_cis.trans.csv'
+~~~
+{: .error}
 
 ### QTL Peaks Figure
 

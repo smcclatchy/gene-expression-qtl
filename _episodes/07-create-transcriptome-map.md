@@ -30,6 +30,13 @@ source("../code/gg_transcriptome_map.R")
 ~~~
 {: .language-r}
 
+
+
+~~~
+Error in library(AnnotationHub): there is no package called 'AnnotationHub'
+~~~
+{: .error}
+
 ## Load Data
 
 Load in the LOD peaks over 6 from previous lesson.
@@ -40,6 +47,21 @@ Load in the LOD peaks over 6 from previous lesson.
 lod_summary <- read.csv("../results/gene.norm_qtl_peaks_cis.trans.csv")
 ~~~
 {: .language-r}
+
+
+
+~~~
+Warning in file(file, "rt"): cannot open file '../results/
+gene.norm_qtl_peaks_cis.trans.csv': No such file or directory
+~~~
+{: .warning}
+
+
+
+~~~
+Error in file(file, "rt"): cannot open the connection
+~~~
+{: .error}
 
 In order to use the `ggtmap` function, we need to provide specific column names. These are documented in the "gg_transcriptome_map.R" file in the code directory of this workshop. The required column names are:
 
@@ -56,12 +78,37 @@ In order to use the `ggtmap` function, we need to provide specific column names.
 ~~~
 # Get gene positions.
 ensembl <- get_ensembl_genes()
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in get_ensembl_genes(): could not find function "get_ensembl_genes"
+~~~
+{: .error}
+
+
+
+~~~
 df <- data.frame(ensembl    = ensembl$gene_id, 
                  gene_chr   = seqnames(ensembl), 
                  gene_start = start(ensembl) * 1e-6, 
                  gene_end   = end(ensembl)   * 1e-6,
                  stringsAsFactors = F)
+~~~
+{: .language-r}
 
+
+
+~~~
+Error in data.frame(ensembl = ensembl$gene_id, gene_chr = seqnames(ensembl), : object 'ensembl' not found
+~~~
+{: .error}
+
+
+
+~~~
 lod_summary <- lod_summary %>% 
                  rename(lodcolumn = "ensembl",
                         chr       = "qtl_chr",
@@ -71,7 +118,19 @@ lod_summary <- lod_summary %>%
                  mutate(marker.id = str_c(qtl_chr, qtl_pos * 1e6, sep = "_"),
                         gene_chr  = factor(gene_chr, levels = c(1:19, "X")),
                         qtl_chr   = factor(qtl_chr, levels = c(1:19, "X")))
+~~~
+{: .language-r}
 
+
+
+~~~
+Error in rename(., lodcolumn = "ensembl", chr = "qtl_chr", pos = "qtl_pos", : object 'lod_summary' not found
+~~~
+{: .error}
+
+
+
+~~~
 rm(df)
 ~~~
 {: .language-r}
@@ -95,6 +154,19 @@ We can tabluate the number of cis- and trans-eQTL that we have and add this to o
 ~~~
 lod_summary <- lod_summary %>% 
                      mutate(cis = if_else(qtl_chr == gene_chr & abs(gene_start - qtl_pos) < 4, "cis", "trans"))
+~~~
+{: .language-r}
+
+
+
+~~~
+Error in mutate(., cis = if_else(qtl_chr == gene_chr & abs(gene_start - : object 'lod_summary' not found
+~~~
+{: .error}
+
+
+
+~~~
 count(lod_summary, cis)
 ~~~
 {: .language-r}
@@ -102,12 +174,9 @@ count(lod_summary, cis)
 
 
 ~~~
-    cis  n
-1   cis 31
-2 trans 64
-3  <NA>  1
+Error in count(lod_summary, cis): object 'lod_summary' not found
 ~~~
-{: .output}
+{: .error}
 
 ### Plot Transcriptome Map
 
@@ -117,7 +186,12 @@ ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.ra
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-07-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="432" style="display: block; margin: auto;" />
+
+
+~~~
+Error in ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, : could not find function "ggtmap"
+~~~
+{: .error}
 
 The plot above is called a "Transcriptome Map" because it shows the postions of the genes (or transcripts) and their corresponding QTL. The QTL position is shown on the X-axis and the gene position is shown on the Y-axis. The chromosomes are listed along the top and right of the plot. What type of QTL are the genes with QTL that are located along the diagonal?
 

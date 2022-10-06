@@ -17,7 +17,7 @@ knitr_fig_path("03-")
 ```
 
 Load the libraries.
-```{r, load_tidyverse, message=FALSE}
+```{r, load_tidyverse, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(knitr)
 library(corrplot)
@@ -158,42 +158,6 @@ pheno_clin_std %>%
     labs(title = "Distribution of Standardized Phenotypes")
 ```
 
-### Tests for sex, wave and diet_days.
-
-```{r convert_factors}
-# convert sex and DO wave (batch) to factors
-pheno_clin$sex = factor(pheno_clin$sex)
-pheno_clin$DOwave = factor(pheno_clin$DOwave)
-```
-
-```{r sex_diet_wave_anova}
-tmp = pheno_clin_log %>%
-        select(mouse, sex, DOwave, diet_days, num_islets:weight_10wk) %>%
-        gather(phenotype, value, -mouse, -sex, -DOwave, -diet_days) %>%
-        group_by(phenotype) %>%
-        nest()
-mod_fxn = function(df) {
-  lm(value ~ sex + DOwave + diet_days, data = df)
-}
-tmp = tmp %>%
-  mutate(model = map(data, mod_fxn)) %>%
-  mutate(summ = map(model, tidy)) %>%
-  unnest(summ)
-# kable(tmp, caption = "Effects of Sex, Wave & Diet Days on Phenotypes")
-```
-
-```{r sex_diet_wave_effects}
-tmp %>%
-  filter(term != "(Intercept)") %>%
-  mutate(neg.log.p = -log10(p.value)) %>%
-  ggplot(aes(term, neg.log.p)) +
-    geom_point() +
-    facet_wrap(~phenotype) +
-    labs(title = "Significance of Sex, Wave & Diet Days on Phenotypes") +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-rm(tmp)
-```
-
 ### Weight vs. Food Intake
 
 ```{r bw_vs_food, warning=FALSE, message=FALSE}
@@ -207,23 +171,6 @@ pheno_clin_log %>%
     geom_smooth(method = "lm") +
     labs(title = "Food Intake vs. Body Weight", y = "log(Body Weight)") + 
     facet_wrap(~week)
-```
-
-```{r bw_sex_food_model}
-model_fxn = function(df) { lm(value ~ sex*food_ave, data = df) }
-tmp = pheno_clin_log %>%
-  select(mouse, sex, food_ave:weight_10wk) %>%
-  gather(phenotype, value, -mouse, -sex, -food_ave) %>%
-  separate(phenotype, c("phenotype", "week")) %>%
-  mutate(week = factor(week, levels = c("2wk", "6wk", "10wk"))) %>%
-  group_by(week) %>%
-  nest() %>%
-  mutate(model = map(data, model_fxn)) %>%
-  mutate(summ = map(model, tidy)) %>%
-  unnest(summ) %>%
-  filter(term != "(Intercept)") %>%
-  mutate(p.adj = p.adjust(p.value))
-# kable(tmp, caption = "Effects of Sex and Food Intake on Body Weight")
 ```
 
 ### Correlation Plots
@@ -280,7 +227,7 @@ the first gene are plotted over a diagonal line tracing a normal distribution
 for those counts. Notice that most of the count data values lie off of this 
 line, indicating that these gene counts are not normally distributed. 
 
-```{r view_manual_qqplot_raw, echo=FALSE}
+```{r view_manual_qqplot_raw, echo=FALSE, warning=FALSE}
 library(rafalib)
 ps <- ( seq(0,99) + 0.5 )/100
 qs <- quantile(dataset.islet.rnaseq$raw[,1], ps)
@@ -355,7 +302,7 @@ The expression data loaded provides LOD peaks for the eQTL analyses performed in
 this study. As a preview of what you will be doing next, look at the first 
 several rows of LOD peak values and extract the LOD peaks for chromosome 11.
 
-```{r lod_peaks}
+```{r lod_peaks, warning=FALSE}
 # look at LOD peaks
 dataset.islet.rnaseq$lod.peaks[1:6,]
 
