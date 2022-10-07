@@ -33,12 +33,14 @@ one another, a far more complicated path to follow than the path from a single
 gene mutation to its resulting protein to a disease phenotype. Cardiovascular 
 disease, Alzheimer's disease, arthritis, diabetes and cancer involve a 
 complex interplay of genes with environment, and their mechanisms are not well 
-understood. Genome-wide association studies (GWAS) associate genetic loci with disease
-traits, yet most GWAS variants for common diseases like diabetes are located in non-coding 
-regions of the genome. These variants are therefore likely to be involved in gene 
-regulation. 
+understood. Genome-wide association studies (GWAS) associate genetic loci with 
+disease traits, yet most GWAS variants for common diseases like diabetes are 
+located in non-coding regions of the genome. These variants are therefore likely 
+to be involved in gene regulation. 
 
-![GWAS variants such as SNPs are often in non-coding regions of the genome, indicating that they regulate gene expression. Here a non-coding SNP influences expression of a gene, which in turn affects a disease phenotype or other outcome of interest.](../fig/cis-regulation-single-gene.png)
+![GWAS variants such as SNPs are often in non-coding regions of the genome, indicating that they regulate gene expression.](../fig/gwas-catalog.png) 
+
+![Here a non-coding SNP influences expression of a gene, which in turn affects a disease phenotype or other outcome of interest.](../fig/cis-regulation-single-gene.png)
 
 Gene regulation controls the quantity, timing and locale of gene expression. 
 Analyzing genome variants through cell or tissue gene expression is known as 
