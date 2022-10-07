@@ -195,38 +195,75 @@ pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 pheno_clin$diet_days = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
+covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)[,-1]
 ~~~
 {: .language-r}
 
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now let's perform the genome scan!
+#### [Permutations]
+
+First, we need to work out the signifcance level.  Let's find the signifance level for 0.1, 0.05 and 0.01.  
+
+
+~~~
+operm <- scan1perm(genoprobs = probs, 
+                   pheno = norm[,"ENSMUSG00000020679", drop = FALSE], 
+                   addcovar=covar,
+                   n_perm=1000)
+~~~
+{: .language-r}
+
+
+
+
+*Note* DO NOT RUN THIS (it will take too long).  Instead, I have run it earlier and will load it in here.  We will also perform a summary to find the summary level for 0.1, 0.05 and 0.01
+
+
+
+~~~
+load("../data/operm_ENSMUSG00000020679_1000.Rdata")
+
+summary(operm,alpha=c(0.1, 0.05, 0.01))
+~~~
+{: .language-r}
+
+
+
+~~~
+LOD thresholds (1000 permutations)
+     ENSMUSG00000020679
+0.1                7.29
+0.05               7.73
+0.01               8.30
+~~~
+{: .output}
+#### Genome Scan
 
 
 ~~~
 qtl = scan1(genoprobs = probs, 
             pheno = norm[,"ENSMUSG00000020679", drop = FALSE], 
             kinship = K, 
-            addcovar = covar, 
-            cores = 2)
+            addcovar = covar)
 ~~~
 {: .language-r}
 
-Let's plot it
+Next, we plot the genome scan.
 
 
 ~~~
 plot_scan1(x = qtl, 
            map = map, 
-           lodcolumn = "ENSMUSG00000020679", 
+           lodcolumn = "ENSMUSG00000020679",
            main = colnames(qtl))
-abline(h = 6, col = 2, lwd = 2)
+           add_threshold(map,  summary(operm, alpha=0.1), col = 'purple')
+           add_threshold(map,  summary(operm, alpha=0.05), col = 'red')
+           add_threshold(map,  summary(operm, alpha=0.01), col = 'blue')
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-05-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
-
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 
@@ -234,7 +271,7 @@ Let's find LOD peaks
 
 
 ~~~
-lod_threshold = 6
+lod_threshold = summary(operm, alpha=0.01)
 peaks = find_peaks(scan1_output = qtl, 
                    map = map, 
                    threshold = lod_threshold, 
@@ -249,13 +286,26 @@ kable(peaks %>%
 
 Table: Phenotype QTL Peaks with LOD >= 6
 
-|lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
-|:------------------|:---|---------:|---------:|---------:|---------:|
-|ENSMUSG00000020679 |9   | 109.08150|  6.402594| 106.66772| 111.56048|
-|ENSMUSG00000020679 |11  |  84.40138| 36.878942|  83.64714|  84.40138|
-|ENSMUSG00000020679 |15  |  68.91018|  6.121254|  67.82232|  70.38004|
-|ENSMUSG00000020679 |18  |  70.89669|  6.042135|  33.80428|  71.96869|
+|lodcolumn          |chr |      pos|      lod|    ci_lo|    ci_hi|
+|:------------------|:---|--------:|--------:|--------:|--------:|
+|ENSMUSG00000020679 |11  | 84.40138| 36.87894| 83.64714| 84.40138|
 
+### QTL effects
+
+~~~
+blup <- scan1blup(genoprobs=probs[,peaks$chr[1]], 
+                  norm[,peaks$lodcolumn[1], drop=FALSE])
+
+plot_coefCC(blup, 
+       map=map, 
+       columns=1:8,
+       bgcolor="gray95", 
+       legend="bottomleft"
+       )
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-05-qtl_effects-1.png" alt="plot of chunk qtl_effects" width="612" style="display: block; margin: auto;" />
 
 > ## Challenge
 > Now choose another gene expression trait in `norm` data object and perform 

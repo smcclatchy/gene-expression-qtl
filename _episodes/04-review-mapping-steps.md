@@ -235,7 +235,7 @@ We can see that sex and DOwave (especially the third batch) are significant. Her
 pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave, data = pheno_clin)
+covar = model.matrix(~sex + DOwave, data = pheno_clin)[,-1]
 ~~~
 {: .language-r}
 **REMEMBER:** the sample IDs must be in the rownames of `pheno`, `addcovar`, `genoprobs` and `K`. `qtl2` uses the sample IDs to align the samples between objects.
@@ -245,7 +245,44 @@ covar = model.matrix(~sex + DOwave, data = pheno_clin)
 
 At each marker on the genotyping array, we will fit a model that regresses the phenotype (insulin secretion AUC) on covariates and the founder allele proportions.  Note that this model will give us an estimate of the effect of each founder allele at each marker. There are eight founder strains that contributed to the DO, so we will get eight founder allele effects.
 
-Now let's perform the genome scan, using the [scan1](https://github.com/rqtl/qtl2/blob/master/R/plot_scan1.R) function.
+#### [Permutations]
+
+First, we need to work out the signifcance level.  Let's find the signifance level for 0.1, 0.05 and 0.01.  
+
+
+~~~
+operm <- scan1perm(genoprobs = probs, 
+                   pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE],
+                   addcovar=covar,
+                   n_perm=1000)
+~~~
+{: .language-r}
+
+
+
+
+*Note* DO NOT RUN THIS (it will take too long).  Instead, I have run it earlier and will load it in here.  We will also perform a summary to find the summary level for 0.1, 0.05 and 0.01
+
+
+
+~~~
+load("../data/operm_Ins_tAUC_log_1000.Rdata")
+
+summary(operm,alpha=c(0.1, 0.05, 0.01))
+~~~
+{: .language-r}
+
+
+
+~~~
+LOD thresholds (1000 permutations)
+     Ins_tAUC_log
+0.1          7.22
+0.05         7.58
+0.01         8.38
+~~~
+{: .output}
+#### Genome Scan
 
 
 ~~~
@@ -260,8 +297,12 @@ Next, we plot the genome scan.
 
 
 ~~~
-plot_scan1(x = qtl, map = map, lodcolumn = "Ins_tAUC_log")
-  abline(h = 6, col = 2, lwd = 2)
+plot_scan1(x = qtl, 
+           map = map, 
+           lodcolumn = "Ins_tAUC_log")
+           add_threshold(map,  summary(operm,alpha=0.1), col = 'purple')
+           add_threshold(map,  summary(operm, alpha=0.05), col = 'red')
+           add_threshold(map,  summary(operm, alpha=0.01), col = 'blue')
 ~~~
 {: .language-r}
 
@@ -281,7 +322,7 @@ Let's find LOD peaks.  Here we are choosing to find peaks with a LOD score great
 
 
 ~~~
-lod_threshold = 6
+lod_threshold = summary(operm, alpha=0.01)
 peaks = find_peaks(scan1_output = qtl, map = map, 
                    threshold = lod_threshold, 
                    peakdrop = 4, 
@@ -299,6 +340,43 @@ Table: Phenotype QTL Peaks with LOD >= 6
 |lodcolumn    |chr |      pos|      lod|    ci_lo|    ci_hi|
 |:------------|:---|--------:|--------:|--------:|--------:|
 |Ins_tAUC_log |11  | 83.59467| 11.25884| 83.58553| 84.95444|
+
+
+### QTL effects
+
+
+~~~
+g <- maxmarg(probs, 
+             map=map, 
+             chr=peaks$chr[1],
+             pos=peaks$pos[1], 
+             minprob = 0.4,
+             return_char=TRUE)
+
+plot_pxg(g, 
+         pheno_clin[,peaks$lodcolumn[1]], 
+         ylab=peaks$lodcolumn[1], 
+         sort=FALSE)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-04-qtl_effects-1.png" alt="plot of chunk qtl_effects" width="612" style="display: block; margin: auto;" />
+
+~~~
+blup <- scan1blup(genoprobs=probs[,peaks$chr[1]], 
+                  pheno=pheno_clin[,peaks$lodcolumn[1], drop=FALSE])
+
+plot_coefCC(blup, 
+       map=map, 
+       columns=1:8,
+       bgcolor="gray95", 
+       legend="bottomleft",
+       scan1_output = qtl
+       )
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-04-qtl_effects-2.png" alt="plot of chunk qtl_effects" width="612" style="display: block; margin: auto;" />
 
 > ## Challenge
 > Now choose another phenotype in `pheno_clin` and perform the same steps.  

@@ -35,19 +35,6 @@ library(qtl2ggplot)
 library(RColorBrewer)
 
 source("../code/gg_transcriptome_map.R")
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in library(AnnotationHub): there is no package called 'AnnotationHub'
-~~~
-{: .error}
-
-
-
-~~~
 source("../code/qtl_heatmap.R")
 ~~~
 {: .language-r}
@@ -96,18 +83,18 @@ kable(gene.info[1:10,])
 
 
 
-|gene_id            |symbol        |chr |     start|       end| strand|    middle|nearest.marker.id |biotype              |module      |hotspot |
-|:------------------|:-------------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------------|:-----------|:-------|
-|ENSMUSG00000001150 |Mcm3ap        |10  |  76.46897|  76.51586|      1|  76.49241|10_76348570       |protein_coding       |grey60      |NA      |
-|ENSMUSG00000060377 |Rpl36a-ps1    |14  |  98.99398|  98.99430|     -1|  98.99414|14_99002274       |pseudogene           |grey        |NA      |
-|ENSMUSG00000020463 |Smek2         |11  |  29.17289|  29.22080|      1|  29.19684|11_29272786       |protein_coding       |green       |NA      |
-|ENSMUSG00000041741 |Pde3a         |6   | 141.24927| 141.49935|      1| 141.37431|6_141380097       |protein_coding       |yellow      |NA      |
-|ENSMUSG00000087047 |1700110K17Rik |9   |  40.32343|  40.34356|      1|  40.33349|9_40336324        |processed_transcript |brown       |NA      |
-|ENSMUSG00000002233 |Rhoc          |3   | 104.78901| 104.79446|      1| 104.79174|3_104735800       |protein_coding       |magenta     |NA      |
-|ENSMUSG00000066000 |2610305D13Rik |4   | 147.61194| 147.64251|     -1| 147.62723|4_147608212       |protein_coding       |grey        |NA      |
-|ENSMUSG00000002844 |Adprh         |16  |  38.44540|  38.45269|     -1|  38.44904|16_38447345       |protein_coding       |blue        |NA      |
-|ENSMUSG00000001986 |Gria3         |X   |  41.40085|  41.67860|      1|  41.53973|X_41456110        |protein_coding       |greenyellow |NA      |
-|ENSMUSG00000039307 |Hexdc         |11  | 121.20443| 121.22266|      1| 121.21354|11_121200487      |protein_coding       |royalblue   |NA      |
+|gene_id            |symbol        |chr |     start|       end| strand|    middle|nearest.marker.id |biotype        |module        |hotspot |
+|:------------------|:-------------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------|:-------------|:-------|
+|ENSMUSG00000053030 |Spink2        |5   |  77.20511|  77.21147|     -1|  77.20829|5_77208620        |protein_coding |grey          |NA      |
+|ENSMUSG00000031133 |Arhgef6       |X   |  57.23148|  57.33873|     -1|  57.28511|X_57291035        |protein_coding |brown         |NA      |
+|ENSMUSG00000050014 |Apol10b       |15  |  77.58416|  77.59613|     -1|  77.59014|15_77634457       |protein_coding |magenta       |NA      |
+|ENSMUSG00000032294 |Pkm           |9   |  59.65637|  59.67938|      1|  59.66787|9_59698276        |protein_coding |grey          |NA      |
+|ENSMUSG00000032193 |Ldlr          |9   |  21.72358|  21.74992|      1|  21.73675|9_21642743        |protein_coding |darkturquoise |NA      |
+|ENSMUSG00000042185 |Nfrkb         |9   |  31.38619|  31.42133|      1|  31.40376|9_31418320        |protein_coding |purple        |NA      |
+|ENSMUSG00000047821 |Trim16        |11  |  62.82023|  62.85081|      1|  62.83552|11_62885718       |protein_coding |lightyellow   |NA      |
+|ENSMUSG00000051606 |2010001K21Rik |13  |  47.01067|  47.01120|      1|  47.01093|13_47003050       |pseudogene     |grey          |NA      |
+|ENSMUSG00000036745 |Ttll7         |3   | 146.85237| 146.98401|      1| 146.91819|3_146965364       |protein_coding |green         |NA      |
+|ENSMUSG00000057047 |1700010B08Rik |2   | 173.71941| 173.72209|      1| 173.72075|2_173712434       |protein_coding |grey          |NA      |
 
 ### Expression Data
 
@@ -164,13 +151,13 @@ pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 pheno_clin$diet_days = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
+covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)[,-1]
 ~~~
 {: .language-r}
 
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lessons. 
+Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lessons.  We will not perform permutations in this lesson as it will take too long.  Instead we will use 6, which is the LOD score used in the paper to determine significance.
 
 ### QTL Scans
 
@@ -190,21 +177,6 @@ if(file.exists(qtl.file)) {
     }
 ~~~
 {: .language-r}
-
-
-
-~~~
-Warning in gzfile(file, "wb"): cannot open compressed file '../results/
-gene.norm_qtl_cis.trans.Rdata', probable reason 'Invalid argument'
-~~~
-{: .warning}
-
-
-
-~~~
-Error in gzfile(file, "wb"): cannot open the connection
-~~~
-{: .error}
 
 ### QTL plots
 
@@ -259,24 +231,16 @@ Table: Phenotype QTL Peaks with LOD >= 6
 
 |lodcolumn          |chr |       pos|       lod|     ci_lo|     ci_hi|
 |:------------------|:---|---------:|---------:|---------:|---------:|
-|ENSMUSG00000002233 |2   |  26.27621|  6.145184|  25.78965| 145.82111|
-|ENSMUSG00000087047 |2   | 180.12269|  7.620187| 179.84014| 182.10767|
-|ENSMUSG00000041741 |6   | 142.77099| 20.519167| 140.91495| 142.86298|
-|ENSMUSG00000087047 |9   |  40.08221| 14.455816|  39.58111|  40.35521|
-|ENSMUSG00000060377 |9   | 123.88603|  8.153739| 123.35891| 123.92644|
-|ENSMUSG00000001150 |10  |  76.34857| 11.948820|  76.34857|  78.35703|
-|ENSMUSG00000020463 |11  |  28.68441| 12.252424|  27.00223|  29.27279|
-|ENSMUSG00000060377 |11  |  96.03498|  6.022818|  41.49478| 122.07865|
-|ENSMUSG00000041741 |12  | 112.93229|  8.309546| 112.53616| 113.01113|
-|ENSMUSG00000087047 |15  | 102.26587|  6.083713|  23.72111| 102.71487|
-
-
-
-~~~
-Error: Cannot open file for writing:
-* '../results/gene.norm_qtl_peaks_cis.trans.csv'
-~~~
-{: .error}
+|ENSMUSG00000031133 |5   | 137.34262|  6.744248| 135.15740| 138.79128|
+|ENSMUSG00000032294 |5   | 143.52107|  7.028723| 143.17185| 144.97877|
+|ENSMUSG00000032193 |8   |  37.97245|  6.031635|  35.63153|  40.63349|
+|ENSMUSG00000047821 |8   |  47.61172|  6.325701|  46.98022|  61.91179|
+|ENSMUSG00000032193 |8   | 122.74500|  6.381958| 122.19836| 125.94550|
+|ENSMUSG00000042185 |9   |  31.44209| 44.860987|  31.41832|  31.56095|
+|ENSMUSG00000032294 |9   |  59.58989| 27.886902|  59.01100|  59.90035|
+|ENSMUSG00000050014 |10  | 119.15255|  6.115704|  91.10766| 122.92597|
+|ENSMUSG00000050014 |15  |  77.63446| 70.765316|  77.63446|  77.78415|
+|ENSMUSG00000031133 |X   |  57.31206| 29.190819|  57.29944|  59.51435|
 
 ### QTL Peaks Figure
 

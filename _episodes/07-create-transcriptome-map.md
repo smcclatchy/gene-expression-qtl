@@ -41,21 +41,6 @@ lod_summary <- read.csv("../results/gene.norm_qtl_peaks_cis.trans.csv")
 ~~~
 {: .language-r}
 
-
-
-~~~
-Warning in file(file, "rt"): cannot open file '../results/
-gene.norm_qtl_peaks_cis.trans.csv': No such file or directory
-~~~
-{: .warning}
-
-
-
-~~~
-Error in file(file, "rt"): cannot open the connection
-~~~
-{: .error}
-
 In order to use the `ggtmap` function, we need to provide specific column names. These are documented in the "gg_transcriptome_map.R" file in the code directory of this workshop. The required column names are:
 
 * data: data.frame (or tibble) with the following columns:
@@ -86,19 +71,7 @@ lod_summary <- lod_summary %>%
                  mutate(marker.id = str_c(qtl_chr, qtl_pos * 1e6, sep = "_"),
                         gene_chr  = factor(gene_chr, levels = c(1:19, "X")),
                         qtl_chr   = factor(qtl_chr, levels = c(1:19, "X")))
-~~~
-{: .language-r}
 
-
-
-~~~
-Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'rename': object 'lod_summary' not found
-~~~
-{: .error}
-
-
-
-~~~
 rm(df)
 ~~~
 {: .language-r}
@@ -122,19 +95,6 @@ We can tabluate the number of cis- and trans-eQTL that we have and add this to o
 ~~~
 lod_summary <- lod_summary %>% 
                      mutate(cis = if_else(qtl_chr == gene_chr & abs(gene_start - qtl_pos) < 4, "cis", "trans"))
-~~~
-{: .language-r}
-
-
-
-~~~
-Error in mutate(., cis = if_else(qtl_chr == gene_chr & abs(gene_start - : object 'lod_summary' not found
-~~~
-{: .error}
-
-
-
-~~~
 count(lod_summary, cis)
 ~~~
 {: .language-r}
@@ -142,9 +102,12 @@ count(lod_summary, cis)
 
 
 ~~~
-Error in count(lod_summary, cis): object 'lod_summary' not found
+    cis  n
+1   cis 34
+2 trans 51
+3  <NA>  3
 ~~~
-{: .error}
+{: .output}
 
 ### Plot Transcriptome Map
 
@@ -154,12 +117,7 @@ ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.ra
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in h(simpleError(msg, call)): error in evaluating the argument 'table' in selecting a method for function '%in%': error in evaluating the argument 'x' in selecting a method for function 'colnames': object 'lod_summary' not found
-~~~
-{: .error}
+<img src="../fig/rmd-07-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="432" style="display: block; margin: auto;" />
 
 The plot above is called a "Transcriptome Map" because it shows the postions of the genes (or transcripts) and their corresponding QTL. The QTL position is shown on the X-axis and the gene position is shown on the Y-axis. The chromosomes are listed along the top and right of the plot. What type of QTL are the genes with QTL that are located along the diagonal?
 

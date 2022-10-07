@@ -148,39 +148,67 @@ pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 pheno_clin$diet_days = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
+covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)[,-1]
 
 ```
 
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now let's perform the genome scan!
+#### [Permutations]
 
-```{r QTL}
+First, we need to work out the signifcance level.  Let's find the signifance level for 0.1, 0.05 and 0.01.  
+
+```{r QTL_perm, warning=FALSE, error=FALSE, eval=F}
+operm <- scan1perm(genoprobs = probs, 
+                   pheno = norm[,"ENSMUSG00000020679", drop = FALSE], 
+                   addcovar=covar,
+                   n_perm=1000)
+```
+
+```{r QTL_perm_saving, warning=FALSE, error=FALSE, eval=F, echo=F}
+save(operm, file="../data/operm_ENSMUSG00000020679_1000.Rdata")
+
+```
+
+
+*Note* DO NOT RUN THIS (it will take too long).  Instead, I have run it earlier and will load it in here.  We will also perform a summary to find the summary level for 0.1, 0.05 and 0.01
+
+
+```{r QTL_perm_file, warning=FALSE, error=FALSE}
+load("../data/operm_ENSMUSG00000020679_1000.Rdata")
+
+summary(operm,alpha=c(0.1, 0.05, 0.01))
+
+
+```
+#### Genome Scan
+
+```{r QTL, warning=FALSE, error=FALSE}
 qtl = scan1(genoprobs = probs, 
             pheno = norm[,"ENSMUSG00000020679", drop = FALSE], 
             kinship = K, 
-            addcovar = covar, 
-            cores = 2)
+            addcovar = covar)
 ```
 
-Let's plot it
+Next, we plot the genome scan.
 
 ```{r qtl_plot, fig.width=8, fig.height=6, warning=FALSE}
 plot_scan1(x = qtl, 
            map = map, 
-           lodcolumn = "ENSMUSG00000020679", 
+           lodcolumn = "ENSMUSG00000020679",
            main = colnames(qtl))
-abline(h = 6, col = 2, lwd = 2)
-```
+           add_threshold(map,  summary(operm, alpha=0.1), col = 'purple')
+           add_threshold(map,  summary(operm, alpha=0.05), col = 'red')
+           add_threshold(map,  summary(operm, alpha=0.01), col = 'blue')
 
+```
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 
 Let's find LOD peaks
 
 ```{r interval}
-lod_threshold = 6
+lod_threshold = summary(operm, alpha=0.01)
 peaks = find_peaks(scan1_output = qtl, 
                    map = map, 
                    threshold = lod_threshold, 
@@ -190,6 +218,21 @@ kable(peaks %>%
         arrange(chr, pos), caption = "Phenotype QTL Peaks with LOD >= 6")
 ```
 
+### QTL effects
+
+```{r qtl_effects, warning=F}
+
+blup <- scan1blup(genoprobs=probs[,peaks$chr[1]], 
+                  norm[,peaks$lodcolumn[1], drop=FALSE])
+
+plot_coefCC(blup, 
+       map=map, 
+       columns=1:8,
+       bgcolor="gray95", 
+       legend="bottomleft"
+       )
+
+```
 
 > ## Challenge
 > Now choose another gene expression trait in `norm` data object and perform 

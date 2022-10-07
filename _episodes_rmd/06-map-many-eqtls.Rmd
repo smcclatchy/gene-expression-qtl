@@ -170,13 +170,13 @@ pheno_clin$sex = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 pheno_clin$diet_days = factor(pheno_clin$DOwave)
 
-covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)
+covar = model.matrix(~sex + DOwave + diet_days, data = pheno_clin)[,-1]
 
 ```
 
 ### [Performing a genome scan](https://smcclatchy.github.io/mapping/06-perform-genome-scan/) 
 
-Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lessons. 
+Now lets perform the genome scan!  We are also going to save our qtl results in an `Rdata` file to be used in further lessons.  We will not perform permutations in this lesson as it will take too long.  Instead we will use 6, which is the LOD score used in the paper to determine significance.
 
 ### QTL Scans
 

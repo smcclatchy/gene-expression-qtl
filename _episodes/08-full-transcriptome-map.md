@@ -142,14 +142,10 @@ eqtl_density_plot(data = lod_summary, lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
 ~~~
 {: .output}
 
@@ -170,14 +166,10 @@ eqtl_density_plot(data = filter(lod_summary, cis == "cis"), lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
 ~~~
 {: .output}
 
@@ -196,14 +188,10 @@ eqtl_density_plot(data = filter(lod_summary, cis == "trans"), lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
 ~~~
 {: .output}
 
@@ -237,8 +225,8 @@ qtl_dens = lod_summary %>%
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups`
-argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
 ~~~
 {: .output}
 
@@ -485,12 +473,4 @@ chr11_all = left_join(chr11_eqtl, chr11_expr, by = 'ensembl')
 write_csv(chr11_all, file = file.path('../results/', 'chr11_eqtl_genes.csv'))
 ~~~
 {: .language-r}
-
-
-
-~~~
-Error: Cannot open file for writing:
-* '../results//chr11_eqtl_genes.csv'
-~~~
-{: .error}
 
