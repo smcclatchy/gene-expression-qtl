@@ -70,7 +70,7 @@ rm(df)
 
 In the previous lesson, we mapped the QTL locations of 50 genes. In this lesson, we will map the QTL positions of `r nrow(lod_summary)` genes.
 
-```{r fig.width=6,fig.height=6,warning=FALSE,message=FALSE}
+```{r fig.width=8,fig.height=8,warning=FALSE,message=FALSE}
 ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.radius = 4)
 ```
 
@@ -124,7 +124,7 @@ We have provided a function to do this in the "gg_transcriptome_map.R" file in t
 
 This function has been designed to use the same data structure as we used to create the transcriptome map. First, we will look at the overall QTL density for all peaks with LOD > 7.18.
 
-```{r all_eqtl_density,fig.width=6,warning=FALSE}
+```{r all_eqtl_density,fig.width=8,warning=FALSE}
 eqtl_density_plot(data = lod_summary, lod_thr = 7.18)
 ```
 
