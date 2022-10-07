@@ -292,6 +292,7 @@ Table: Phenotype QTL Peaks with LOD >= 6
 
 ### QTL effects
 
+
 ~~~
 blup <- scan1blup(genoprobs=probs[,peaks$chr[1]], 
                   norm[,peaks$lodcolumn[1], drop=FALSE])
@@ -300,8 +301,8 @@ plot_coefCC(blup,
        map=map, 
        columns=1:8,
        bgcolor="gray95", 
-       legend="bottomleft"
-       )
+       legend="bottomleft",
+       scan1_output = qtl )
 ~~~
 {: .language-r}
 

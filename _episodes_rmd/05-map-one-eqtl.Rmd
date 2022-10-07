@@ -229,8 +229,8 @@ plot_coefCC(blup,
        map=map, 
        columns=1:8,
        bgcolor="gray95", 
-       legend="bottomleft"
-       )
+       legend="bottomleft",
+       scan1_output = qtl )
 
 ```
 
