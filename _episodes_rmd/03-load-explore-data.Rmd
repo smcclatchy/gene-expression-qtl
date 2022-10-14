@@ -158,49 +158,6 @@ pheno_clin_std %>%
     labs(title = "Distribution of Standardized Phenotypes")
 ```
 
-### Weight vs. Food Intake
-
-```{r bw_vs_food, warning=FALSE, message=FALSE}
-pheno_clin_log %>%
-  select(mouse, sex, food_ave:weight_10wk) %>%
-  gather(phenotype, value, -mouse, -sex, -food_ave) %>%
-  separate(phenotype, c("phenotype", "week")) %>%
-  mutate(week = factor(week, levels = c("2wk", "6wk", "10wk"))) %>%
-  ggplot(aes(food_ave, value, color = sex)) +
-    geom_point() +
-    geom_smooth(method = "lm") +
-    labs(title = "Food Intake vs. Body Weight", y = "log(Body Weight)") + 
-    facet_wrap(~week)
-```
-
-### Correlation Plots
-
-Females
-
-```{r female_corr_plot, fig.width=15, fig.height=15, message=FALSE, warning=FALSE}
-tmp = pheno_clin_log %>% 
-        filter(sex == "F") %>%
-        select(starts_with(c("Ins", "Glu", "TG")))
-tmp = cor(tmp, use = "pairwise")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Female Clinical Phenotype Correlation")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Female Clinical Phenotype Correlation")
-```
-
-Males
-
-```{r male_corr_plot, fig.width=15, fig.height=15, warning=FALSE, message=FALSE}
-tmp = pheno_clin_log %>% 
-        filter(sex == "M") %>%
-        select(starts_with(c("Ins", "Glu", "TG")))
-tmp = cor(tmp, use = "pairwise")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Male Clinical Phenotype Correlation")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Male Clinical Phenotype Correlation")
-```
-
 ## Gene Expression Phenotypes
 ```{r load_expression_data}
 # load the expression data along with annotations and metadata

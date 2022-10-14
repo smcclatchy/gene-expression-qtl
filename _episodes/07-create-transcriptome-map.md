@@ -103,9 +103,8 @@ count(lod_summary, cis)
 
 ~~~
     cis  n
-1   cis 34
-2 trans 51
-3  <NA>  3
+1   cis 33
+2 trans 55
 ~~~
 {: .output}
 
