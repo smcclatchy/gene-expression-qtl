@@ -142,10 +142,14 @@ eqtl_density_plot(data = lod_summary, lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
 ~~~
 {: .output}
 
@@ -166,10 +170,14 @@ eqtl_density_plot(data = filter(lod_summary, cis == "cis"), lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
 ~~~
 {: .output}
 
@@ -188,10 +196,14 @@ eqtl_density_plot(data = filter(lod_summary, cis == "trans"), lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
 ~~~
 {: .output}
 
@@ -225,8 +237,8 @@ qtl_dens = lod_summary %>%
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using the
-`.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using
+the `.groups` argument.
 ~~~
 {: .output}
 

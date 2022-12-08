@@ -223,61 +223,6 @@ pheno_clin_std %>%
 
 <img src="../fig/rmd-03-pheno_std-1.png" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
 
-### Weight vs. Food Intake
-
-
-~~~
-pheno_clin_log %>%
-  select(mouse, sex, food_ave:weight_10wk) %>%
-  gather(phenotype, value, -mouse, -sex, -food_ave) %>%
-  separate(phenotype, c("phenotype", "week")) %>%
-  mutate(week = factor(week, levels = c("2wk", "6wk", "10wk"))) %>%
-  ggplot(aes(food_ave, value, color = sex)) +
-    geom_point() +
-    geom_smooth(method = "lm") +
-    labs(title = "Food Intake vs. Body Weight", y = "log(Body Weight)") + 
-    facet_wrap(~week)
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-bw_vs_food-1.png" alt="plot of chunk bw_vs_food" width="612" style="display: block; margin: auto;" />
-
-### Correlation Plots
-
-Females
-
-
-~~~
-tmp = pheno_clin_log %>% 
-        filter(sex == "F") %>%
-        select(starts_with(c("Ins", "Glu", "TG")))
-tmp = cor(tmp, use = "pairwise")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Female Clinical Phenotype Correlation")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Female Clinical Phenotype Correlation")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-female_corr_plot-1.png" alt="plot of chunk female_corr_plot" width="1080" style="display: block; margin: auto;" />
-
-Males
-
-
-~~~
-tmp = pheno_clin_log %>% 
-        filter(sex == "M") %>%
-        select(starts_with(c("Ins", "Glu", "TG")))
-tmp = cor(tmp, use = "pairwise")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Male Clinical Phenotype Correlation")
-corrplot.mixed(tmp, upper = "ellipse", lower = "number", 
-               main = "Male Clinical Phenotype Correlation")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-male_corr_plot-1.png" alt="plot of chunk male_corr_plot" width="1080" style="display: block; margin: auto;" />
-
 ## Gene Expression Phenotypes
 
 ~~~

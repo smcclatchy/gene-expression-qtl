@@ -25,4 +25,22 @@ Result Interpretation (Sue Example) - now do some of this yourself
   Myo15b chr2 qtl decent lod drop Hnf4a (hotspot)
   pull example out of hotspot that points back
   in this case chr2 hotspot points to Hnf4a
-  
+ 
+ suggestions for next time:
+ Belinda
+  simplify code for all steps
+  don't touch interpreting the results 
+ participants
+  include mediation analysis
+  make two days
+ Dan
+  simplify loading & exploring data
+  follow a single phenotype, not all
+  keep log transform expression data
+  go through reviewing mapping steps more quickly (qtl2 is a prereq)
+  don't reteach it - give people an exercise in which they do qtl mapping collectively
+  Sue creates an exercise to place at the top of that episode
+  episode 5 - help people understand that eqtl are just another phenotype, but they have a genomic location so put a graphic here
+  transcriptome map - instead of ggtmap, use tidyverse
+  eqtl density plot was tricky for students to do themselves
+  mapping 20k genes comes out of nowhere 
