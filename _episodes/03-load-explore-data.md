@@ -18,6 +18,7 @@ source: Rmd
 Load the libraries.
 
 ~~~
+library(ggbeeswarm)
 library(tidyverse)
 library(knitr)
 library(corrplot)
@@ -90,140 +91,163 @@ pheno_clin_dict %>%
 |weight_10wk        |Body weight at indicated date; units are gm.                                                                                                                                                                                                            |NA                               |
 |DOwave             |Wave (i.e., batch) of DO mice                                                                                                                                                                                                                           |NA                               |
 
-### Boxplots
+### Phenotype Distributions
+
 Boxplots are a great way to view the distribution of the data and to identify 
-any outliers. The following boxplots display repeated measurements of body 
-weight, glucose, insulin and triglyceride.
+any outliers. We will be using the total area under the curve of insulin from 
+the glucose tolerance test (Ins_tAUC). We will also log-transform the data 
+using the [scale_y_log10()][scale_y_log10] function.
 
 
 ~~~
-# pull out body weights over time and place in long form
-body_weights <- pheno_clin %>%
-  select(mouse, sex, starts_with("weight")) %>%
-  pivot_longer(cols=starts_with("weight"), 
-               names_to = "week",
-               values_to = "weight", 
-               names_transform = list(week = readr::parse_number))
-
-# redefine week as a factor so that plot will render correctly
-body_weights$week <- as.factor(body_weights$week)
-
-# plot body weights on a log 10 scale
-ggplot(body_weights, aes(week, weight, fill = sex)) +
+# plot Insulin on a log 10 scale
+ggplot(pheno_clin, aes(sex, Ins_tAUC)) +
   geom_boxplot() +
   scale_y_log10() +
-  labs(title = "Body Weight", y = "Weight (g)")
+  labs(title = "Insulin tAUC", y = "Insulin tAUC")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-bw_boxplot-1.png" alt="plot of chunk bw_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-Ins_tAUC_boxplot-1.png" alt="plot of chunk Ins_tAUC_boxplot" width="612" style="display: block; margin: auto;" />
 
-Repeat boxplots for glucose, insulin and triglyceride measurements in the same 
-manner as for weight.
+Another visualization that has become popular is the 
+[Violin Plot][https://en.wikipedia.org/wiki/Violin_plot]. We can create one
+using ggplot's [geom_violin][https://ggplot2.tidyverse.org/reference/geom_violin.html].
+Whereas the boxplot automatically adds the median, we must tell `geom_violin()`
+which quantiles that we want to draw using the argument 
+"draw_quantiles = c(0.25, 0.5, 0.75)". We have also overlaid the data points 
+using ggbeeswarm's
+[geom_beeswarm][https://www.rdocumentation.org/packages/ggbeeswarm/versions/0.5.3/topics/geom_beeswarm].
+We have told `geom_beeswarm()` to plot the points using the argument 
+"alpha = 0.1". The alpha argument ranges between 0 (completely transparent) to
+1 (completely opaque). A value of 0.1 means mostly transparent.
 
 
 ~~~
-glucose <- pheno_clin %>%
-  select(mouse, sex, (starts_with("Glu_") & ends_with("wk"))) %>%
-  pivot_longer(cols=starts_with("Glu"), 
-               names_to = "week",
-               values_to = "glucose", 
-               names_transform = list(week = readr::parse_number))
-
-# redefine week as a factor so that plot will render correctly
-glucose$week <- as.factor(glucose$week)
-
-ggplot(glucose, aes(week, glucose, fill = sex)) +
-  geom_boxplot() +
+# plot Insulin on a log 10 scale
+ggplot(pheno_clin, aes(sex, Ins_tAUC)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_beeswarm(alpha = 0.1) +
   scale_y_log10() +
-  labs(title = "Fasting Plasma Glucose", y = "Glucose (mg/dl)")
+  labs(title = "Insulin tAUC", y = "Insulin tAUC")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-glucose_boxplot-1.png" alt="plot of chunk glucose_boxplot" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-Ins_tAUC_violin-1.png" alt="plot of chunk Ins_tAUC_violin" width="612" style="display: block; margin: auto;" />
 
-
-~~~
-insulin <- pheno_clin %>%
-  select(mouse, sex, (starts_with("Ins_") & ends_with("wk"))) %>%
-  pivot_longer(cols=starts_with("Ins"), 
-               names_to = "week",
-               values_to = "insulin", 
-               names_transform = list(week = readr::parse_number))
-# redefine week as a factor so that plot will render correctly
-insulin$week <- as.factor(insulin$week)
-
-ggplot(insulin, aes(week, insulin, fill = sex)) +
-  geom_boxplot() +
-  scale_y_log10() +
-  labs(title = "Fasting Plasma Insulin", y = "Insulin (ng/ml)")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-insulin_boxplot-1.png" alt="plot of chunk insulin_boxplot" width="612" style="display: block; margin: auto;" />
-
-
-~~~
-triglyceride <- pheno_clin %>%
-  select(mouse, sex, starts_with("TG")) %>%
-  pivot_longer(cols=starts_with("TG"), 
-               names_to = "week",
-               values_to = "triglyceride", 
-               names_transform = list(week = readr::parse_number))
-
-# redefine week as a factor so that plot will render correctly
-triglyceride$week <- as.factor(triglyceride$week)
-
-ggplot(triglyceride, aes(week, triglyceride, fill = sex)) +
-  geom_boxplot() +
-  scale_y_log10() +
-  labs(title = "Fasting Plasma Triglyceride", y = "Triglyceride (mg/dl)")
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-trig_boxplot-1.png" alt="plot of chunk trig_boxplot" width="612" style="display: block; margin: auto;" />
-
-
-~~~
-remaining_phenos <- pheno_clin %>%
-  select(mouse, sex, diet_days:Ins_tAUC, food_ave) %>% 
-  pivot_longer(!c(mouse, sex), names_to = "phenotype", values_to = "value")
+> ## Challenge 1
+> How many orders of magnitude (powers of 10) does Insulin tAUC span?  
+>
+> > ## Solution
+> > Insulin tAUC spans three orders of magnitude, from near 10 to over 1000.  
+> {: .solution}
+{: .challenge}
   
-ggplot(remaining_phenos, aes(sex, value, fill = sex)) +
-    geom_boxplot() +
-    scale_y_log10() +
-    facet_wrap(~phenotype, scales = "free_y")
+  
+> ## Challenge 2
+> Which sex has higher median Insulin tAUC values?  
+>
+> > ## Solution
+> > Males have higher Insulin tAUC than females.  
+> {: .solution}
+{: .challenge}
+
+Both of the boxplot and the violin plot are useful visualizations which you can
+use to get some sense of the distribution of your data.
+
+### Quality Control of Data
+
+Many statistical tests rely upon the data having a "normal" (or Gaussian) 
+distribution. Many biological phenotypes do not follow this distribution and
+must be transformed before analysis. This is why we log-transformed the data
+in the plots above. 
+
+While we can "eyeball" the distributions in the violin plot, it would be 
+better to use a "quantile-quantile" plot. 
+
+
+~~~
+pheno_clin %>% 
+  ggplot(aes(sample = Ins_tAUC)) +
+    stat_qq() +
+    geom_qq_line() +
+    facet_wrap(~sex)
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-fig1_boxplots-1.png" alt="plot of chunk fig1_boxplots" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-qqplot-1.png" alt="plot of chunk qqplot" width="612" style="display: block; margin: auto;" />
 
-### QA/QC
+In these plots, the "quantiles" of the normal distribution are plotted on the
+X-axis and the data are plotted on the Y-axis. The line indicates the 
+quantiles that would be followed by a normal distribution. The untransformed
+data do **not** follow a normal distribution because the points are far from
+the line.  
 
-Log transform and standardize each phenotype. Consider setting points that are 
-more than 5 std. dev. from the mean to NA. Only do this if the final 
-distribution doesn't look skewed.
+Next, we will loag-transform the data and then create a quantile-quantile plot.
 
 
 ~~~
-pheno_clin_log = pheno_clin %>%
-                   mutate_if(is.numeric, log)
-pheno_clin_std = pheno_clin_log %>%
-                   select(mouse, num_islets:weight_10wk) %>%
-                   mutate_if(is.numeric, scale)
-pheno_clin_std %>%
-  select(num_islets:weight_10wk) %>%
-  gather(phenotype, value) %>%
-  ggplot(aes(x = phenotype, y = value)) +
+pheno_clin %>% 
+  mutate(Ins_tAUC = log(Ins_tAUC)) %>% 
+  ggplot(aes(sample = Ins_tAUC)) +
+    stat_qq() +
+    geom_qq_line() +
+    facet_wrap(~sex)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-qqplot_log-1.png" alt="plot of chunk qqplot_log" width="612" style="display: block; margin: auto;" />
+
+> ## Challenge 3
+> Does the log transformation make the data more normally distributed? Explain 
+> your answer.
+>
+> > ## Solution
+> > Yes. The log transformation makes the data more normally distributed because
+> > the data points follow the normality line more closely.  
+> {: .solution}
+{: .challenge}
+  
+  
+> ## Challenge 4
+> Do any data points look suspicious to you? Explain your answer.
+>
+> > ## Solution
+> > The data points that deviate from the normality line would be worth
+> > investigating. All data deviates somewhat from normality, but the three
+> > lowest points in the male data plot would be worth investigating. They may
+> > be real, but there may also have been mishap in the assay.
+> {: .solution}
+{: .challenge}
+
+Another way to identify outliers is to standardize the data and look for data 
+points that are more than four standard deviations from the mean.
+
+To do this, we will log transform and standardize Insulin tAUC. 
+
+
+~~~
+ins_tauc = pheno_clin %>% 
+             select(mouse, sex, Ins_tAUC) %>%
+             group_by(sex) %>% 
+             mutate(Ins_tAUC = log(Ins_tAUC),
+                    Ins_tAUC = scale(Ins_tAUC))
+
+ins_tauc %>% 
+  ggplot(aes(x = sex, y = Ins_tAUC)) +
     geom_boxplot() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(title = "Distribution of Standardized Phenotypes")
+    geom_hline(aes(yintercept = -4), color = 'red') +
+    geom_hline(aes(yintercept =  4), color = 'red') +
+    labs(title = "Distribution of Standardized Ins_tAUC")
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-03-pheno_std-1.png" alt="plot of chunk pheno_std" width="612" style="display: block; margin: auto;" />
 
+There are no data points outside of the four standard deviation limits.
+
 ## Gene Expression Phenotypes
+
 
 ~~~
 # load the expression data along with annotations and metadata
@@ -347,34 +371,23 @@ line, indicating that these gene counts are not normally distributed.
 
 <img src="../fig/rmd-03-view_manual_qqplot_raw-1.png" alt="plot of chunk view_manual_qqplot_raw" width="612" style="display: block; margin: auto;" />
 
-The same plot can be drawn as shown below. The diagonal line represents a 
-standard normal distribution with mean 0 and standard deviation 1. Count data
-values are plotted against this standard normal distribution.
-
-
-~~~
-qqnorm(dataset.islet.rnaseq$raw[,1], 
-     xlab="Theoretical normal percentiles", 
-     ylab="Count percentiles",
-     main="Count distribution for gene ENSMUSG00000000001")
-qqline(dataset.islet.rnaseq$raw[,1]) 
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-view_qqplot_raw-1.png" alt="plot of chunk view_qqplot_raw" width="612" style="display: block; margin: auto;" />
-
 Q-Q plots for the first six genes show that count data for these genes are not
 normally distributed. They are also not on the same scale. The y-axis values for
-each subplot range to 20,000 counts in the first subplot, 250 in the second, 80
+each subplot range to 20,000 counts in the first subplot, 250 in the second, 90
 in the third, and so on. 
 
 
 ~~~
-par(mfrow=c(2,3))
-for (i in 1:6) {
-  qqnorm(dataset.islet.rnaseq$raw[,i])
-  qqline(dataset.islet.rnaseq$raw[,i])
-  }
+dataset.islet.rnaseq$raw %>% 
+  as.data.frame() %>%
+  select(ENSMUSG00000000001:ENSMUSG00000000058) %>% 
+  pivot_longer(cols = everything(), names_to = 'gene', values_to = 'value') %>% 
+  ggplot(aes(sample = value)) +
+    stat_qq() +
+    geom_qq_line() +
+    facet_wrap(~gene, scales = 'free') +
+    labs(title = 'Count distribution for six genes',
+         xlab = 'Normal percentiles', y = 'Count percentiles')
 ~~~
 {: .language-r}
 
@@ -386,33 +399,57 @@ distributed. They are also all on the same scale now as well.
 
 
 ~~~
-par(mfrow=c(2,3))
-for (i in 1:6) {
-  qqnorm(dataset.islet.rnaseq$expr[,i])
-  qqline(dataset.islet.rnaseq$expr[,i])
-  }
+dataset.islet.rnaseq$expr %>% 
+  as.data.frame() %>%
+  select(ENSMUSG00000000001:ENSMUSG00000000058) %>% 
+  pivot_longer(cols = everything(), names_to = 'gene', values_to = 'value') %>% 
+  ggplot(aes(sample = value)) +
+    stat_qq() +
+    geom_qq_line() +
+    facet_wrap(~gene, scales = 'free') +
+    labs(title = 'Normalized count distribution for six genes',
+         xlab = 'Normal percentiles', y = 'Count percentiles')
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-03-view_qqplots_normalized-1.png" alt="plot of chunk view_qqplots_normalized" width="612" style="display: block; margin: auto;" />
 
-Boxplots of raw counts for 5 example genes are shown at left below. Notice that 
+Boxplots of raw counts for six example genes are shown at left below. Notice that 
 the median count values (horizontal black bar in each boxplot) are not 
 comparable between the genes because the counts are not on the same scale. At
-right, boxplots for the same 5 genes show normalized count data on the same 
+right, boxplots for the same genes show normalized count data on the same 
 scale.
 
 
 ~~~
-par(las=2, mfrow=c(1,2))
-boxplot(dataset.islet.rnaseq$raw[,c(5:9)], 
-        main="Raw count distributions for 5 example genes")
-boxplot(dataset.islet.rnaseq$expr[,c(5:9)], 
-        main="Normalized count distributions for the same 5 example genes")
+raw = dataset.islet.rnaseq$raw %>% 
+        as.data.frame() %>% 
+        select(ENSMUSG00000000001:ENSMUSG00000000058) %>% 
+        pivot_longer(cols = everything(), names_to = 'gene', values_to = 'value') %>% 
+        mutate(type = 'raw')
+
+norm = dataset.islet.rnaseq$expr %>% 
+         as.data.frame() %>% 
+         select(ENSMUSG00000000001:ENSMUSG00000000058) %>% 
+         pivot_longer(cols = everything(), names_to = 'gene', values_to = 'value') %>% 
+         mutate(type = 'normalized')
+
+bind_rows(raw, norm) %>%
+  mutate(type = factor(type, levels = c('raw', 'normalized'))) %>% 
+  ggplot(aes(gene, value)) +
+    geom_boxplot() +
+    facet_wrap(~type, scales = 'free') +
+    labs(title = 'Count distributions for example genes') +
+    theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 1))
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-03-view_example_boxplots-1.png" alt="plot of chunk view_example_boxplots" width="612" style="display: block; margin: auto;" />
+
+~~~
+rm(raw, norm)
+~~~
+{: .language-r}
 
 Have a look at the first several rows of normalized count data.
 

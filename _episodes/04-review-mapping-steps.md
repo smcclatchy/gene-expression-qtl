@@ -196,18 +196,18 @@ tmp
 
 
 ~~~
-# A tibble: 7 × 8
+# A tibble: 7 x 8
 # Groups:   phenotype [1]
-  phenotype    data               model  term  estimate std.e…¹ stati…²  p.value
+  phenotype    data               model  term  estimate std.e~1 stati~2  p.value
   <chr>        <list>             <list> <chr>    <dbl>   <dbl>   <dbl>    <dbl>
-1 Ins_tAUC_log <tibble [500 × 5]> <lm>   (Int…  4.49    0.447    10.1   1.10e-21
-2 Ins_tAUC_log <tibble [500 × 5]> <lm>   sexM   0.457   0.0742    6.17  1.48e- 9
-3 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.294   0.118    -2.49  1.33e- 2
-4 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.395   0.118    -3.36  8.46e- 4
-5 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.176   0.118    -1.49  1.38e- 1
-6 Ins_tAUC_log <tibble [500 × 5]> <lm>   DOwa… -0.137   0.118    -1.16  2.46e- 1
-7 Ins_tAUC_log <tibble [500 × 5]> <lm>   diet…  0.00111 0.00346   0.322 7.48e- 1
-# … with abbreviated variable names ¹​std.error, ²​statistic
+1 Ins_tAUC_log <tibble [500 x 5]> <lm>   (Int~  4.49    0.447    10.1   1.10e-21
+2 Ins_tAUC_log <tibble [500 x 5]> <lm>   sexM   0.457   0.0742    6.17  1.48e- 9
+3 Ins_tAUC_log <tibble [500 x 5]> <lm>   DOwa~ -0.294   0.118    -2.49  1.33e- 2
+4 Ins_tAUC_log <tibble [500 x 5]> <lm>   DOwa~ -0.395   0.118    -3.36  8.46e- 4
+5 Ins_tAUC_log <tibble [500 x 5]> <lm>   DOwa~ -0.176   0.118    -1.49  1.38e- 1
+6 Ins_tAUC_log <tibble [500 x 5]> <lm>   DOwa~ -0.137   0.118    -1.16  2.46e- 1
+7 Ins_tAUC_log <tibble [500 x 5]> <lm>   diet~  0.00111 0.00346   0.322 7.48e- 1
+# ... with abbreviated variable names 1: std.error, 2: statistic
 ~~~
 {: .output}
 

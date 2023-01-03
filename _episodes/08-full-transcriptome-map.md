@@ -81,7 +81,7 @@ ggtmap(data = lod_summary %>% filter(qtl_lod >= 7.18), cis.points = TRUE, cis.ra
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-08-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="432" style="display: block; margin: auto;" />
+<img src="../fig/rmd-08-unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" width="576" style="display: block; margin: auto;" />
 
 This transcriptome map is definitely a lot more crowded than the one in the previous lesson. Again, the gene locations are shown on the X-axis and the QTL locations are shown on the Y-axis.
 
@@ -142,18 +142,14 @@ eqtl_density_plot(data = lod_summary, lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
 ~~~
 {: .output}
 
-<img src="../fig/rmd-08-all_eqtl_density-1.png" alt="plot of chunk all_eqtl_density" width="432" style="display: block; margin: auto;" />
+<img src="../fig/rmd-08-all_eqtl_density-1.png" alt="plot of chunk all_eqtl_density" width="576" style="display: block; margin: auto;" />
 
 There are clearly some loci that have an enrichment of eQTL. We have drawn a dashed line at "100" as an aribtrary cutoff as a potential cutoff to use when selecting peaks.
 
@@ -170,14 +166,10 @@ eqtl_density_plot(data = filter(lod_summary, cis == "cis"), lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
 ~~~
 {: .output}
 
@@ -196,14 +188,10 @@ eqtl_density_plot(data = filter(lod_summary, cis == "trans"), lod_thr = 7.18)
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the `.groups` argument.
 ~~~
 {: .output}
 
@@ -237,8 +225,8 @@ qtl_dens = lod_summary %>%
 
 
 ~~~
-`summarise()` has grouped output by 'qtl_chr'. You can override using
-the `.groups` argument.
+`summarise()` has grouped output by 'qtl_chr'. You can override using the
+`.groups` argument.
 ~~~
 {: .output}
 
@@ -252,7 +240,7 @@ qtl_dens
 
 
 ~~~
-# A tibble: 20 × 3
+# A tibble: 20 x 3
 # Groups:   qtl_chr [20]
    qtl_chr dens_x dens_y
    <fct>    <dbl>  <dbl>
