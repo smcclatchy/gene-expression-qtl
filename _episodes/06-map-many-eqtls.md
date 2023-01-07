@@ -83,18 +83,18 @@ kable(gene.info[1:10,])
 
 
 
-|gene_id            |symbol        |chr |     start|       end| strand|    middle|nearest.marker.id |biotype              |module    |hotspot |
-|:------------------|:-------------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------------|:---------|:-------|
-|ENSMUSG00000036975 |Tmem177       |1   | 119.90789| 119.91321|     -1| 119.91055|1_119908056       |protein_coding       |tan       |NA      |
-|ENSMUSG00000071415 |Rpl23         |11  |  97.77753|  97.78244|     -1|  97.77998|11_97709598       |protein_coding       |salmon    |NA      |
-|ENSMUSG00000079614 |Seh1l         |18  |  67.77488|  67.79546|      1|  67.78517|18_67653971       |protein_coding       |turquoise |NA      |
-|ENSMUSG00000024013 |Fgd2          |17  |  29.36091|  29.37966|      1|  29.37029|17_29386387       |protein_coding       |brown     |NA      |
-|ENSMUSG00000056598 |Lrrc48        |11  |  60.35333|  60.39434|      1|  60.37383|11_60327308       |protein_coding       |grey      |NA      |
-|ENSMUSG00000031270 |4930513O06Rik |X   | 139.08624| 139.09340|      1| 139.08982|X_139084893       |protein_coding       |brown     |NA      |
-|ENSMUSG00000045709 |1700023L04Rik |6   |  29.98533|  29.99378|      1|  29.98955|6_29931253        |lincRNA              |grey      |NA      |
-|ENSMUSG00000073569 |Gm10540       |18  |  45.28583|  45.28611|     -1|  45.28597|18_45285943       |pseudogene           |grey      |NA      |
-|ENSMUSG00000051965 |Nanos2        |7   |  18.98752|  18.98896|      1|  18.98824|7_18987420        |protein_coding       |grey      |NA      |
-|ENSMUSG00000086967 |4930566F21Rik |5   |  31.48663|  31.49518|     -1|  31.49090|5_31505343        |processed_transcript |grey      |NA      |
+|gene_id            |symbol  |chr |     start|       end| strand|    middle|nearest.marker.id |biotype        |module       |hotspot |
+|:------------------|:-------|:---|---------:|---------:|------:|---------:|:-----------------|:--------------|:------------|:-------|
+|ENSMUSG00000028182 |Lrriq3  |3   | 155.09343| 155.19428|      1| 155.14386|3_155141204       |protein_coding |brown        |NA      |
+|ENSMUSG00000025437 |Usp33   |3   | 152.34648| 152.39361|      1| 152.37005|3_152372563       |protein_coding |pink         |NA      |
+|ENSMUSG00000022354 |Ndufb9  |15  |  58.93381|  58.93949|      1|  58.93665|15_58956707       |protein_coding |blue         |NA      |
+|ENSMUSG00000086905 |Gm13716 |2   |  85.19693|  85.19867|      1|  85.19780|2_85202802        |antisense      |grey         |NA      |
+|ENSMUSG00000022812 |Gsk3b   |16  |  38.08900|  38.24608|      1|  38.16754|16_38137342       |protein_coding |midnightblue |NA      |
+|ENSMUSG00000018974 |Sart3   |5   | 113.74245| 113.77165|     -1| 113.75705|5_113653421       |protein_coding |purple       |NA      |
+|ENSMUSG00000021013 |Ttc8    |12  |  98.92057|  98.98324|      1|  98.95191|12_98904979       |protein_coding |grey         |NA      |
+|ENSMUSG00000075558 |Gm17151 |10  |  80.76686|  80.76899|     -1|  80.76792|10_80824573       |antisense      |grey         |NA      |
+|ENSMUSG00000049699 |Ucn2    |9   | 108.98616| 108.98716|      1| 108.98666|9_108986207       |protein_coding |grey         |NA      |
+|ENSMUSG00000050534 |Htr5b   |1   | 121.50984| 121.52846|     -1| 121.51915|1_121401626       |protein_coding |grey         |NA      |
 
 ### Expression Data
 

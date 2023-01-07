@@ -186,7 +186,7 @@ Now let's apply that function to the data object `tmp` that we created above.
 ~~~
 tmp = tmp %>%
   mutate(model = map(data, mod_fxn)) %>%
-  mutate(summ = map(model, tidy)) %>%
+  mutate(summ  = map(model, tidy)) %>%
   unnest(summ)
 
 tmp
@@ -232,12 +232,13 @@ We can see that sex and DOwave (especially the third batch) are significant. Her
 
 ~~~
 # convert sex and DO wave (batch) to factors
-pheno_clin$sex = factor(pheno_clin$sex)
+pheno_clin$sex    = factor(pheno_clin$sex)
 pheno_clin$DOwave = factor(pheno_clin$DOwave)
 
 covar = model.matrix(~sex + DOwave, data = pheno_clin)[,-1]
 ~~~
 {: .language-r}
+
 **REMEMBER:** the sample IDs must be in the rownames of `pheno`, `addcovar`, `genoprobs` and `K`. `qtl2` uses the sample IDs to align the samples between objects.
 
 
@@ -252,9 +253,9 @@ First, we need to work out the signifcance level.  Let's find the signifance lev
 
 ~~~
 operm <- scan1perm(genoprobs = probs, 
-                   pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE],
-                   addcovar=covar,
-                   n_perm=1000)
+                   pheno     = pheno_clin[,"Ins_tAUC_log", drop = FALSE],
+                   addcovar  = covar,
+                   n_perm    = 1000)
 ~~~
 {: .language-r}
 
@@ -268,7 +269,7 @@ operm <- scan1perm(genoprobs = probs,
 ~~~
 load("../data/operm_Ins_tAUC_log_1000.Rdata")
 
-summary(operm,alpha=c(0.1, 0.05, 0.01))
+summary(operm, alpha = c(0.1, 0.05, 0.01))
 ~~~
 {: .language-r}
 
@@ -277,9 +278,9 @@ summary(operm,alpha=c(0.1, 0.05, 0.01))
 ~~~
 LOD thresholds (1000 permutations)
      Ins_tAUC_log
-0.1          7.22
-0.05         7.58
-0.01         8.38
+0.1          7.19
+0.05         7.63
+0.01         8.43
 ~~~
 {: .output}
 #### Genome Scan
@@ -287,9 +288,9 @@ LOD thresholds (1000 permutations)
 
 ~~~
 qtl = scan1(genoprobs = probs, 
-            pheno = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
-            kinship = K, 
-            addcovar = covar)
+            pheno     = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+            kinship   = K, 
+            addcovar  = covar)
 ~~~
 {: .language-r}
 
@@ -297,24 +298,24 @@ Next, we plot the genome scan.
 
 
 ~~~
-plot_scan1(x = qtl, 
+plot_scan1(x   = qtl, 
            map = map, 
            lodcolumn = "Ins_tAUC_log")
-           add_threshold(map,  summary(operm,alpha=0.1), col = 'purple')
-           add_threshold(map,  summary(operm, alpha=0.05), col = 'red')
-           add_threshold(map,  summary(operm, alpha=0.01), col = 'blue')
+           add_threshold(map,  summary(operm, alpha = 0.1),  col = 'purple')
+           add_threshold(map,  summary(operm, alpha = 0.05), col = 'red')
+           add_threshold(map,  summary(operm, alpha = 0.01), col = 'blue')
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-04-qtl_plot-1.png" alt="plot of chunk qtl_plot" width="576" style="display: block; margin: auto;" />
 
-We can see a very strong peak on chromosome 11 with no other distibuishable peaks.
+We can see a very strong peak on chromosome 11 with no other distinguishable peaks.
 
 ### [Finding LOD peaks](https://smcclatchy.github.io/mapping/07-find-lod-peaks/)
 
 We can find all of the peaks above the significance threshold using the [find_peaks](https://github.com/rqtl/qtl2/blob/master/R/find_peaks.R) function. 
 
-The support interval is determined using the [Bayesian Credible Interval](http://www.ncbi.nlm.nih.gov/pubmed/11560912) and represents the region most likely to contain the causative polymorphism(s). We can obtain this interval by adding a `prob` argument to [find_peaks](https://github.com/rqtl/qtl2/blob/master/R/find_peaks.R). We pass in a value of `0.95` to request a support interval that contains the causal SNP 95% of the time.
+The support interval is determined using the [Bayesian Credible Interval](http://www.ncbi.nlm.nih.gov/pubmed/11560912) and represents the region most likely to contain the causal polymorphism(s). We can obtain this interval by adding a `prob` argument to [find_peaks](https://github.com/rqtl/qtl2/blob/master/R/find_peaks.R). We pass in a value of `0.95` to request a support interval that contains the causal SNP 95% of the time.
 
 In case there are multiple peaks are found on a chromosome, the `peakdrop` argument allows us to the find the peak which has a certain LOD score drop between other peaks. 
 
@@ -344,39 +345,111 @@ Table: Phenotype QTL Peaks with LOD >= 6
 
 ### QTL effects
 
+Once we have selected a QTL peak to investigate, we can make several types of
+plots to view the founder allele effects. In the mapping model, we can estimate
+the magnitude and direction of the founder allele effects. One method is to 
+estimate the allele effects across the entire chromosome. This can be 
+informative for complex peaks that span many Mb. We use the 
+[scan1blup][https://github.com/kbroman/qtl2/blob/main/R/scan1blup.R] fuction to
+estimate the allele effects and the 
+[plot_coefCC][https://github.com/kbroman/qtl2/blob/main/R/plot_coef.R] fuction
+to plot the results.
+
 
 ~~~
-g <- maxmarg(probs, 
-             map=map, 
-             chr=peaks$chr[1],
-             pos=peaks$pos[1], 
-             minprob = 0.4,
-             return_char=TRUE)
+# g <- maxmarg(probs = probs, 
+#              map   = map, 
+#              chr   = peaks$chr[1],
+#              pos   = peaks$pos[1], 
+#              minprob     = 0.4,
+#              return_char = TRUE)
+# 
+# plot_pxg(geno  = g, 
+#          pheno = pheno_clin[,peaks$lodcolumn[1]], 
+#          ylab  = peaks$lodcolumn[1], 
+#          sort  = FALSE)
 
-plot_pxg(g, 
-         pheno_clin[,peaks$lodcolumn[1]], 
-         ylab=peaks$lodcolumn[1], 
-         sort=FALSE)
+chr = 11
+
+blup <- scan1blup(genoprobs = probs[,chr], 
+                  pheno     = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+                  kinship   = K[[chr]], 
+                  addcovar  = covar)
+
+plot_coefCC(x            = blup, 
+            map          = map, 
+            columns      = 1:8,
+            bgcolor      = "gray95", 
+            legend       = "bottomleft",
+            scan1_output = qtl,
+            main         = "Ins_tAUC_log")
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-04-qtl_effects-1.png" alt="plot of chunk qtl_effects" width="612" style="display: block; margin: auto;" />
 
-~~~
-blup <- scan1blup(genoprobs=probs[,peaks$chr[1]], 
-                  pheno=pheno_clin[,peaks$lodcolumn[1], drop=FALSE])
+> **NOTE**: Don't run the code above because it takes a long time. We have 
+provided the code and the output so that you can run this for your data.  
 
-plot_coefCC(blup, 
-       map=map, 
-       columns=1:8,
-       bgcolor="gray95", 
-       legend="bottomleft",
-       scan1_output = qtl
-       )
+From the plot above, DO mice carrying the A/J, c57BL/6J, 129S1/SvImJ, or 
+NOD/ShiLtJ alleles at the chromosome 11 QTL peak have higher Insulint tAUC than
+DO mice carrying the other founder alleles.
+
+If we are only interested in the allele effects at the marker with the highest
+LOD score, we can extract the genoprobs at that marker and estimate and plot
+the allele effects.
+
+
+~~~
+# Get the marker with the highest LOD score.
+max_mkr = find_marker(map = map, chr = peaks$chr, pos = peaks$pos)
+
+max_pr = pull_genoprobpos(genoprobs = probs, marker = max_mkr)
+
+mod = fit1(genoprobs = max_pr, 
+           pheno     = pheno_clin[,"Ins_tAUC_log", drop = FALSE], 
+           kinship   = K[[chr]], 
+           addcovar  = covar)
+
+data.frame(founder = names(mod$coef[1:8]),
+           coef    = mod$coef[1:8],
+           se      = mod$SE[1:8]) %>% 
+  ggplot(aes(x = founder, y = coef)) +
+    geom_pointrange(aes(ymin = coef - se, ymax = coef + se)) +
+    labs(title = "Founder Allele Effects at Chr 11 Ins_tAUC QTL")
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-04-qtl_effects-2.png" alt="plot of chunk qtl_effects" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-04-fit1-1.png" alt="plot of chunk fit1" width="612" style="display: block; margin: auto;" />
+
+In this plot, you can see that DO mice carrying the four founder alleles on the
+left (A/J, c57BL/6J, 129S1/SvImJ, NOD/ShiLtJ) have higher Insulin tAUC values
+than DO mice carrying the other founders.
+
+As a reference, here are the DO founder letter codes:
+
+
+~~~
+kable(data.frame(Letter = LETTERS[1:8],
+                 Strain = c("A/J",       "C57BL/6J", "129S1/SvImJ", "NOD/ShiLtJ",
+                            "NZO/HlLtJ", "CAST/EiJ", "PWK/PhJ",     "WSB/EiJ")))
+~~~
+{: .language-r}
+
+
+
+|Letter |Strain      |
+|:------|:-----------|
+|A      |A/J         |
+|B      |C57BL/6J    |
+|C      |129S1/SvImJ |
+|D      |NOD/ShiLtJ  |
+|E      |NZO/HlLtJ   |
+|F      |CAST/EiJ    |
+|G      |PWK/PhJ     |
+|H      |WSB/EiJ     |
+
+
 
 > ## Challenge
 > Now choose another phenotype in `pheno_clin` and perform the same steps.  
